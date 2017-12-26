@@ -138,7 +138,7 @@ class _Base(object):
         log.debug('{0}.load ({1:.0f} seconds)'.format(cls.__name__, process_time))
 
     @classmethod
-    def post_process(cls, db, **kwargs):
+    def post_process(cls, db):
         """ Post-process processing method.  This method is a placeholder
             that may be overridden in children...
             @see: stop_time.py

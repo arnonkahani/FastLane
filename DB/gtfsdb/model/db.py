@@ -4,7 +4,7 @@ log = logging.getLogger(__file__)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import inspect
-from GTFSDB import config
+from gtfsdb import config
 
 
 class Database(object):
@@ -23,7 +23,7 @@ class Database(object):
 
     @property
     def classes(self):
-        from GTFS.model.base import Base
+        from gtfsdb.model.base import Base
         if self.tables:
             return [c for c in Base.__subclasses__() if c.__tablename__ in self.tables]
         return Base.__subclasses__()
@@ -68,7 +68,7 @@ class Database(object):
             if self._schema:
                 from sqlalchemy.schema import CreateSchema
                 self.engine.execute(CreateSchema(self._schema))
-        except Exception, e:
+        except Exception as e:
             log.info("NOTE: couldn't create schema {0} (schema might already exist)\n{1}".format(self._schema, e))
 
         for cls in self.classes:
@@ -91,7 +91,5 @@ class Database(object):
     def url(self, val):
         self._url = val
         self.engine = create_engine(val)
-        if self.is_sqlite:
-            self.engine.connect().connection.connection.text_factory = str
         session_factory = sessionmaker(self.engine)
         self.session = scoped_session(session_factory)

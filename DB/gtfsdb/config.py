@@ -1,4 +1,4 @@
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import logging.config
 import os
 
@@ -14,7 +14,7 @@ if config.has_section('loggers'):
 
 '''Application defaults'''
 BATCH_SIZE = 5000
-DATABSE_URL = 'sqlite://'
+DATABSE_URL = 'postgresql+psycopg2://postgres:<password>@localhost:5432'
 
 '''Data source constants'''
 DATASOURCE_GTFS = 1
