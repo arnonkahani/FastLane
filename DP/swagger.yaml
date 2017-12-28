@@ -1,0 +1,73 @@
+swagger: '2.0'
+info:
+  title: Fast Lanes API
+  version: "0.1"
+consumes:
+  - application/json
+produces:
+  - application/json
+security:
+  # enable OAuth protection for all REST endpoints
+  # (only active if the TOKENINFO_URL environment variable is set)
+  - oauth2: [uid]
+paths:
+  /points:
+    get:
+      tags: [calculation]
+      operationId: app.get_calculation
+      summary: Get the calculation of the points
+      parameters:
+        - $ref: '#/parameters/point'
+      responses:
+        200:
+          description: Return all pi vi
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Points'
+
+parameters:
+  point:
+    type: array
+    properties:
+      x:
+        type: string
+        description: x point
+        example: "123127182781"
+      y:
+        type: string
+        description: y point
+        example: "38923892389"
+
+definitions:
+  Points:
+    type: object
+    required:
+      - x
+      - y
+    properties:
+      x:
+        type: string
+        description: x point
+        example: "123127182781"
+      y:
+        type: string
+        description: y point
+        example: "38923892389"
+      v:
+        type: integer
+        description: v
+        example: 20
+      p:
+        type: integer
+        description: p
+        example: 20
+
+
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    authorizationUrl: https://example.com/oauth2/dialog
+    scopes:
+      uid: Unique identifier of the user accessing the service.
