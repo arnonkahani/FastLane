@@ -1,14 +1,34 @@
-#!/usr/bin/env python3
-import connexion
-import logging
+from flask import Flask, redirect, url_for, request, jsonify
+from logic import getTrips
+
+app = Flask(__name__)
+
+headers = {'Content-Type': 'application/json'}
+url = "z"
 
 
-def get_calculation(points):
-    return [points]
+@app.route('/compute/<name>')
+def success(name):
+    return 'welcome %s' % name
 
 
-logging.basicConfig(level=logging.INFO)
-app = connexion.App(__name__)
-app.add_api('swagger.yaml')
-app.debug = True
-app.run(port=8080, server='gevent')
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        user = request.form['nm']
+        return redirect(url_for('success', name=user))
+    else:
+        user = request.args.get('nm')
+        return redirect(url_for('success', name=user))
+
+
+@app.route('/compute')
+def compute():
+    geoJson = request.json
+    print geoJson
+    data = getTrips(geoJson)
+    return jsonify(data)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
