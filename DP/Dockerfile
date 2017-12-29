@@ -5,4 +5,4 @@ COPY . /app
 WORKDIR /app
 RUN pip install -r ./DP/requirements.txt
 ENTRYPOINT ["python"]
-CMD ["app.py"]
+CMD ["./DP/app.py"]
