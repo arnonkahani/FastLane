@@ -1,2 +1,2 @@
-connexion>=1.0.31
-gevent>=1.1b1
+Flask==0.10.1
+requests==2.18.4
