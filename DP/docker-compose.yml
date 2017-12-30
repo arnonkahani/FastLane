@@ -1,0 +1,6 @@
+version: '2'
+services:
+  app:
+    image: arnonkahani/FastLane:3-create_data_procc_layer
+    ports:
+      - 3000
