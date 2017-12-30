@@ -4,5 +4,6 @@ RUN apt-get install -y python-pip python-dev build-essential
 COPY . /app
 WORKDIR /app
 RUN pip install -r ./DP/requirements.txt
+EXPOSE 3000
 ENTRYPOINT ["python"]
 CMD ["./DP/app.py"]
