@@ -26,8 +26,7 @@ def compute():
     geoJson = request.json
     print geoJson
     data = getTrips(geoJson)
-    computeNumForBusStops(data)
-    return data
+    return computeNumForBusStops(data)
 
 
 @app.route('/coordinates')
