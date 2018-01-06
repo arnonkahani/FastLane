@@ -1,6 +1,6 @@
 from flask import jsonify,json
 from datetime import datetime
-from geojson import LineString
+#from geojson import LineString
 import requests
 
 server_ip = 'https://fastlanes-data-processing.herokuapp.com'
@@ -14,7 +14,7 @@ def setDefaultHours():
 
 
 def getTrips(geoJson):
-    lineStringGeo = LineString(json.loads(geoJson))
+    #lineStringGeo = LineString(json.loads(geoJson))
     #data = requests.get(server_ip, json=lineStringGeo)
     data = requests.get(server_ip)
     return data.content
