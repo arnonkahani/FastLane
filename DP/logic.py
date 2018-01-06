@@ -1,8 +1,10 @@
 from flask import jsonify,json
 from datetime import datetime
+from geojson import LineString
 import requests
 
 server_ip = 'https://fastlanes-data-processing.herokuapp.com'
+headers = {'Content-Type': 'application/json'}
 
 def setDefaultHours():
     hours = {}
@@ -12,15 +14,14 @@ def setDefaultHours():
 
 
 def getTrips(geoJson):
-    headers = {'Content-Type': 'application/json'}
-    data = requests.get(server_ip, json=geoJson)
+    lineStringGeo = LineString(json.loads(geoJson))
+    #data = requests.get(server_ip, json=lineStringGeo)
     data = requests.get(server_ip)
-    return computeNumForBusStops(data.content)
+    return data.content
 
 
 def computeNumForBusStops(jsonObj):
     retval = []
-    record = {}
     dic = json.loads(jsonObj)
     data = dic['data']
     for stop in data['stops']:
@@ -35,9 +36,12 @@ def computeNumForBusStops(jsonObj):
         for key, value in hours.iteritems():
             pair = {}
             pair['numOfTripsPerHour'] = value
-            pair['hour'] = key
+            pair['hour'] = "%02d:%02d" % (key, 0)
             list.append(pair)
         record['numberOfTrips'] = list
+        geoPoint = stop['geom']
+        record['lat'] = geoPoint['coordinates'][0]
+        record['lng'] = geoPoint['coordinates'][1]
         retval.append(record)
-    jsonVal = json.dumps(retval[0])
+    jsonVal = json.dumps(retval)
     return jsonVal

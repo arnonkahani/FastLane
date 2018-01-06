@@ -1,10 +1,9 @@
 from flask import Flask, redirect, url_for, request, jsonify , json
-from logic import getTrips
+from logic import getTrips , computeNumForBusStops
 
 app = Flask(__name__)
 
 headers = {'Content-Type': 'application/json'}
-url = "z"
 
 
 @app.route('/compute/<name>')
@@ -24,6 +23,15 @@ def login():
 
 @app.route('/compute')
 def compute():
+    geoJson = request.json
+    print geoJson
+    data = getTrips(geoJson)
+    computeNumForBusStops(data)
+    return jsonify(data)
+
+
+@app.route('/coordinates')
+def coordinates():
     geoJson = request.json
     print geoJson
     data = getTrips(geoJson)
