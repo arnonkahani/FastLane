@@ -1,0 +1,180 @@
+
+/* bar chart CSS */
+.bar{
+  fill: steelblue;
+}
+
+.bar:hover{
+  fill: rgb(233, 204, 38);
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.svg{
+  margin-left: 50px;
+}
+
+/* navigation bar CSS */
+#nav_bar,
+#nav_bar ul,
+#nav_bar ul li,
+#nav_bar ul li a {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  line-height: 1;
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#nav_bar:after,
+#nav_bar > ul:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+
+#nav_bar {
+  width: auto;
+  border-bottom: 3px solid rgb(233, 204, 38);
+  font-family: Raleway, sans-serif;
+  line-height: 1;
+}
+
+#nav_bar ul {
+  background: #ffffff;
+}
+
+#nav_bar > ul > li {
+  float: left;
+}
+
+#nav_bar.align-center > ul {
+  font-size: 0;
+  text-align: center;
+}
+
+#nav_bar.align-center > ul > li {
+  display: inline-block;
+  float: none;
+}
+
+#nav_bar.align-right > ul > li {
+  float: right;
+}
+
+#nav_bar.align-right > ul > li > a {
+  margin-right: 0;
+  margin-left: -4px;
+}
+
+#nav_bar > ul > li > a {
+  z-index: 2;
+  padding: 18px 25px 12px 25px;
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: none;
+  color: #444444;
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  -ms-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+  margin-right: -4px;
+}
+
+#nav_bar > ul > li.active > a,
+#nav_bar > ul > li:hover > a,
+#nav_bar > ul > li > a:hover {
+  color: #ffffff;
+}
+
+#nav_bar > ul > li > a:after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  width: 100%;
+  height: 120%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  content: "";
+  -webkit-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+  -webkit-transform: perspective(5px) rotateX(2deg);
+  -webkit-transform-origin: bottom;
+  -moz-transform: perspective(5px) rotateX(2deg);
+  -moz-transform-origin: bottom;
+  transform: perspective(5px) rotateX(2deg);
+  transform-origin: bottom;
+}
+
+#nav_bar > ul > li.active > a:after,
+#nav_bar > ul > li:hover > a:after,
+#nav_bar > ul > li > a:hover:after{
+  background: rgb(233, 204, 38);
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 3px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+.d3-tip.n:after {
+  margin: -2px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+/* path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+} */
+
+
+
+
+

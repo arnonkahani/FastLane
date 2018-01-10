@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FastLanes</title>
+        <meta charset="utf-8">
+        <link rel='stylesheet' href='style.css'>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"/>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+
+    <body>
+        <!--start nav bar -->
+        <div class="container">
+                <header class="main">
+                    <nav>
+                        <div id="nav_bar">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/formula/create">Create a formula</a></li>
+                                <li><a href="/formula/select">Select formula</a></li>
+                                <li><a href="/admin">Admin</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+        <!--end nav bar -->
+
+        <!-- start content -->
+        <div class='container'>
+                <h2> select formula</h2>
+                <div>
+                    <button onclick="sendData()">Calaulate Data</button>
+                    <button onclick="clearData()">Clear</button>
+                </div>
+                <div id="map" style="width: 600px; height: 400px; margin-bottom: 70px"></div>
+                <script type='text/javascript' src='script.js'></script>
+                
+        </div>
+        <!-- end content -->
+    </body>
+</html>
