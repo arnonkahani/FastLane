@@ -15,16 +15,16 @@ class Trip(Base):
 
     __tablename__ = 'trips'
 
-    trip_id = Column(String(255), primary_key=True, index=True, nullable=False)
-    route_id = Column(String(255), index=True, nullable=False)
-    service_id = Column(String(255), index=True, nullable=False)
+    trip_id = Column(String(20), primary_key=True, index=True, nullable=False)
+    route_id = Column(String(20), index=True, nullable=False)
+    service_id = Column(String(20), index=True, nullable=False)
     direction_id = Column(Integer, index=True)
-    block_id = Column(String(255), index=True)
-    shape_id = Column(String(255), index=True, nullable=True)
-    trip_type = Column(String(255))
+    block_id = Column(String(20), index=True)
+    shape_id = Column(String(20), index=True, nullable=True)
+    trip_type = Column(String(20))
 
-    trip_headsign = Column(String(255))
-    trip_short_name = Column(String(255))
+    trip_headsign = Column(String(100))
+    trip_short_name = Column(String(100))
     bikes_allowed = Column(Integer, default=0)
     wheelchair_accessible = Column(Integer, default=0)
 
@@ -54,7 +54,7 @@ class Trip(Base):
         uselist=True, viewonly=True)
 
     @classmethod
-    def post_process(cls, db, **kwargs):
+    def post_process(cls, db):
         trips = db.session.query(Trip).all()
         for t in trips:
             if not t.is_valid:
