@@ -16,7 +16,7 @@ class GTFS_DB():
 
     def load_data(self,filename):
         self.gtfs = GTFS(filename)
-        self.gtfs.load(self.db,batch_size=config.BATCH_SIZE)
+        self.gtfs.load(self.db,batch_size=config.BATCH_SIZE,shouldLoadFile=True)
 
 
 

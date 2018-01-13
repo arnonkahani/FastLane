@@ -1,5 +1,6 @@
 import logging
 import time
+from binascii import unhexlify
 
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, Integer, Numeric, String
@@ -8,7 +9,7 @@ from sqlalchemy.sql import func
 
 from gtfsdb import config
 from gtfsdb.model.base import Base
-
+from shapely import wkb, wkt
 
 __all__ = ['Pattern', 'Shape']
 
@@ -36,7 +37,8 @@ class Pattern(Base):
             cls.geom = deferred(Column(Geometry(geometry_type='LINESTRING', srid=config.SRID)))
 
     def geom_from_shape(self, points):
-        coords = ['{0} {1}'.format(r.shape_pt_lon, r.shape_pt_lat) for r in points]
+        coords = [wkb.loads(bytes(r.geom.data)) for r in points]
+        coords = ['{0} {1}'.format(r.x, r.y) for r in coords]
         self.geom = 'SRID={0};LINESTRING({1})'.format(config.SRID, ','.join(coords))
 
     @classmethod
@@ -71,11 +73,10 @@ class Shape(Base):
 
     __tablename__ = 'shapes'
 
-    shape_id = Column(String(255), primary_key=True, index=True)
-    shape_pt_lat = Column(Numeric(12, 9))
-    shape_pt_lon = Column(Numeric(12, 9))
+    shape_id = Column(String(10), primary_key=True, index=True)
     shape_pt_sequence = Column(Integer, primary_key=True, index=True)
     shape_dist_traveled = Column(Numeric(20, 10))
+
 
     @classmethod
     def add_geometry_column(cls):
