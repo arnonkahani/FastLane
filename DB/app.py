@@ -42,7 +42,7 @@ def construct_linestring(geoJSONCoordinates):
 
 
 @app.route('/stops', methods=['POST'])
-def getStopsByLine():
+def dataForFormulaComputation():
     stop_line = construct_linestring(json.loads(request.get_json())['coordinates'])
     print(stop_line)
     request.get_json()
