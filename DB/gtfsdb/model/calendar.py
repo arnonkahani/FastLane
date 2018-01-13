@@ -39,7 +39,7 @@ class Calendar(Base):
     def weekday_list(self):
         weekday_dict = dict(monday=0, tuesday=1, wednesday=2, thursday=3,
                             friday=4, saturday=5, sunday=6)
-        return [v for k, v in weekday_dict.iteritems() if getattr(self, k)]
+        return [v for k, v in weekday_dict.items() if getattr(self, k)]
 
     def to_date_list(self):
         date_list = []

@@ -96,7 +96,7 @@ class Block(Base):
         return ret_val
 
     @classmethod
-    def load(cls, db, **kwargs):
+    def load(cls, db ,batch_size  ,gtfs_directory):
         log.debug('{0}.load (loaded later in post_process)'.format(cls.__name__))
         pass
 
@@ -112,7 +112,7 @@ class Block(Base):
         """ loop thru a full trip table and break things into buckets based on service key and block id
         """
         start_time = time.time()
-        batch_size = config.DEFAULT_BATCH_SIZE
+        batch_size = config.BATCH_SIZE
         num_recs = 0
 
         # step 1: loop thru all trips, sorted by block and service key

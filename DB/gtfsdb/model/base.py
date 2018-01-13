@@ -1,16 +1,16 @@
 import csv
-import datetime
+from datetime import datetime
 import os
-from pkg_resources import resource_filename  # @UnresolvedImport
-import sys
 import time
 import logging
 log = logging.getLogger(__name__)
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import object_session
-from gtfsdb import config, util
-
+from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
+from geoalchemy2.elements import WKBElement
+import json
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 class _Base(object):
 
@@ -38,26 +38,41 @@ class _Base(object):
         clean_dict = cls.make_record(attrs)
         return cls(**clean_dict)
 
+
+    def to_dict(self, rel=None, backref=None):
+        if rel is None:
+            rel = False
+        res = {column.key: getattr(self, attr)
+               for attr, column in self.__mapper__.c.items()}
+        if rel:
+            for attr, relation in self.__mapper__.relationships.items():
+                # Avoid recursive loop between to tables.
+                if backref == relation.table:
+                    continue
+                value = getattr(self, attr)
+                if value is None:
+                    res[relation.key] = None
+                elif isinstance(value.__class__, DeclarativeMeta):
+                    res[relation.key] = value.to_dict(backref=self.__table__)
+                else:
+                    res[relation.key] = [i.to_dict(backref=self.__table__)
+                                         for i in value]
+        return res
+
+    def __iter__(self):
+        return self.to_dict().iteritems()
+
     @property
-    def to_dict(self):
-        """convert a SQLAlchemy object into a dict that is serializable to JSON
-        """
-        ret_val = self.__dict__.copy()
-
-        """ not crazy about this hack, but ... the __dict__ on a SQLAlchemy
-        object contains hidden crap that we delete from the class dict
-        """
-        if set(['_sa_instance_state']).issubset(ret_val):
-            del ret_val['_sa_instance_state']
-
-        """ we're using 'created' as the date parameter, so convert values
-        to strings <TODO>: better would be to detect date & datetime objects,
-        and convert those...
-        """
-        if set(['created']).issubset(ret_val):
-            ret_val['created'] = ret_val['created'].__str__()
-
-        return ret_val
+    def to_json(self, rel=None):
+        def extended_encoder(x):
+            if isinstance(x, WKBElement):
+                return mapping(to_shape(x))
+            if isinstance(x, datetime):
+                return x.isoformat()
+        if rel is None:
+            rel = False
+        dict_t = self.to_dict(rel)
+        return json.dumps(dict_t, default=extended_encoder)
 
     def get_up_date_name(self, attribute_name):
         """ return attribute name of where we'll store an update variable
@@ -112,9 +127,8 @@ class _Base(object):
         records = []
         file_path = os.path.join(directory, cls.filename)
         if os.path.exists(file_path):
-            f = open(file_path, 'r')
-            utf8_file = util.UTF8Recoder(f, 'utf-8-sig')
-            reader = csv.DictReader(utf8_file)
+            f = open(file_path, 'r',encoding="utf-8")
+            reader = csv.DictReader(f)
             reader.fieldnames = [field.strip().lower() for field in reader.fieldnames]
             table = cls.__table__
             try:
@@ -128,13 +142,14 @@ class _Base(object):
                 i += 1
                 if i >= batch_size:
                     db.engine.execute(table.insert(), records)
-                    sys.stdout.write('*')
+                    print('*')
                     records = []
                     i = 0
             if len(records) > 0:
                 db.engine.execute(table.insert(), records)
             f.close()
         process_time = time.time() - start_time
+        print('{0}.load ({1:.0f} seconds)'.format(cls.__name__, process_time))
         log.debug('{0}.load ({1:.0f} seconds)'.format(cls.__name__, process_time))
 
     @classmethod
@@ -147,15 +162,15 @@ class _Base(object):
 
     @classmethod
     def make_record(cls, row):
-        for k, v in row.items():
-            if isinstance(v, basestring):
+        for k, v in list(row.items()):
+            if isinstance(v, (str,bytes)):
                 row[k] = v.strip()
 
             try:
                 if k:
-                    if (k not in cls.__table__.c):
-                        del row[k]
-                    elif not v:
+                    # if (k not in cls.__table__.c):
+                    #     del row[k]
+                    if not v:
                         row[k] = None
                     elif k.endswith('date'):
                         row[k] = datetime.datetime.strptime(v, '%Y%m%d').date()

@@ -20,6 +20,8 @@ class Database(object):
         self.tables = tables
         self.url = db_url
         self.schema = schema
+        self.is_geospatial = True
+        self.is_postgresql = True
 
     @property
     def classes(self):
@@ -31,9 +33,11 @@ class Database(object):
     def create(self):
         """Drop/create GTFS database"""
         ins = inspect(self.engine)
+        tables = ins.get_table_names()
         for cls in self.sorted_classes:
             log.debug("create table: {0}".format(cls.__table__))
-            if not cls.__table__ in ins.get_table_names():
+            table = str(cls.__table__)
+            if not (table in tables):
                 cls.__table__.create(self.engine)
 
     @property

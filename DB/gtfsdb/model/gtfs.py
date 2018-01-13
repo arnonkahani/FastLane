@@ -17,25 +17,31 @@ class GTFS(object):
 
     def __init__(self, filename):
         self.file = filename
-        self.local_file = request(filename)[0]
+        self.local_file = request.urlopen(filename)
 
-    def load(self, db, batch_size=config.BATCH_SIZE,):
+    def load(self, db, batch_size=config.BATCH_SIZE,shouldLoadFile = False):
         '''Load GTFS into database'''
         start_time = time.time()
         log.debug('GTFS.load: {0}'.format(self.file))
 
         # load known GTFS files, derived tables & lookup tables
         gtfs_directory = self.unzip()
-        for cls in db.sorted_classes:
-            cls.load(db, batch_size,gtfs_directory)
+        if shouldLoadFile:
+            for cls in db.sorted_classes:
+                if not cls.__name__ in ['Calendar','CalendarDate','Route','RouteDirection','Stop',
+                                        'StopFeature','Transfer','Shape','Agency',
+                                        'FeedInfo','RouteFilter','RouteType','Block','Pattern','Trip']:
+                    print("Loading {0}".format(cls.__name__))
+                    cls.load(db = db, batch_size = batch_size,gtfs_directory = gtfs_directory)
         shutil.rmtree(gtfs_directory)
-
+        print("Finished loading classes")
         # load route geometries derived from shapes.txt
-        if Route in db.classes:
-            Route.load_geoms(db)
-
-        for cls in db.sorted_classes:
-            cls.post_process(db, **kwargs)
+        if shouldLoadFile:
+            if Route in db.classes:
+                Route.load_geoms(db)
+        if shouldLoadFile:
+            for cls in db.sorted_classes:
+                cls.post_process(db)
 
         process_time = time.time() - start_time
         log.debug('GTFS.load ({0:.0f} seconds)'.format(process_time))
