@@ -23,8 +23,7 @@ def login():
 
 @app.route('/compute')
 def compute():
-    geoJson = request.json
-    print geoJson
+    geoJson = request.get_json()
     data = getTrips(geoJson)
     return computeNumForBusStops(data)
 
