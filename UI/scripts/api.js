@@ -12,6 +12,7 @@ const rp = require('request-promise');
     return res;
 };
 
+
 module.exports = {HttpReq};
 
 

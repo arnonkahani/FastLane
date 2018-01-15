@@ -19,9 +19,8 @@
                         <div id="nav_bar">
                             <ul>
                                 <li><a href="/">Home</a></li>
-                                <li><a href="/formula/create">Create a formula</a></li>
-                                <li><a href="/formula/select">Select formula</a></li>
-                                <li><a href="/admin">Admin</a></li>
+                                <li><a href="/formula/create">Create New Formula</a></li>
+                                <li><a class='active' href="/formula/select">Calculate Data</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -31,13 +30,40 @@
 
         <!-- start content -->
         <div class='container'>
-                <h2> select formula</h2>
-                <div>
-                    <button onclick="sendData()">Calaulate Data</button>
-                    <button onclick="clearData()">Clear</button>
+                <div class='map-container'>
+                    <div id="map"></div>
+                    <script type='text/javascript' src='script.js'></script>
+                    <div class='btn-container'>
+                        <button id='btn-calculate' onclick="sendData()">Calaulate Data</button>
+                        <button id='btn-clear' onclick="clearData()">Clear</button>
+                    </div>
                 </div>
-                <div id="map" style="width: 600px; height: 400px; margin-bottom: 70px"></div>
-                <script type='text/javascript' src='script.js'></script>
+                <div class='properties-container'>
+                    <div class='select-formula'>
+                        <label for="formulas">Select Formula:</label>
+                        <select class="formulas">
+                            <option value="defult-formula">deafult formula</option>
+                        </select>
+                    </div>
+                    <div class='select-date'>
+                        <div class='first-date'>
+                            <label for="date">Start Date:</label>
+                            <input class="date" type="date">
+                        </div>
+                        <div class='end-date'>
+                            <label for="date">End Date:</label>
+                            <input class="date" type="date">
+                        </div>
+                        
+                    </div>
+                    <div class='select-time'>
+                            <label for="time">Start Time: </label>
+                            <input class="time" type="time">
+                            <label for="time">End Time: </label>
+                            <input class="time" type="time">
+                    </div>
+                </div>
+                
                 
         </div>
         <!-- end content -->
