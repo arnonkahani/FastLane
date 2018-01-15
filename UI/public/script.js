@@ -50,7 +50,7 @@ function sendData(){
             data: markers
           })
         .then(function (response) {
-            console.log(response.data);
+           
             showResults(response.data);
         })
         .catch(function (error) {
@@ -63,6 +63,7 @@ function clearData(){
     markersLayer.clearLayers();
     linesLayer.clearLayers();
     markers = [];
+    d3.selectAll("svg").remove();
 }
 
 function showResults(res){
@@ -88,7 +89,7 @@ function showResults(res){
   .ticks(10);
 
   // create bar chart for each stop
-//   d3.json("test.json", function(error, data) {
+  // d3.json("test.json", function(error, data) {
     res.forEach(function(stop) {
 
       // create stops markers
