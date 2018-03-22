@@ -1,8 +1,8 @@
 import pickle
 
-from gtfsdb.app import GTFS_DB
+from DB.gtfsdb.app import GTFS_DB
 import os
-from gtfsdb import Stop, StopTime, Base, Calendar, Trip
+from DB.gtfsdb import Stop, StopTime, Base, Calendar, Trip
 from sqlalchemy.orm import sessionmaker, Query
 import json
 from sqlalchemy.ext.declarative import DeclarativeMeta

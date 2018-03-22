@@ -15,7 +15,7 @@ if config.has_section('loggers'):
 
 '''Application defaults'''
 BATCH_SIZE = 200000
-DATABSE_URL = 'postgresql+psycopg2://postgres:k1k2k3d4@localhost:5432/fastlanes'
+DATABSE_URL = 'postgresql+psycopg2://postgres:k1k2k3d4@localhost:5432/fastlanes_v2'
 
 '''Data source constants'''
 DATASOURCE_GTFS = 1
@@ -27,25 +27,13 @@ SRID = 4326
 
 '''Order list of class names, used for creating & populating tables'''
 SORTED_CLASS_NAMES = [
-    'RouteType',
-    'RouteFilter',
-    'FeedInfo',
     'Agency',
-    'Block',
     'Calendar',
-    'CalendarDate',
     'Route',
-    'RouteDirection',
     'Stop',
-    'StopFeature',
-    'Transfer',
     'Shape',
     'Pattern',
     'Trip',
     'StopTime',
     'RouteStop',
-    'Frequency',
-    'FareAttribute',
-    'FareRule',
-    'UniversalCalendar',
 ]

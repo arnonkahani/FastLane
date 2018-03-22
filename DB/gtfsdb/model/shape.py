@@ -7,8 +7,9 @@ from sqlalchemy import Column, Integer, Numeric, String
 from sqlalchemy.orm import deferred, relationship
 from sqlalchemy.sql import func
 
-from gtfsdb import config
-from gtfsdb.model.base import Base
+from DB.gtfsdb import config
+from DB.gtfsdb.model.base import Base
+
 from shapely import wkb, wkt
 
 __all__ = ['Pattern', 'Shape']
