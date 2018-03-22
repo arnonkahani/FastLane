@@ -12,6 +12,17 @@ from .route import Route
 
 log = logging.getLogger(__name__)
 
+SORTED_CLASS_NAMES = [
+    'Agency',
+    'Block',
+    'Calendar',
+    'Route',
+    'Stop',
+    'Shape',
+    'Pattern',
+    'Trip',
+    'StopTime',
+]
 
 class GTFS(object):
 
@@ -28,18 +39,16 @@ class GTFS(object):
         gtfs_directory = self.unzip()
         if shouldLoadFile:
             for cls in db.sorted_classes:
-                if not cls.__name__ in ['Calendar','CalendarDate','Route','RouteDirection','Stop',
-                                        'StopFeature','Transfer','Shape','Agency',
-                                        'FeedInfo','RouteFilter','RouteType','Block','Pattern','Trip']:
+                if not cls.__name__ in SORTED_CLASS_NAMES:
                     print("Loading {0}".format(cls.__name__))
                     cls.load(db = db, batch_size = batch_size,gtfs_directory = gtfs_directory)
         shutil.rmtree(gtfs_directory)
         print("Finished loading classes")
         # load route geometries derived from shapes.txt
-        if shouldLoadFile:
+        if shouldLoadFile and False:
             if Route in db.classes:
                 Route.load_geoms(db)
-        if shouldLoadFile:
+        if shouldLoadFile and False:
             for cls in db.sorted_classes:
                 cls.post_process(db)
 
