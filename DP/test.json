@@ -1,0 +1,105 @@
+[
+  {
+    "lat": 35.228999,
+    "lng": 31.792396,
+    "numberOfTrips": [
+      {
+        "hour": "00:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "01:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "02:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "03:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "04:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "05:00",
+        "numOfTripsPerHour": 4
+      },
+      {
+        "hour": "06:00",
+        "numOfTripsPerHour": 10
+      },
+      {
+        "hour": "07:00",
+        "numOfTripsPerHour": 6
+      },
+      {
+        "hour": "08:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "09:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "10:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "11:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "12:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "13:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "14:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "15:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "16:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "17:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "18:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "19:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "20:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "21:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "22:00",
+        "numOfTripsPerHour": 0
+      },
+      {
+        "hour": "23:00",
+        "numOfTripsPerHour": 0
+      }
+    ],
+    "stopName": "\u05d3\u05e8\u05da \u05e9\u05db\u05dd/\u05d8\u05d5\u05d1\u05dc\u05e8"
+  }
+]
