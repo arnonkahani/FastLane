@@ -6,7 +6,7 @@ import time
 from urllib import request
 import zipfile
 
-from gtfsdb import config
+from DB.gtfsdb import config
 from .route import Route
 
 
@@ -14,7 +14,6 @@ log = logging.getLogger(__name__)
 
 SORTED_CLASS_NAMES = [
     'Agency',
-    'Block',
     'Calendar',
     'Route',
     'Stop',
@@ -39,16 +38,18 @@ class GTFS(object):
         gtfs_directory = self.unzip()
         if shouldLoadFile:
             for cls in db.sorted_classes:
-                if not cls.__name__ in SORTED_CLASS_NAMES:
+                if cls.__name__ in ["Agency","Route","Stop","Shape"]:
+                    continue
+                if cls.__name__ in SORTED_CLASS_NAMES:
                     print("Loading {0}".format(cls.__name__))
                     cls.load(db = db, batch_size = batch_size,gtfs_directory = gtfs_directory)
         shutil.rmtree(gtfs_directory)
         print("Finished loading classes")
         # load route geometries derived from shapes.txt
-        if shouldLoadFile and False:
+        if shouldLoadFile:
             if Route in db.classes:
                 Route.load_geoms(db)
-        if shouldLoadFile and False:
+        if shouldLoadFile:
             for cls in db.sorted_classes:
                 cls.post_process(db)
 

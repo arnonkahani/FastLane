@@ -1,7 +1,7 @@
-from gtfsdb import config
-from gtfsdb.model.base import Base
-from gtfsdb.model.db import Database
-from gtfsdb.model.gtfs import GTFS
+from DB.gtfsdb import config
+from DB.gtfsdb.model.base import Base
+from DB.gtfsdb.model.db import Database
+from DB.gtfsdb.model.gtfs import GTFS
 
 class GTFS_DB():
     def __init__(self):
@@ -16,7 +16,7 @@ class GTFS_DB():
 
     def load_data(self,filename):
         self.gtfs = GTFS(filename)
-        self.gtfs.load(self.db,batch_size=config.BATCH_SIZE,shouldLoadFile=False)
+        self.gtfs.load(self.db,batch_size=config.BATCH_SIZE,shouldLoadFile=True)
 
 
 

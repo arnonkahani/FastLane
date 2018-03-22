@@ -8,8 +8,8 @@ from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
 
-from gtfsdb import config
-from gtfsdb.model.base import Base
+from DB.gtfsdb import config
+from DB.gtfsdb.model.base import Base
 
 __all__ = ['Route']
 

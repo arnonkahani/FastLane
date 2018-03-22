@@ -1,7 +1,7 @@
 import logging
 
-from gtfsdb import config
-from gtfsdb.model.base import Base
+from DB.gtfsdb import config
+from DB.gtfsdb.model.base import Base
 from sqlalchemy import Column, Index
 from sqlalchemy.types import Boolean, Date, String
 
