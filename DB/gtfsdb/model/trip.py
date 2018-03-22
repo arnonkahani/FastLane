@@ -19,14 +19,9 @@ class Trip(Base):
     route_id = Column(String(20), index=True, nullable=False)
     service_id = Column(String(20), index=True, nullable=False)
     direction_id = Column(Integer, index=True)
-    block_id = Column(String(20), index=True)
     shape_id = Column(String(20), index=True, nullable=True)
     trip_type = Column(String(20))
-
     trip_headsign = Column(String(100))
-    trip_short_name = Column(String(100))
-    bikes_allowed = Column(Integer, default=0)
-    wheelchair_accessible = Column(Integer, default=0)
 
     pattern = relationship(
         'Pattern',
@@ -48,44 +43,7 @@ class Trip(Base):
         uselist=True, viewonly=True)
 
     universal_calendar = relationship(
-        'UniversalCalendar',
-        primaryjoin='Trip.service_id==UniversalCalendar.service_id',
+        'Calender',
+        primaryjoin='Trip.service_id==Calender.service_id',
         foreign_keys='(Trip.service_id)',
         uselist=True, viewonly=True)
-
-    @classmethod
-    def post_process(cls, db):
-        trips = db.session.query(Trip).all()
-        for t in trips:
-            if not t.is_valid:
-                log.warn("invalid trip: {0} only has {1} stop_time record (i.e., maybe the stops are coded as "
-                         "non-public, and thus their stop time records didn't make it into the gtfs)"
-                         .format(t.trip_id, t.trip_len))
-
-    @property
-    def start_stop(self):
-        return self.stop_times[0].stop
-
-    @property
-    def end_stop(self):
-        return self.stop_times[-1].stop
-
-    @property
-    def start_time(self):
-        return self.stop_times[0].departure_time
-
-    @property
-    def end_time(self):
-        return self.stop_times[-1].arrival_time
-
-    @property
-    def trip_len(self):
-        ret_val = 0
-        if self.stop_times:
-            ret_val = len(self.stop_times)
-        return ret_val
-
-    @property
-    def is_valid(self):
-        # trip has to have multiple stop times to be valid, else it's not a trip...
-        return self.trip_len >= 2
