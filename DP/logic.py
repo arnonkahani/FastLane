@@ -16,7 +16,7 @@ def setDefaultHours():
 def getTrips(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
-    data = requests.post('http://132.72.233.209:5000/stops', json=jsonLineStringGeo)
+    data = requests.post('http://132.73.193.102:5000/stops', json=jsonLineStringGeo)
     return data.content
 
 
