@@ -5,12 +5,14 @@ const path = require('path');
 const create_route = function(dirname){
     router.use(express.static(path.join(dirname, 'public')));
     router.get('/select', function(req, res) {
-        res.sendFile(path.join(dirname + '/select_formula.html'));
+        res.render('select_formula');
     });
 
     router.get('/create', function(req, res) {
-        res.sendFile(path.join(dirname + '/create_formula.html'));
+        res.render('create_formula');
     });
+
+
 
 return router;
 }
