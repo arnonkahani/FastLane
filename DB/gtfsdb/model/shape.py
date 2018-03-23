@@ -51,7 +51,9 @@ class Pattern(Base):
             func.max(Shape.shape_dist_traveled).label('dist')
         )
         shapes = q.group_by(Shape.shape_id)
+        count = 0
         for shape in shapes:
+            count += 1
             pattern = cls()
             pattern.shape_id = shape.shape_id
             pattern.pattern_dist = shape.dist
@@ -61,6 +63,8 @@ class Pattern(Base):
                 q = q.order_by(Shape.shape_pt_sequence)
                 pattern.geom_from_shape(q)
             session.add(pattern)
+            if count % 10000 == 0:
+                print(count)
         session.commit()
         session.close()
         processing_time = time.time() - start_time

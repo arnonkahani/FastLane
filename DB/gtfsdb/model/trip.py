@@ -23,11 +23,11 @@ class Trip(Base):
     trip_type = Column(String(20))
     trip_headsign = Column(String(100))
 
-    pattern = relationship(
-        'Pattern',
-        primaryjoin='Trip.shape_id==Pattern.shape_id',
-        foreign_keys='(Trip.shape_id)',
-        uselist=False, viewonly=True)
+    # pattern = relationship(
+    #     'Pattern',
+    #     primaryjoin='Trip.shape_id==Pattern.shape_id',
+    #     foreign_keys='(Trip.shape_id)',
+    #     uselist=False, viewonly=True)
 
     route = relationship(
         'Route',
