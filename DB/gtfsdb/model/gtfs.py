@@ -17,7 +17,6 @@ SORTED_CLASS_NAMES = [
     'Calendar',
     'Route',
     'Stop',
-    'Shape',
     'Pattern',
     'Trip',
     'StopTime',
@@ -38,8 +37,6 @@ class GTFS(object):
         gtfs_directory = self.unzip()
         if shouldLoadFile:
             for cls in db.sorted_classes:
-                if cls.__name__ in ["Agency","Route","Stop","Shape","Calendar","Pattern"]:
-                    continue
                 if cls.__name__ in SORTED_CLASS_NAMES:
                     print("Loading {0}".format(cls.__name__))
                     cls.load(db = db, batch_size = batch_size,gtfs_directory = gtfs_directory)

@@ -11,8 +11,9 @@ from DB.gtfsdb import config
 from DB.gtfsdb.model.base import Base
 
 from shapely import wkb, wkt
+from shapely.geometry import Point
 
-__all__ = ['Pattern', 'Shape']
+__all__ = ['Pattern']
 
 
 log = logging.getLogger(__name__)
@@ -37,8 +38,14 @@ class Pattern(Base):
         if not hasattr(cls, 'geom'):
             cls.geom = deferred(Column(Geometry(geometry_type='LINESTRING', srid=config.SRID)))
 
+    # def geom_from_shape(self, points):
+    #     coords = [wkb.loads(bytes(r.geom.data)) for r in points]
+    #     coords = ['{0} {1}'.format(r.x, r.y) for r in coords]
+    #     self.geom = 'SRID={0};LINESTRING({1})'.format(config.SRID, ','.join(coords))
+
     def geom_from_shape(self, points):
-        coords = [wkb.loads(bytes(r.geom.data)) for r in points]
+        #TODO : double tiple quadrple check
+        coords = [Point(float(r[0]),float(r[1])) for r in points]
         coords = ['{0} {1}'.format(r.x, r.y) for r in coords]
         self.geom = 'SRID={0};LINESTRING({1})'.format(config.SRID, ','.join(coords))
 
@@ -46,24 +53,32 @@ class Pattern(Base):
     def load(cls, db, **kwargs):
         start_time = time.time()
         session = db.session
-        q = session.query(
-            Shape.shape_id,
-            func.max(Shape.shape_dist_traveled).label('dist')
-        )
-        shapes = q.group_by(Shape.shape_id)
+        import csv
+        from operator import itemgetter, attrgetter, methodcaller
+
+        shapes = {}
+
+        with open('{0}/shapes.txt'.format(kwargs['gtfs_directory']),
+                  encoding="utf-8") as f:
+            s = csv.reader(f)
+            t = next(s)
+            for row in s:
+                if row[0] not in shapes:
+                    shapes[row[0]] = []
+                shapes[row[0]].append((row[1], row[2], int(row[3])))
+
+        for k in shapes.keys():
+            shapes[k] = sorted(shapes[k], key=itemgetter(2))
         count = 0
-        for shape in shapes:
+        print(len(shapes))
+        for shape_id,shape in shapes.items():
             count += 1
             pattern = cls()
-            pattern.shape_id = shape.shape_id
-            pattern.pattern_dist = shape.dist
+            pattern.shape_id = shape_id
             if hasattr(cls, 'geom'):
-                q = session.query(Shape)
-                q = q.filter(Shape.shape_id == shape.shape_id)
-                q = q.order_by(Shape.shape_pt_sequence)
-                pattern.geom_from_shape(q)
+                pattern.geom_from_shape(shape)
             session.add(pattern)
-            if count % 10000 == 0:
+            if count % 500 == 0:
                 print(count)
         session.commit()
         session.close()
@@ -72,23 +87,23 @@ class Pattern(Base):
             cls.__name__, processing_time))
 
 
-class Shape(Base):
-    datasource = config.DATASOURCE_GTFS
-    filename = 'shapes.txt'
-
-    __tablename__ = 'shapes'
-
-    shape_id = Column(String(10), primary_key=True, index=True)
-    shape_pt_sequence = Column(Integer, primary_key=True, index=True)
-    shape_dist_traveled = Column(Numeric(20, 10))
-
-
-    @classmethod
-    def add_geometry_column(cls):
-        if not hasattr(cls, 'geom'):
-            cls.geom = Column(Geometry(geometry_type='POINT', srid=config.SRID))
-
-    @classmethod
-    def add_geom_to_dict(cls, row):
-        args = (config.SRID, row['shape_pt_lon'], row['shape_pt_lat'])
-        row['geom'] = 'SRID={0};POINT({1} {2})'.format(*args)
+# class Shape(Base):
+#     datasource = config.DATASOURCE_GTFS
+#     filename = 'shapes.txt'
+#
+#     __tablename__ = 'shapes'
+#
+#     shape_id = Column(String(10), primary_key=True, index=True)
+#     shape_pt_sequence = Column(Integer, primary_key=True, index=True)
+#     shape_dist_traveled = Column(Numeric(20, 10))
+#
+#
+#     @classmethod
+#     def add_geometry_column(cls):
+#         if not hasattr(cls, 'geom'):
+#             cls.geom = Column(Geometry(geometry_type='POINT', srid=config.SRID))
+#
+#     @classmethod
+#     def add_geom_to_dict(cls, row):
+#         args = (config.SRID, row['shape_pt_lon'], row['shape_pt_lat'])
+#         row['geom'] = 'SRID={0};POINT({1} {2})'.format(*args)
