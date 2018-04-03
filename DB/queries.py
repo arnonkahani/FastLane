@@ -3,40 +3,52 @@ import pickle
 from sqlalchemy.orm import Session
 
 from DB.app import to_json
-from DB.gtfsdb import Stop, StopTime
-
+from DB.gtfsdb import Stop as queryStop, StopTime as queryStopTime , Calendar as queryCalender , Trip as queryTrip
+from SharedLayer.objects.Agency import Agency
+from SharedLayer.objects.Calender import Calender
+from SharedLayer.objects.Path import Path
+from SharedLayer.objects.PathPoint import PathPoint
+from SharedLayer.objects.Route import Route
+from SharedLayer.objects.Stop import Stop as Stop
+from SharedLayer.objects.StopTime import StopTime
+from SharedLayer.objects.Trip import Trip
 
 def get_stoptimes_info_by_area_demo(session : Session,line_string_2pt :str):
-    que = session.query(Stop) \
-        .with_entities(Stop.stop_id,
-                       Stop.stop_name,
-                       Stop.geom,
-                       StopTime.arrival_time,
-                       StopTime.trip_id) \
+    que = session.query(queryStop) \
+        .with_entities(queryStop.stop_id,
+                       queryStop.stop_name,
+                       queryStop.geom,
+                       queryStopTime.arrival_time,
+                       queryStopTime.trip_id) \
         .filter(
-        Stop.geom.intersects(line_string_2pt)) \
-        .join(StopTime, StopTime.stop_id == Stop.stop_id)
+        queryStop.geom.intersects(line_string_2pt)) \
+        .join(queryStopTime, queryStopTime.stop_id == queryStop.stop_id)
 
-    # que2 = session.query(Calendar).with_entities(Calendar.service_id,Calendar.sunday,
-    #                    Calendar.monday,
-    #                    Calendar.tuesday,
-    #                    Calendar.wednesday,
-    #                    Calendar.thursday,
-    #                    Calendar.friday,
-    #                    Calendar.saturday,
-    #                    Trip.trip_id)\
-    #     .join(Trip, Trip.service_id == Calendar.service_id)
+    days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
-    def constructResponse(row, names):
-        resp = {}
-        for idx in range(len(names)):
-            resp[names[idx]] = row[idx]
-        return resp
+    def _buildStopTimeObj(record, fields):
+        infoForStopTime = {}
+        for index in range(len(fields)):
+            infoForStopTime[fields[index]] = record[index]
+        trip = Trip(infoForStopTime['trip_id'])
+        stop = Stop(infoForStopTime['stop_id'], infoForStopTime['stop_name'], infoForStopTime['geom'])
+        stoptime = StopTime(trip, stop, infoForStopTime['arrival_time'])
+        return stoptime
 
     def convert_to_number(date):
         return int(date[:2]) % 24
 
-    days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    que2 = session.query(queryCalender).with_entities(queryCalender.service_id, queryCalender.sunday,
+                                                      queryCalender.monday,
+                                                      queryCalender.tuesday,
+                                                      queryCalender.wednesday,
+                                                      queryCalender.thursday,
+                                                      queryCalender.friday,
+                                                      queryCalender.saturday,
+                                                      queryTrip.trip_id) \
+        .join(queryTrip, queryTrip.service_id == queryCalender.service_id)
+
+
     # res_calender = [constructResponse(x, ["service_id","sunday", "monday", "tuesday", "wednesday","thursday", "friday", "saturday","trip_id"]) for x in que2]
     serives_2_dates = {}
     # for service_res in res_calender:
@@ -47,7 +59,14 @@ def get_stoptimes_info_by_area_demo(session : Session,line_string_2pt :str):
     with open('gtfsdb/obj/' + "calander" + '.pkl', 'rb') as f:
         serives_2_dates = pickle.load(f)
 
-    res = [constructResponse(x, ["stop_id", "stop_name", "geom", "arrival_time", "trip_id"]) for x in que]
+    stopTimeArray = [_buildStopTimeObj(record , ["stop_id", "stop_name", "geom", "arrival_time", "trip_id"]) for record in que]
+    pickleStopTimeArray = pickle.dumps(stopTimeArray)
+
+    ## return pickleStopTimeArray
+
+
+
+
     data_to_send = {}
     for trip in res:
         stop_id = trip["stop_id"]

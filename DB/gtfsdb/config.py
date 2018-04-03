@@ -15,7 +15,7 @@ if config.has_section('loggers'):
 
 '''Application defaults'''
 BATCH_SIZE = 200000
-DATABSE_URL = 'postgresql+psycopg2://postgres:k1k2k3d4@localhost:5432/fastlanes_v2'
+DATABSE_URL = 'postgresql+psycopg2://postgres:k1k2k3d4@10.0.0.4:5432/fastlanes_v2'
 
 '''Data source constants'''
 DATASOURCE_GTFS = 1

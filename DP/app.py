@@ -1,9 +1,9 @@
 from flask import Flask, redirect, url_for, request, jsonify , json
-from logic import getTrips , computeNumForBusStops
+from DP.logic import getTrips , computeNumForBusStops , ComputeStopTimeInfo
 
 app = Flask(__name__)
 
-headers = {'Content-Type': 'application/json'}
+headers = {'Content-Type': 'application/octet-stream'}
 
 
 @app.route('/compute/<name>')
@@ -31,9 +31,17 @@ def compute():
 @app.route('/coordinates')
 def coordinates():
     geoJson = request.json
-    print geoJson
+    print (geoJson)
     data = getTrips(geoJson)
     return jsonify(data)
+
+
+@app.route('/viz')
+def viz():
+    area = request.data
+    pickleStopTimes = request.post('http://132.73.193.102:5000/viz', json=area)
+    stopTimeArray = ComputeStopTimeInfo(pickleStopTimes)
+    return jsonify(stopTimeArray)
 
 
 if __name__ == '__main__':

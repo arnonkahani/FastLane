@@ -115,8 +115,8 @@ def getData():
 
 if __name__ == '__main__':
     a = GTFS_DB()
-    a.load_data('file:///{0}'.format(
-        os.path.join('/Users/arnon/Documents/SchoolProjects/FastLane/DB/MockData', 'israel-public-transportation.zip')))
+    # a.load_data('file:///{0}'.format(
+    #     os.path.join('/Users/arnon/Documents/SchoolProjects/FastLane/DB/MockData', 'israel-public-transportation.zip')))
     db = a.db
     Base.metadata.bind = db.engine
     DBSession = sessionmaker()

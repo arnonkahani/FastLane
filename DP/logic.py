@@ -13,12 +13,18 @@ def setDefaultHours():
     return hours
 
 
+def ComputeStopTimeInfo(geoJson):
+    lineStringGeo = LineString(geoJson)
+    jsonLineStringGeo = json.dumps(lineStringGeo)
+    data = requests.post('http://132.73.193.102:5000/viz', json=jsonLineStringGeo)
+    return data.content
+
+
 def getTrips(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
     data = requests.post('http://132.73.193.102:5000/stops', json=jsonLineStringGeo)
     return data.content
-
 
 def computeNumForBusStops2(jsonObj):
     retval = []
