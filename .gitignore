@@ -212,3 +212,4 @@
 **/fabric.properties
 
 DB/MockData/**
+DB/.idea/*
