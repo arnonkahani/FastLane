@@ -8,25 +8,30 @@ L.HexLayer = L.Class.extend({
         radius: 25
     },
     hour: 6,
-    day:1,
+    day: 1,
 
-    onmouseover : function(tooltip) { return function(d){
-        tooltip.transition()
+    onmouseover: function (tooltip) {
+        return function (d) {
+            tooltip.transition()
                 .duration(200)
                 .style("opacity", 1);
 
-        tooltip.html(d.length)
+            tooltip.html(d.length)
                 .style("top", (d3.event.pageY - 40) + "px")
                 .style("left", (d3.event.pageX + 15) + "px");
-    }},
-mouseout : function(tooltip) { return function(d){
-        tooltip.transition()
+        }
+    },
+    mouseout: function (tooltip) {
+        return function (d) {
+            tooltip.transition()
                 .duration(500)
                 .style("opacity", 0);
-    }}
+        }
+    }
     ,
-    interval_action: function(layer){
+    interval_action: function (layer) {
         layer.hour = (1 + layer.hour) % 24
+        document.getElementById("time_view").innerText = layer.hour
         layer._update(true)
     },
 
@@ -34,13 +39,13 @@ mouseout : function(tooltip) { return function(d){
         var options = L.setOptions(this, options);
         this._tooltip = options.tooltip;
         var _hexbin = d3.hexbin().radius(this.options.radius)
-        _hexbin.size([5,5])
+        _hexbin.size([5, 5])
         this._layout = _hexbin;
         this._data = data;
 
         this._levels = {};
         this.animations = null
-        
+
     },
 
     onAdd: function (map) {
@@ -77,17 +82,22 @@ mouseout : function(tooltip) { return function(d){
                 .append('svg').attr('class', 'leaflet-layer leaflet-zoom-hide');
         }
     },
-    _turn_to_feature_collection: function(data) {
-        feat_coll = {'type': 'FeatureCollection',  
-                 'features':[]}
+    _turn_to_feature_collection: function (data) {
+        feat_coll = {
+            'type': 'FeatureCollection',
+            'features': []
+        }
 
-        feat_coll['features'] = data.data.stops.map(function(stop) { return {
-            'type': 'Feature',  
-             'geometry': {  
-                'type': 'Point',  
-                'coordinates': stop.geom.coordinates
-            }}})  
-              
+        feat_coll['features'] = data.data.stops.map(function (stop) {
+            return {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': stop.geom.coordinates
+                }
+            }
+        })
+
         return feat_coll
     },
     _update: function (should_update) {
@@ -101,11 +111,11 @@ mouseout : function(tooltip) { return function(d){
 
         var padding = this.options.padding,
             bounds = this._translateBounds(d3.geo.bounds(this._turn_to_feature_collection(this._data)));
-            width = bounds.getSize().x + (2 * padding),
+        width = bounds.getSize().x + (2 * padding),
             height = bounds.getSize().y + (2 * padding),
             margin_top = bounds.min.y - padding,
             margin_left = bounds.min.x - padding;
-            
+
         this._layout.size([width, height]);
         this._container.attr("width", width).attr("height", height)
             .style("margin-left", margin_left + "px").style("margin-top", margin_top + "px");
@@ -131,16 +141,16 @@ mouseout : function(tooltip) { return function(d){
         var data = []
 
         this._data.data.stops.map(function (d) {
-                 var points = this._project(d.geom.coordinates);
-                 for (i = 0 ; i < d.rides[this.day][this.hour]; i++)
-                    data.push(points)
-            }, this)
+            var points = this._project(d.geom.coordinates);
+            for (i = 0; i < d.rides[this.day][this.hour]; i++)
+                data.push(points)
+        }, this)
 
         var bins = layout(data)
         var hexagons = container.selectAll(".hexagon").data(bins);
 
         var path = hexagons.enter().append("path").attr("class", "hexagon")
-  
+
         this._applyStyle(path);
 
         hexagons.attr("d", function (d) {
@@ -148,7 +158,7 @@ mouseout : function(tooltip) { return function(d){
         });
 
         hexagons.on("mouseover", this.onmouseover(this._tooltip))
-        .on("mouseout", this.mouseout(this._tooltip))
+            .on("mouseout", this.mouseout(this._tooltip))
     },
 
     _applyStyle: function (hexagons) {
@@ -168,12 +178,12 @@ mouseout : function(tooltip) { return function(d){
         return L.bounds(nw, se);
     },
 
-    activateNewConfig: function(new_config) {
+    activateNewConfig: function (new_config) {
 
-        if(new_config.animate){
-            if(this.animations)clearInterval(this.animations);
+        if (new_config.animate) {
+            if (this.animations) clearInterval(this.animations);
             this.animations = setInterval(() => this.interval_action(this), 1000);
-        }else if(this.animations){
+        } else if (this.animations) {
             clearInterval(this.animations);
             this.animations = null;
         }
