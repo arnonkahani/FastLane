@@ -1,13 +1,17 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+var cookieParser = require('cookie-parser')
 const exphbs  = require('express-handlebars');
 const bodyParser = require('body-parser');
+const uuidv1 = require('uuid/v1');
 const {HttpReq} = require('./scripts/api.js');
 const formula = require('./routes/formula')(__dirname);
 app.use(bodyParser.urlencoded({
     extended: true
   }));
+
+app.use(cookieParser())
 
  const hbs = app.engine('.hbs', exphbs({
     extname: '.hbs',
@@ -27,6 +31,20 @@ app.set('views', 'views');
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function (req, res, next) {
+    var cookie = req.cookies.cookieName;
+    if (cookie === undefined)
+    {
+      res.cookie('cookieName',uuidv1(), { maxAge: 900000, httpOnly: true });
+      console.log('cookie created successfully');
+    } 
+    else
+    {
+      console.log('cookie exists', cookie);
+    } 
+    next();
+  });
+
 
 app.use('/formula',formula);
 
@@ -45,6 +63,14 @@ app.get("/vis2", function (req, res, next) {
 app.get("/vis3", function (req, res, next) {
     res.render('vis3');
 });
+
+app.post("/analytics", function(req, res, next){
+    let analytics = req.body
+    analytics.sessionId = req.cookies.cookieName
+    //send to ziv
+
+})
+
 
 app.get("/updatedVis1", function (req, res, next) {
 

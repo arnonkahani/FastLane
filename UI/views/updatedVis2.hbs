@@ -131,6 +131,8 @@
 							<div class="media-body">
 								<button class="btn btn-sm pmd-btn-raised pmd-ripple-effect btn-primary" id="sendData" type="button">Show Visualization</button>
 							</div>
+								
+							
 
 						</div>
 
@@ -154,7 +156,9 @@
 					<script src="http://d3js.org/d3.v3.min.js"></script>
 					<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 					<script src="assets/js/jquery-1.12.2.min.js"></script>
+					<script src="analytics.js"></script>
 					<script>
+						
 
 						$("#sendData").click(function () {
 							let vizElement = document.getElementById("vis2-svg")
@@ -167,6 +171,7 @@
 							loadData(parsedList, createBarChart);
 
 						});
+						clickWrapper(document.getElementById("sendData"))
 
 						function loadData(selectedItems, callback) {
 							console.log(selectedItems)
