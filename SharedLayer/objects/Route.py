@@ -19,8 +19,9 @@ class RouteType(Enum):
 
 
 class Route:
-    def __init__(self, id: str, short_name: str, long_name: str, description: str, color: RouteColor,
-                 trips: List[Trip], route_type: RouteType):
+    def __init__(self, id: str = None, short_name: str = None, long_name: str = None, description: str = None,
+                 color: RouteColor = None,
+                 trips: List[Trip] = None, route_type: RouteType = None):
         self.id = id
         self.short_name = short_name
         self.long_name = long_name

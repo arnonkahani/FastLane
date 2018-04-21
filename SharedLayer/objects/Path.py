@@ -3,6 +3,6 @@ from typing import List
 
 
 class Path:
-    def __init__(self, total_dist: float, path_points: List[PathPoint]):
+    def __init__(self, total_dist: float = None, path_points: List[PathPoint] = None):
         self.total_dist = total_dist
         self.path_points = path_points

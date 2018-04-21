@@ -1,38 +1,16 @@
-import pickle
-from DB.queries import *
-from DB.gtfsdb.app import GTFS_DB
-import os
-from DB.gtfsdb import Stop, StopTime, Base, Calendar, Trip
-from sqlalchemy.orm import sessionmaker, Query
 import json
-from sqlalchemy.ext.declarative import DeclarativeMeta
-from geoalchemy2.shape import to_shape
-from shapely.geometry import mapping
-from geoalchemy2.elements import WKBElement
-from geoalchemy2 import func, functions
-from datetime import datetime
-from flask import Flask, url_for, request, jsonify
-from time import time
-import sys
-import geojson
+from flask import Flask, request
+from geoalchemy2 import functions
+from sqlalchemy.orm import sessionmaker
+from DB.gtfsdb import Base
+from DB.gtfsdb.gtfs_db import GTFS_DB
+from DB.queries import *
 
 app = Flask(__name__)
 
 headers = {'Content-Type': 'application/json'}
 url = "z"
 result = []
-
-
-def to_json(data):
-    def extended_encoder(x):
-        if isinstance(x, Base):
-            return x.to_dict()
-        if isinstance(x, WKBElement):
-            return mapping(to_shape(x))
-        if isinstance(x, datetime):
-            return x.isoformat()
-
-    return json.dumps(data, default=extended_encoder)
 
 
 def construct_linestring(geoJSONCoordinates):
@@ -43,11 +21,10 @@ def construct_linestring(geoJSONCoordinates):
     return 'LINESTRING(' + linestring + ')'
 
 
-@app.route('/viz', methods=['POST'])
+@app.route('/stops_times/square', methods=['POST'])
 def stoptimes_info_by_area():
     sq_area = construct_linestring(request.get_json()['coordinates'])
-    return get_stoptimes_info_by_area_demo(session=session,line_string_2pt=sq_area)
-
+    return get_stoptimes_info_by_area(session=session,line_string_2pt=sq_area)
 
 
 @app.route('/stops', methods=['POST'])
@@ -89,34 +66,8 @@ def dataForFormulaComputation():
     return to_json(data)
 
 
-@app.route('/')
-def getData():
-    time_S = time()
-    print("start: " + str(time_S))
-    s = session.query(Stop).with_entities(Stop.stop_id).all()
-    st = []
-    time_S = time() - time_S
-    print("end: " + str(time_S))
-    s = [x for x in s]
-    data = {"data": {"stops": s, "stops_times": st}}
-    print(sys.getsizeof(data))
-
-    def extended_encoder(x):
-        if isinstance(x, Base):
-            return x.to_dict()
-        if isinstance(x, WKBElement):
-            return mapping(to_shape(x))
-        if isinstance(x, datetime):
-            return x.isoformat()
-
-    result = json.dumps(data, default=extended_encoder)
-    return result
-
-
 if __name__ == '__main__':
     a = GTFS_DB()
-    a.load_data('file:///{0}'.format(
-        os.path.join('/Users/arnon/Documents/SchoolProjects/FastLane/DB/MockData', 'israel-public-transportation.zip')))
     db = a.db
     Base.metadata.bind = db.engine
     DBSession = sessionmaker()

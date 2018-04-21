@@ -4,7 +4,7 @@ from SharedLayer.objects.Route import Route
 
 
 class Agency:
-    def __init__(self, id: str, name: str, url: str, routes: List[Route]):
+    def __init__(self, id: str = None, name: str = None, url: str = None, routes: List[Route] = None):
         self.id = id
         self.name = name
         self.url = url

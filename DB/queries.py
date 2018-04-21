@@ -1,13 +1,16 @@
 import pickle
 
 from sqlalchemy.orm import Session
+from DB.gtfsdb import Stop, StopTime, Trip, Calendar
+from SharedLayer.objects.StopTime import StopTime as StopTimeObj
+from SharedLayer.objects.Trip import Trip as TripObj
+from SharedLayer.objects.Calender import Calender as CalenderObj
+from SharedLayer.objects.Stop import Stop as StopObj
+from geoalchemy2.shape import to_shape
 
-from DB.app import to_json
-from DB.gtfsdb import Stop, StopTime
+def get_stoptimes_info_by_area(session: Session, line_string_2pt: str):
 
-
-def get_stoptimes_info_by_area_demo(session : Session,line_string_2pt :str):
-    que = session.query(Stop) \
+    stop_stops_times_in_area = session.query(Stop) \
         .with_entities(Stop.stop_id,
                        Stop.stop_name,
                        Stop.geom,
@@ -17,55 +20,43 @@ def get_stoptimes_info_by_area_demo(session : Session,line_string_2pt :str):
         Stop.geom.intersects(line_string_2pt)) \
         .join(StopTime, StopTime.stop_id == Stop.stop_id)
 
-    # que2 = session.query(Calendar).with_entities(Calendar.service_id,Calendar.sunday,
-    #                    Calendar.monday,
-    #                    Calendar.tuesday,
-    #                    Calendar.wednesday,
-    #                    Calendar.thursday,
-    #                    Calendar.friday,
-    #                    Calendar.saturday,
-    #                    Trip.trip_id)\
-    #     .join(Trip, Trip.service_id == Calendar.service_id)
+    stop_stops_times_in_area_res = list(stop_stops_times_in_area)
+    trips_set = set(list(map(lambda x: x[4], stop_stops_times_in_area_res)))
 
-    def constructResponse(row, names):
-        resp = {}
-        for idx in range(len(names)):
-            resp[names[idx]] = row[idx]
-        return resp
+    trip_calanders = session.query(Calendar).with_entities(Calendar.sunday,
+                                             Calendar.monday,
+                                             Calendar.tuesday,
+                                             Calendar.wednesday,
+                                             Calendar.thursday,
+                                             Calendar.friday,
+                                             Calendar.saturday,
+                                             Trip.trip_id) \
+        .filter(Trip.trip_id.in_(trips_set)) \
+        .join(Trip, Trip.service_id == Calendar.service_id)
 
-    def convert_to_number(date):
-        return int(date[:2]) % 24
+    trip_calanders_res = list(trip_calanders)
+    trip_calanders_dict = dict((x[7], x[0:-1]) for x in trip_calanders_res)
 
-    days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
-    # res_calender = [constructResponse(x, ["service_id","sunday", "monday", "tuesday", "wednesday","thursday", "friday", "saturday","trip_id"]) for x in que2]
-    serives_2_dates = {}
-    # for service_res in res_calender:
-    #     serives_2_dates[service_res['trip_id']] = {}
-    #     for day in days:
-    #         serives_2_dates[service_res['trip_id']][day] = service_res[day]
+    stops = {}
+    trips = {}
+    result = []
+    for stop_time_res in stop_stops_times_in_area_res:
 
-    with open('gtfsdb/obj/' + "calander" + '.pkl', 'rb') as f:
-        serives_2_dates = pickle.load(f)
+        stop_id = stop_time_res[0]
+        stop_name = stop_time_res[1]
+        stop_geom = stop_time_res[2]
+        arrival_time = stop_time_res[3]
+        trip_id = stop_time_res[4]
 
-    res = [constructResponse(x, ["stop_id", "stop_name", "geom", "arrival_time", "trip_id"]) for x in que]
-    data_to_send = {}
-    for trip in res:
-        stop_id = trip["stop_id"]
-        if not stop_id in data_to_send:
-            data_to_send[stop_id] = {}
-            data_to_send[stop_id]['stop_id'] = trip["stop_id"]
-            data_to_send[stop_id]['stop_name'] = trip["stop_name"]
-            data_to_send[stop_id]['geom'] = trip["geom"]
-            data_to_send[stop_id]['rides'] = []
-            for i in range(7):
-                data_to_send[stop_id]['rides'].append([])
-                for j in range(24):
-                    data_to_send[stop_id]['rides'][i].append(0)
+        stop_time_obj = StopTimeObj(arrival_time=arrival_time)
+        if trip_id not in trips:
+            trips[trip_id] = TripObj(id = trip_id,calenders= CalenderObj(days=trip_calanders_dict[trip_id]))
+        stop_time_obj.trip = trips[trip_id]
 
-        for idx, day in enumerate(days):
-            if serives_2_dates[trip['trip_id']][day]:
-                data_to_send[stop_id]['rides'][idx][convert_to_number(trip['arrival_time'])] += 1
-    print(que)
-    data = {"data": {"stops": list(data_to_send.values())}}
-    data_json = to_json(data)
-    return data_json
+        if stop_id not in stops:
+            stops[stop_id] = StopObj(id=stop_id,name=stop_name,location=to_shape(stop_geom))
+        stop_time_obj.stop = stops[stop_id]
+
+        result.append(stop_time_obj)
+
+    return pickle.dumps(result)
