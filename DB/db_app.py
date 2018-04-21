@@ -1,5 +1,3 @@
-import sys
-sys.path.append('../')
 
 import json
 from flask import Flask, request
