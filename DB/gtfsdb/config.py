@@ -31,9 +31,12 @@ SORTED_CLASS_NAMES = [
     'Calendar',
     'Route',
     'Stop',
-    'Shape',
     'Pattern',
     'Trip',
     'StopTime',
     'RouteStop',
 ]
+
+SHOULD_DROP_ALL_TABELS = False
+GTFS_FILE_PATH = "file:////Users/arnon/Documents/SchoolProjects/FastLane/DB/MockData/small_mock.zip"
+SHOULD_LOAD_DATA = False

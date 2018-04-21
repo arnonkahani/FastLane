@@ -22,9 +22,15 @@ class Agency(Base):
         foreign_keys='(Agency.agency_id)',
         uselist=True, viewonly=True)
 
-    # These fields are avlible in the GTFS specs but in the Israeli files
-    # agency_timezone = Column(String(50), nullable=False)
-    # agency_lang = Column(String(10))
-    # agency_phone = Column(String(50))
-    # agency_fare_url = Column(String(255))
+    @classmethod
+    def get_csv_table_columns(self):
+        return self.__table__.columns.keys()[1:]
 
+    @classmethod
+    def get_csv_table_index(self):
+        return "id"
+
+    @classmethod
+    def transform_data(self, df):
+        df = df[self.get_csv_table_columns()]
+        return df

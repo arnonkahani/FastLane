@@ -4,6 +4,7 @@ from DB.gtfsdb import config
 from DB.gtfsdb.model.base import Base
 from sqlalchemy import Column, Index
 from sqlalchemy.types import Boolean, Date, String
+import pandas as pd
 
 __all__ = ['Calendar']
 
@@ -32,5 +33,21 @@ class Calendar(Base):
     def weekday_list(self):
         return [self.sunday,self.monday,self.tuesday,self.wednesday,self.thursday,self.friday,self.saturday]
 
+    @classmethod
+    def get_csv_table_columns(self):
+        return self.__table__.columns.keys()
+
+    @classmethod
+    def get_csv_table_index(self):
+        return "service_id"
+
+    @classmethod
+    def transform_data(self,df):
+        df = df[self.get_csv_table_columns()]
+        df[["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]] =\
+            df[["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]].astype(bool)
+        df["start_date"] = pd.to_datetime(df["start_date"],yearfirst=True,format='%Y%m%d')
+        df["end_date"] = pd.to_datetime(df["end_date"],yearfirst=True,format='%Y%m%d')
+        return df
 
 

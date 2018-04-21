@@ -1,5 +1,3 @@
-import datetime
-import time
 import logging
 
 log = logging.getLogger(__name__)
@@ -8,9 +6,9 @@ from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
 
-from DB.gtfsdb import config
+from DB.gtfsdb import config, Database
 from DB.gtfsdb.model.base import Base
-
+import pandas as p
 __all__ = ['Route']
 
 
@@ -33,3 +31,20 @@ class Route(Base):
         primaryjoin='Route.route_id==Trip.route_id',
         foreign_keys='(Route.route_id)',
         uselist=True, viewonly=True)
+
+    @classmethod
+    def get_csv_table_columns(self):
+        return self.__table__.columns.keys()
+
+    @classmethod
+    def get_csv_table_index(self):
+        return "route_id"
+
+    @classmethod
+    def transform_data(self, df):
+        if 'route_desc' not in df.columns:
+            df['route_desc'] = ""
+        if 'route_color' not in df.columns:
+            df['route_color'] = ""
+        df = df[self.get_csv_table_columns()]
+        return df
