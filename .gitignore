@@ -213,3 +213,4 @@
 
 DB/MockData/**
 DB/.idea/*
+.vscode/**
