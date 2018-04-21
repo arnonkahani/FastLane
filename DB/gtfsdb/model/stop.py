@@ -4,7 +4,7 @@ from geoalchemy2 import Geometry
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 
 log = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class Stop(Base):
 
     @classmethod
     def transform_data(self, df):
-        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(config.SRID,x.stop_lon,x.stop_lat), axis=1)
+        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(config.SRID, x.stop_lon, x.stop_lat), axis=1)
 
         if 'zone_id' not in df.columns:
             df['zone_id'] = ""

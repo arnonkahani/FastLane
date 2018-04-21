@@ -1,6 +1,6 @@
 from typing import List
 
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 from DB.gtfsdb.model.db import Database
 from DB.gtfsdb.model.gtfs import GTFS
@@ -31,5 +31,5 @@ class GTFS_DB():
         :returns:  GTFS -- the GTFS instance.
         """
         gtfs = GTFS(file_path)
-        gtfs.load(self.db, shouldLoadFile=config.SHOULD_LOAD_DATA)
+        gtfs.load(self.db)
         return gtfs

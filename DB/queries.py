@@ -37,7 +37,7 @@ def query_stoptimes_info_by_path(session: Session, line_string_path: str):
         .join(StopTime, StopTime.stop_id == Stop.stop_id)
 
 
-def query_trips_calanders_from_set(session: Session, trips_set: Set(str)):
+def query_trips_calanders_from_set(session: Session, trips_set: Set[str]):
     # Gets all calender information of the trip from the previous query
     return session.query(Calendar).with_entities(Calendar.sunday,
                                                  Calendar.monday,

@@ -7,7 +7,7 @@ from shapely.geometry import Point
 from sqlalchemy import Column, Numeric, String
 from sqlalchemy.orm import relationship
 from DB.gtfsdb.model.db import Database
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 
 __all__ = ['Pattern']

@@ -211,6 +211,7 @@
 **/crashlytics-build.properties
 **/fabric.properties
 
-DB/MockData/**
 DB/.idea/*
 .vscode/**
+
+docs/**

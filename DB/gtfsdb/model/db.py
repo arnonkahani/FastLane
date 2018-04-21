@@ -5,7 +5,7 @@ log = logging.getLogger(__file__)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import inspect
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.utils.status import StatusCode
 
 

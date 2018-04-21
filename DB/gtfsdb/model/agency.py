@@ -2,7 +2,7 @@ from sqlalchemy import Column, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
 
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 
 

@@ -1,6 +1,6 @@
 import logging
 
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 from sqlalchemy import Column, Index
 from sqlalchemy.types import Boolean, Date, String

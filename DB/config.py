@@ -2,7 +2,12 @@ from configparser import ConfigParser
 from sqlalchemy_schemadisplay import create_schema_graph
 import logging.config
 import os
-
+# settings.py
+from dotenv import load_dotenv
+# OR, explicitly providing path to '.env'
+from pathlib import Path  # python3 only
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 
 '''Parse configuration file and setup logging'''
@@ -15,7 +20,7 @@ if config.has_section('loggers'):
 
 '''Application defaults'''
 BATCH_SIZE = 200000
-DATABSE_URL = 'postgresql+psycopg2://postgres:k1k2k3d4@localhost:5432/fastlanes_v2'
+DATABSE_URL = os.getenv("DATABSE_URL")
 
 '''Data source constants'''
 DATASOURCE_GTFS = 1
@@ -37,6 +42,7 @@ SORTED_CLASS_NAMES = [
     'RouteStop',
 ]
 
-SHOULD_DROP_ALL_TABELS = False
-GTFS_FILE_PATH = "file:////Users/arnon/Documents/SchoolProjects/FastLane/DB/MockData/small_mock.zip"
-SHOULD_LOAD_DATA = False
+SHOULD_DROP_ALL_TABELS = bool(int(os.getenv("SHOULD_DROP_ALL_TABELS")))
+GTFS_FILE_PATH = os.getenv("GTFS_FILE_PATH")
+SHOULD_LOAD_DATA = bool(int(os.getenv("SHOULD_LOAD_DATA")))
+SHOULD_OVERWRITE_ZIP_FILES = bool(int(os.getenv("SHOULD_OVERWRITE_ZIP_FILES")))
