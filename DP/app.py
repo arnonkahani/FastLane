@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request, jsonify , json
-from logic import getTrips , computeNumForBusStops
+from DP.logic import getTrips , computeNumForBusStops
 
 app = Flask(__name__)
 
@@ -31,7 +31,7 @@ def compute():
 @app.route('/coordinates')
 def coordinates():
     geoJson = request.json
-    print geoJson
+    print (geoJson)
     data = getTrips(geoJson)
     return jsonify(data)
 

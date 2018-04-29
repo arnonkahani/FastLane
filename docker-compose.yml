@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgis:
+    image: mdillon/postgis
+  DB:
+    build: ./DB
+    ports:
+     - "3001:3001"
+  DP:
+    build: ./DP
+    ports:
+     - "3000:3000"
+  UI:
+    build: ./UI
+    ports:
+     - "8080:8080"
