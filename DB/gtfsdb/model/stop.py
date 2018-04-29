@@ -1,12 +1,10 @@
 import logging
-import datetime
-from collections import defaultdict
 
 from geoalchemy2 import Geometry
-from sqlalchemy import Column, Integer, Numeric, String
-from sqlalchemy.orm import joinedload_all, object_session, relationship
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 
 log = logging.getLogger(__name__)
@@ -22,11 +20,10 @@ class Stop(Base):
     stop_code = Column(String(50))
     stop_name = Column(String(255), nullable=False)
     stop_desc = Column(String(255))
-    stop_lat = Column(Numeric(12, 9), nullable=False)
-    stop_lon = Column(Numeric(12, 9), nullable=False)
     zone_id = Column(String(50))
     location_type = Column(Integer, index=True, default=0)
     parent_station = Column(String(255))
+    geom = Column(Geometry(geometry_type='POINT', srid=config.SRID))
 
     stop_times = relationship(
         'StopTime',
@@ -34,12 +31,30 @@ class Stop(Base):
         foreign_keys='(Stop.stop_id)',
         uselist=True, viewonly=True)
 
-    @classmethod
-    def add_geometry_column(cls):
-        if not hasattr(cls, 'geom'):
-            cls.geom = Column(Geometry(geometry_type='POINT', srid=config.SRID))
 
     @classmethod
     def add_geom_to_dict(cls, row):
         args = (config.SRID, row['stop_lon'], row['stop_lat'])
         row['geom'] = 'SRID={0};POINT({1} {2})'.format(*args)
+
+    @classmethod
+    def get_csv_table_columns(self):
+        return self.__table__.columns.keys()
+
+    @classmethod
+    def get_csv_table_index(self):
+        return "stop_id"
+
+    @classmethod
+    def transform_data(self, df):
+        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(config.SRID, x.stop_lon, x.stop_lat), axis=1)
+
+        if 'zone_id' not in df.columns:
+            df['zone_id'] = ""
+        if 'location_type' not in df.columns:
+            df['location_type'] = 1
+        if 'parent_station' not in df.columns:
+            df['parent_station'] = ""
+
+        df = df[self.get_csv_table_columns()]
+        return df

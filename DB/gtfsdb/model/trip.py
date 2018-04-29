@@ -4,8 +4,7 @@ log = logging.getLogger(__name__)
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
-
-from DB.gtfsdb import config
+from DB import config
 from DB.gtfsdb.model.base import Base
 
 
@@ -15,19 +14,19 @@ class Trip(Base):
 
     __tablename__ = 'trips'
 
-    trip_id = Column(String(20), primary_key=True, index=True, nullable=False)
     route_id = Column(String(20), index=True, nullable=False)
     service_id = Column(String(20), index=True, nullable=False)
+    trip_id = Column(String(20), primary_key=True, index=True, nullable=False)
+    trip_headsign = Column(String(100))
     direction_id = Column(Integer, index=True)
     shape_id = Column(String(20), index=True, nullable=True)
-    trip_type = Column(String(20))
-    trip_headsign = Column(String(100))
 
-    # pattern = relationship(
-    #     'Pattern',
-    #     primaryjoin='Trip.shape_id==Pattern.shape_id',
-    #     foreign_keys='(Trip.shape_id)',
-    #     uselist=False, viewonly=True)
+
+    patterns = relationship(
+        'Pattern',
+        primaryjoin='Trip.shape_id==Pattern.shape_id',
+        foreign_keys='(Trip.shape_id)',
+        uselist=False, viewonly=True)
 
     route = relationship(
         'Route',
@@ -47,3 +46,18 @@ class Trip(Base):
         primaryjoin='Trip.service_id==Calendar.service_id',
         foreign_keys='(Trip.service_id)',
         uselist=True, viewonly=True)
+
+    @classmethod
+    def get_csv_table_columns(self):
+        return self.__table__.columns.keys()
+
+    @classmethod
+    def get_csv_table_index(self):
+        return "trip_id"
+
+    @classmethod
+    def transform_data(self, df):
+        if 'trip_headsign' not in df.columns:
+            df['trip_headsign'] = ""
+        df = df[self.get_csv_table_columns()]
+        return df

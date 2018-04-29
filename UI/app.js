@@ -7,6 +7,10 @@ const bodyParser = require('body-parser');
 const uuidv1 = require('uuid/v1');
 const {HttpReq} = require('./scripts/api.js');
 const formula = require('./routes/formula')(__dirname);
+
+analytics_data = {}
+analytics_data_movment = {}
+
 app.use(bodyParser.urlencoded({
     extended: true
   }));
@@ -21,7 +25,10 @@ app.use(cookieParser())
     helpers: {
         foo: function () {
             return "foo";
-        }
+        },
+        json: function (content) {
+    return JSON.stringify(content)
+    }
     }
 }));
 
@@ -70,10 +77,46 @@ app.get("/updatedVis3", function (req, res, next) {
 
 app.post("/analytics", function(req, res, next){
     let analytics = req.body
-    analytics.sessionId = req.cookies.cookieName
-    //send to ziv
+    sessionId = req.cookies.cookieName
+    analytics.time = new Date().getTime()
+    if(analytics_data[sessionId]){
+        analytics_data[sessionId].push(analytics)
+    }else{
+        analytics_data[sessionId] = [analytics]
+    }
+
 
 })
+
+
+app.post("/analytics/movment", function(req, res, next){
+    let analytics = req.body
+    sessionId = req.cookies.cookieName
+    analytics.time = new Date().getTime()
+    if(analytics_data_movment[sessionId]){
+        analytics_data_movment[sessionId] = analytics_data_movment[sessionId].concat(analytics.movment_data)
+    }else{
+        analytics_data_movment[sessionId] = [analytics.movment_data]
+    }
+
+
+})
+
+app.get("/analytics", function (req, res, next) {
+    analytics_view = []
+    Object.entries(analytics_data).forEach(function(value, key, map){
+    user = {sessionId: value[0],button_clicks: value[1].length}
+    analytics_view.push(user)
+    })
+
+    movment_view = {}
+    Object.entries(analytics_data_movment).forEach(function(value, key, map){
+    movment_view[value[0]] = value[1]
+    })
+
+    console.log(analytics_data_movment)
+    res.render('analytics',{data:analytics_view,movment_data:movment_view});
+});
 
 
 app.get("/updatedVis1", function (req, res, next) {

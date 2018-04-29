@@ -14,9 +14,10 @@ class DropoffType(Enum):
 
 
 class StopTime:
-    def __init__(self, arrival_time: str, departure_time: str, stop_sequence: int, dropoff_type: DropoffType,
-                 pickup_type: PickupType, trip: Trip, dist_from_first_stop: float,
-                 stop: Stop):
+    def __init__(self, arrival_time: str = None, departure_time: str = None, stop_sequence: int = None,
+                 dropoff_type: DropoffType = None,
+                 pickup_type: PickupType = None, trip: Trip = None, dist_from_first_stop: float = None,
+                 stop: Stop = None):
         self.trip = trip
         self.stop = stop
         self.arrival_time = arrival_time

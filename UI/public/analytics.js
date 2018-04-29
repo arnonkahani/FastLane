@@ -13,19 +13,32 @@ function clickWrapper(button){
     })
 }
 
+function log_movment(document){
+
+
+window.log_movment_data = []
+
+document.onmousemove = function(event){
+     var x = event.clientX;
+     var y = event.clientY;
+     window.log_movment_data.push([x,y])
+     }
+
+
+setInterval(function(){
+ let data = {
+            url: document.URL,
+            movment_data: window.log_movment_data
+        }
+        console.log(data)
+
+        axios.post('/analytics/movment', data)
+        window.log_movment_data = []
+
+
+ }, 5000);
+
+}
+
 window.Einav = {name:"Einav",clickWrapper:clickWrapper}
 
-// html2canvas(document.body).then(function (canvas) {
-//     document.getElementById("capture").appendChild(canvas);
-//     document.onmousemove = function (event) {
-//         var x = event.clientX * (document.getElementById("capture").childNodes[0].width / document.documentElement.scrollWidth);
-//         var y = event.clientY * (document.getElementById("capture").childNodes[0].height / document.documentElement.scrollHeight);
-//         var coor = "X coords: " + x + ", Y coords: " + y;
-//         var canvas = document.getElementById("capture").childNodes[0];
-//         var ctx = canvas.getContext('2d');
-//         ctx.fillStyle = 'rgba(0, 0, 200, 0.1)';
-//         ctx.fillRect(x, y, 5, 5);
-//     }
-
-
-// });
