@@ -164,6 +164,7 @@
 				<script src="html2canvas.min.js"></script>
 				<script>
 
+
 					$("#sendData").click(function () {
 						let vizElement = document.getElementById("vis2-svg")
 						if (vizElement) {
@@ -176,7 +177,7 @@
 
 					});
 					clickWrapper(document.getElementById("sendData"))
-
+                    log_movment(document)
 					function loadData(selectedItems, callback) {
 						console.log(selectedItems)
 						var len = (selectedItems.length) * 6;
@@ -201,66 +202,6 @@
 										group: 1,
 										name: d.stop_name,
 										value: Math.round(value1 / 7)
-						});
-						clickWrapper(document.getElementById("sendData"))
-						log_movment(document)
-
-						function loadData(selectedItems, callback) {
-							console.log(selectedItems)
-							var len = (selectedItems.length) * 6;
-
-							d3.json("mock_data/data_einav.json", function (error, data) {
-								var parsedData = new Array();
-								data.data.stops.forEach(function (d) {
-
-									var value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0, value6 = 0;
-									if (selectedItems.includes(d.stop_name)) {
-
-										d.rides.forEach(function (day) {
-
-											value1 += day[0] + day[1] + day[2] + day[3] + day[4] + day[5];
-											value2 += day[6] + day[7] + day[8] + day[9];
-											value3 += day[10] + day[11] + day[12] + day[13];
-											value4 += day[14] + day[15] + day[16] + day[17];
-											value5 += day[18] + day[19] + day[20];
-											value6 += day[21] + day[22] + day[23];
-										});
-										var element1 = {
-											group: 1,
-											name: d.stop_name,
-											value: Math.round(value1 / 7)
-										}
-										var element2 = {
-											group: 2,
-											name: d.stop_name,
-											value: Math.round(value2 / 7)
-										}
-										var element3 = {
-											group: 3,
-											name: d.stop_name,
-											value: Math.round(value3 / 7)
-										}
-										var element4 = {
-											group: 4,
-											name: d.stop_name,
-											value: Math.round(value4 / 7)
-										}
-										var element5 = {
-											group: 5,
-											name: d.stop_name,
-											value: Math.round(value5 / 7)
-										}
-										var element6 = {
-											group: 6,
-											name: d.stop_name,
-											value: Math.round(value6 / 7)
-										}
-										parsedData.push(element1);
-										parsedData.push(element2);
-										parsedData.push(element3);
-										parsedData.push(element4);
-										parsedData.push(element5);
-										parsedData.push(element6);
 									}
 									var element2 = {
 										group: 2,

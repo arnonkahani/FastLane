@@ -40,5 +40,5 @@ setInterval(function(){
 
 }
 
-window.Einav = {name:"Einav",clickWrapper:clickWrapper}
+window.Einav = {name:"Einav",clickWrapper:clickWrapper,log_movment:log_movment}
 
