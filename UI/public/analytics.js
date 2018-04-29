@@ -38,9 +38,7 @@ setInterval(function(){
 
  }, 5000);
 
-
 }
 
 window.Einav = {name:"Einav",clickWrapper:clickWrapper}
-
 

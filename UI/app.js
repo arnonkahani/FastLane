@@ -71,6 +71,10 @@ app.get("/vis3", function (req, res, next) {
     res.render('vis3');
 });
 
+app.get("/updatedVis3", function (req, res, next) {
+    res.render('updatedVis3');
+});
+
 app.post("/analytics", function(req, res, next){
     let analytics = req.body
     sessionId = req.cookies.cookieName
