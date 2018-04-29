@@ -213,3 +213,5 @@ DB/.idea/*
 .vscode/**
 
 docs/**
+
+**/tmp/**

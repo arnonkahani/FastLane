@@ -22,7 +22,7 @@ class Trip(Base):
     shape_id = Column(String(20), index=True, nullable=True)
 
 
-    pattern = relationship(
+    patterns = relationship(
         'Pattern',
         primaryjoin='Trip.shape_id==Pattern.shape_id',
         foreign_keys='(Trip.shape_id)',

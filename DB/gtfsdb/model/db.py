@@ -41,14 +41,19 @@ class Database(object):
         tables = ins.get_table_names()
         try:
             for cls in self.sorted_classes:
-                if drop_all_tabels:
+                table = str(cls.__table__)
+                if drop_all_tabels and table in tables:
+                    print("Dropping table schema: {0}".format(cls.__table__))
                     cls.__table__.drop(self.engine)
                     log.debug("Dropped table schema: {0}".format(cls.__table__))
-                table = str(cls.__table__)
+
                 if not (table in tables) or drop_all_tabels:
+                    print("Creating table schema: {0}".format(cls.__table__))
                     cls.__table__.create(self.engine)
                     log.debug("Created table schema: {0}".format(cls.__table__))
+
         except:
+            print(StatusCode.DB_CREATE_ERROR)
             return StatusCode.DB_CREATE_ERROR
 
         return StatusCode.OK
