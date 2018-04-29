@@ -70,7 +70,7 @@
                         colors = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"], // alternatively colorbrewer.YlGnBu[9]
                         days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
                         times = ["1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12am", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12pm"];
-                    datasets = ["\u05d3\u05d9\u05d6\u05e0\u05d2\u05d5\u05e3/\u05d2\u05d5\u05e8\u05d3\u05d5\u05df", "\u05d3\u05d9\u05d6\u05e0\u05d2\u05d5\u05e3/\u05e9\u05d3' \u05d1\u05df \u05d2\u05d5\u05e8\u05d9\u05d5\u05df", "\u05e9\u05d3' \u05d1\u05df \u05d2\u05d5\u05e8\u05d9\u05d5\u05df/\u05d3\u05d9\u05d6\u05e0\u05d2\u05d5\u05e3", "\u05e8\u05d9\u05d9\u05e0\u05e1/\u05d2\u05d5\u05e8\u05d3\u05d5\u05df"];
+                    datasets = {{{json stations}}}
 
                     var svg = d3.select("#chart").append("svg")
                         .attr("width", width + margin.left + margin.right)
@@ -99,8 +99,7 @@
                         .attr("class", function (d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
                     var heatmapChart = function (station) {
-                        d3.json("mock_data/data_ziv.json",
-                            function (jsonData) {
+                            jsonData = {{{json data_viz}}}
                                 let d = jsonData.data;
                                 d = d.stops;
                                 let data = [];
@@ -171,7 +170,7 @@
                                     .attr("y", height + gridSize);
 
                                 legend.exit().remove();
-                            })
+
                     };
 
                     heatmapChart(datasets[0], 1);

@@ -182,7 +182,7 @@
 						console.log(selectedItems)
 						var len = (selectedItems.length) * 6;
 
-						d3.json("mock_data/data_einav.json", function (error, data) {
+						data = {{{json data_viz}}}
 							var parsedData = new Array();
 							data.data.stops.forEach(function (d) {
 
@@ -238,7 +238,7 @@
 							});
 							console.log(parsedData)
 							callback(parsedData)
-						});
+
 
 					}
 
