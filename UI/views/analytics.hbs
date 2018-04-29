@@ -1,0 +1,134 @@
+
+<body>
+    
+<div id="content" class="pmd-content inner-page">
+    <h3 class="text-muted"></h3>
+			<section id="table-analytics" class="row component-section">
+				<div  class="col-md-12">
+					<div class="component-box">
+						<!-- Propeller table example -->
+						<div class="pmd-card pmd-z-depth pmd-card-custom-view">
+							<div class="table-responsive">
+								<table cellspacing="0" cellpadding="0" class="table pmd-table" id="table-propeller">
+									<thead>
+										<tr>
+											<th>Session ID</th>
+											<th>Buttton 1</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+									  {{#each data}}
+                                        <tr>
+											<td data-title="Session ID">{{this.sessionId}}</td>
+											<td data-title="Buttton 1">{{this.button_clicks}}</td>
+											<td data-title=""><a href="javascript:void(0);"><i class="material-icons md-dark pmd-sm">more_vert</i></a></td>
+										</tr>
+                                      {{/each}}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</section>
+        <div class="col-md-12">
+        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+            <div class="pmd-card-body">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select a station</label>
+                    <select id="options" class="select-with-search pmd-select2 form-control">
+                        {{#each movment_data}}
+                        <option>{{@key}}
+                            </option>
+                            {{/each}}
+                    </select>
+                </div>
+            </div>
+        </div>
+	</div>
+			<canvas id="canvas"></canvas>
+
+</div>
+</body>
+
+<script>
+
+
+
+
+var movment_data = {{{json movment_data}}}
+
+var draw_movment_analytics = function(data){
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+var style1 = window.getComputedStyle(document.getElementById("table-analytics"), null);
+var style2 = window.getComputedStyle(document.getElementsByClassName("inner-page")[0], null);
+width_img = parseInt(style1.width.substring(0, style1.width.length-2));
+height_img = parseInt((width_img / 1901) * 966)
+
+ratio = (width_img / 1901)
+
+ctx.canvas.width  = width_img
+ctx.canvas.height = height_img;
+
+console.log(data)
+
+var x_y = []
+data.forEach(function(loc) {
+x_y.push([parseInt(loc[0]*ratio),parseInt(loc[1]*ratio)])
+})
+console.log(x_y)
+var count = x_y.length
+var windows = new Image();
+var index = 0
+
+function init(){
+windows.src = 'assets/images/window1.png';
+
+window.requestAnimationFrame(draw);
+}
+
+function draw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+
+  //ctx.globalCompositeOperation = 'destination-over';
+  //ctx.save();
+  ctx.drawImage(windows, 0,0,width_img,height_img);
+
+
+   index = (index + 1) % count
+   for(var i = 0;i<index;i = i + 2){
+    ctx.fillStyle = 'rgba(200, 0, 0, 0.05)';
+    ctx.fillRect(x_y[i][0],x_y[i][1],20,20)
+    }
+
+
+
+
+  window.requestAnimationFrame(draw);
+}
+
+function plot(){
+
+
+
+}
+
+init();
+}
+
+function changeFunc() {
+    var selectBox = document.getElementById("options");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    draw_movment_analytics(movment_data[selectedValue])
+}
+var _options = document.getElementById("options").onchange = changeFunc
+var selectBox = document.getElementById("options");
+var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+console.log(movment_data[selectedValue])
+console.log(movment_data)
+console.log(selectedValue)
+draw_movment_analytics(movment_data[selectedValue])
+</script>
