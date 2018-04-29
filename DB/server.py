@@ -39,7 +39,7 @@ def construct_linestring(geoJSONCoordinates):
 
 @app.route('/stops_times/square', methods=['POST'])
 def stoptimes_info_by_area():
-    sq_area = construct_linestring(request.get_json()['coordinates'])
+    sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
     return get_stoptimes_info_by_area(session=server.session,line_string_2pt=sq_area)
 
 
