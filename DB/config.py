@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 # OR, explicitly providing path to '.env'
 from pathlib import Path  # python3 only
-env_path = Path('.') / '.env'
+env_path = os.path.dirname(os.path.realpath(__file__)) + '/.env'
 load_dotenv(dotenv_path=env_path)
 
 

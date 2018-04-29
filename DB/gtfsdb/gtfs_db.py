@@ -28,13 +28,10 @@ class GTFS_DB():
         """
         self.db.create_schema(drop_all_tabels=config.SHOULD_DROP_ALL_TABELS)
 
-    def load_data(self, file_path : str = config.GTFS_FILE_PATH) -> GTFS:
+    def load_data(self) -> GTFS:
         """This function loads the db with that data from a given zip file.
-        :param file_path: the path for the GTFS zip file.
-        :type file_path: str.
         :returns:  GTFS -- the GTFS instance.
         """
-        self.gtfs = self.load_data(config.GTFS_FILE_PATH)
-        gtfs = GTFS(file_path)
+        gtfs = GTFS(config.GTFS_FILE_PATH)
         gtfs.load(self.db)
         return gtfs
