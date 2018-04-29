@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request, jsonify , json
-from logic import getTrips , computeNumForBusStops
+from DP.logic import getTrips , computeNumForBusStops
 
 app = Flask(__name__)
 
