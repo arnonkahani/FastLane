@@ -97,6 +97,8 @@ def get_stoptimes_info_by_area(session: Session, line_string_2pt: str) -> pickle
 
         result.append(stop_time_obj)
 
+
+
     return pickle.dumps(result)
 
 
