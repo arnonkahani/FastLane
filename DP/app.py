@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from flask import Flask, redirect, url_for, request, jsonify , json
 from DP.logic import getTrips , computeNumForBusStops
 
