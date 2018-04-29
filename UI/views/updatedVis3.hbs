@@ -159,13 +159,15 @@
     }).addTo(map);
 
 
-    d3.json(container.dataset.source, function (collection) {
+    
+
+   /* d3.json({{{json data_viz}}}, function (collection) {
         collection.data.trips
         L.hexLayer(collection, {
             tooltip: tooltip,
             applyStyle: hex_style
         }).addTo(map);
-    });
+    });*/
 
     var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -184,7 +186,11 @@
                 return scheme[scale(d.length)];
             });
     }
-
+    
+    L.hexLayer({{{json data_viz}}}, {
+                tooltip: tooltip,
+                applyStyle: hex_style
+            }).addTo(map);
     document.getElementById("save_button").onclick = () => {
 
         new_config = {

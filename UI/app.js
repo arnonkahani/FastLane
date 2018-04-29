@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const uuidv1 = require('uuid/v1');
 const {HttpReq} = require('./scripts/api.js');
 const formula = require('./routes/formula')(__dirname);
-
+const axios = require('axios')
 analytics_data = {}
 analytics_data_movment = {}
 
@@ -72,7 +72,21 @@ app.get("/vis3", function (req, res, next) {
 });
 
 app.get("/updatedVis3", function (req, res, next) {
-    res.render('updatedVis3');
+
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+      axios({
+          method: 'get',
+          url: 'http://132.73.214.26:3000/compute',
+          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+        })
+        .then(function (response) {
+            console.log(response.data.data.stops)
+          res.render('updatedVis3',{data_viz:response.data});
+        })
+        .catch(function (error) {
+            res.send(error)
+        });
+    
 });
 
 app.post("/analytics", function(req, res, next){
