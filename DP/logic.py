@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from flask import jsonify,json
 from datetime import datetime
 from geojson import LineString
@@ -22,11 +24,12 @@ def setDefaultHours():
 def getTrips(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
-    data = requests.post('http://132.73.193.102:5000/stops', json=jsonLineStringGeo)
+    data = requests.post('http://132.73.194.168:3001/stops_times/square', json=jsonLineStringGeo)
     return data.content
 
 
-def computeNumOfBusesForStation(stopTimes):
+def computeNumOfBusesForStation(pickleObj):
+    stopTimes = pickle.loads(pickleObj)
     days = 7
     hours = 24
     stopArr = []
