@@ -93,59 +93,63 @@
 	</style>
 </head>
 
-<section class="row component-section">
 
-	<div class="col-md-9">
-		<div class="component-box">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="pmd-card pmd-z-depth">
-						<div class="pmd-card-body">
-							<label class="radio-inline pmd-radio">
-								<input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-								<span for="inlineRadio1">Stacked</span>
-							</label>
-							<label class="radio-inline pmd-radio">
-								<input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" checked>
-								<span for="inlineRadio2">Multiples</span>
-							</label>
-						</div>
+<h2>Vis2</h2>
+<button data-target="#bs-dialog" data-toggle="modal" class="btn pmd-btn-fab pmd-ripple-effect btn-default pull-right" type="button">
+	<i class="material-icons md-dark pmd-sm">help_outline</i>
+</button>
+<div tabindex="-1" class="modal fade" id="bs-dialog" style="display: none;" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<p>Info about vis2</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-9">
+	<div class="component-box">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="pmd-card pmd-z-depth">
+					<div class="pmd-card-body">
+						<label class="radio-inline pmd-radio">
+							<input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+							<span for="inlineRadio1">Stacked</span>
+						</label>
+						<label class="radio-inline pmd-radio">
+							<input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" checked>
+							<span for="inlineRadio2">Multiples</span>
+						</label>
 					</div>
 				</div>
 			</div>
-			<div class="row toggle-button-custom">
-				<div class="col-md-12">
-					<div class="pmd-card pmd-z-depth pmd-card-custom-form">
-						<div class="pmd-card-body">
-							<div class="form-group pmd-textfield pmd-textfield-floating-label">
-								<label>Select stations</label>
-								<select class="form-control select-tags pmd-select2-tags" multiple>
-									{{#each stations}}
-									<option>{{this}}
-									</option>
-									{{/each}}
-								</select>
-							</div>
-
-
-							<div class="media-body">
-								<button class="btn btn-sm pmd-btn-raised pmd-ripple-effect btn-primary" id="sendData" type="button">Show Visualization</button>
-							</div>
-								
-							
-
+		</div>
+		<div class="row toggle-button-custom">
+			<div class="col-md-12">
+				<div class="pmd-card pmd-z-depth pmd-card-custom-form">
+					<div class="pmd-card-body">
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<label>Select stations</label>
+							<select class="form-control select-tags pmd-select2-tags" multiple>
+								{{#each stations}}
+								<option>{{this}}
+								</option>
+								{{/each}}
+							</select>
 						</div>
 
+
+						<div class="media-body">
+							<button class="btn btn-sm pmd-btn-raised pmd-ripple-effect btn-primary" id="sendData" type="button">Show Visualization</button>
+						</div>
 					</div>
-
-
-
-
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
+
 
 <div class="col-md-12 col-sm-12">
 	<h3 class="text-muted"></h3>
@@ -153,214 +157,214 @@
 		<div class="pmd-card-body">
 			<div class="media-body" id="viz2">
 
-					<script src="http://d3js.org/d3.v3.min.js"></script>
-					<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-					<script src="assets/js/jquery-1.12.2.min.js"></script>
-					<script src="analytics.js"></script>
-					<script>
-						
+				<script src="http://d3js.org/d3.v3.min.js"></script>
+				<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+				<script src="assets/js/jquery-1.12.2.min.js"></script>
+				<script src="analytics.js"></script>
+				<script src="html2canvas.min.js"></script>
+				<script>
 
-						$("#sendData").click(function () {
-							let vizElement = document.getElementById("vis2-svg")
-							if (vizElement) {
-								vizElement.parentNode.removeChild(vizElement);
-							}
-							var listItems = Array.from(document.getElementsByClassName('select2-selection__choice')),
-								parsedList = listItems.map(x => x.title.trim())
 
-							loadData(parsedList, createBarChart);
+					$("#sendData").click(function () {
+						let vizElement = document.getElementById("vis2-svg")
+						if (vizElement) {
+							vizElement.parentNode.removeChild(vizElement);
+						}
+						var listItems = Array.from(document.getElementsByClassName('select2-selection__choice')),
+							parsedList = listItems.map(x => x.title.trim())
 
-						});
-						clickWrapper(document.getElementById("sendData"))
-						log_movment(document)
+						loadData(parsedList, createBarChart);
 
-						function loadData(selectedItems, callback) {
-							console.log(selectedItems)
-							var len = (selectedItems.length) * 6;
+					});
+					clickWrapper(document.getElementById("sendData"))
+                    log_movment(document)
+					function loadData(selectedItems, callback) {
+						console.log(selectedItems)
+						var len = (selectedItems.length) * 6;
 
-							d3.json("mock_data/data_einav.json", function (error, data) {
-								var parsedData = new Array();
-								data.data.stops.forEach(function (d) {
+						data = {{{json data_viz}}}
+							var parsedData = new Array();
+							data.data.stops.forEach(function (d) {
 
-									var value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0, value6 = 0;
-									if (selectedItems.includes(d.stop_name)) {
+								var value1 = 0, value2 = 0, value3 = 0, value4 = 0, value5 = 0, value6 = 0;
+								if (selectedItems.includes(d.stop_name)) {
 
-										d.rides.forEach(function (day) {
+									d.rides.forEach(function (day) {
 
-											value1 += day[0] + day[1] + day[2] + day[3] + day[4] + day[5];
-											value2 += day[6] + day[7] + day[8] + day[9];
-											value3 += day[10] + day[11] + day[12] + day[13];
-											value4 += day[14] + day[15] + day[16] + day[17];
-											value5 += day[18] + day[19] + day[20];
-											value6 += day[21] + day[22] + day[23];
-										});
-										var element1 = {
-											group: 1,
-											name: d.stop_name,
-											value: Math.round(value1 / 7)
-										}
-										var element2 = {
-											group: 2,
-											name: d.stop_name,
-											value: Math.round(value2 / 7)
-										}
-										var element3 = {
-											group: 3,
-											name: d.stop_name,
-											value: Math.round(value3 / 7)
-										}
-										var element4 = {
-											group: 4,
-											name: d.stop_name,
-											value: Math.round(value4 / 7)
-										}
-										var element5 = {
-											group: 5,
-											name: d.stop_name,
-											value: Math.round(value5 / 7)
-										}
-										var element6 = {
-											group: 6,
-											name: d.stop_name,
-											value: Math.round(value6 / 7)
-										}
-										parsedData.push(element1);
-										parsedData.push(element2);
-										parsedData.push(element3);
-										parsedData.push(element4);
-										parsedData.push(element5);
-										parsedData.push(element6);
+										value1 += day[0] + day[1] + day[2] + day[3] + day[4] + day[5];
+										value2 += day[6] + day[7] + day[8] + day[9];
+										value3 += day[10] + day[11] + day[12] + day[13];
+										value4 += day[14] + day[15] + day[16] + day[17];
+										value5 += day[18] + day[19] + day[20];
+										value6 += day[21] + day[22] + day[23];
+									});
+									var element1 = {
+										group: 1,
+										name: d.stop_name,
+										value: Math.round(value1 / 7)
 									}
-								});
-								console.log(parsedData)
-								callback(parsedData)
+									var element2 = {
+										group: 2,
+										name: d.stop_name,
+										value: Math.round(value2 / 7)
+									}
+									var element3 = {
+										group: 3,
+										name: d.stop_name,
+										value: Math.round(value3 / 7)
+									}
+									var element4 = {
+										group: 4,
+										name: d.stop_name,
+										value: Math.round(value4 / 7)
+									}
+									var element5 = {
+										group: 5,
+										name: d.stop_name,
+										value: Math.round(value5 / 7)
+									}
+									var element6 = {
+										group: 6,
+										name: d.stop_name,
+										value: Math.round(value6 / 7)
+									}
+									parsedData.push(element1);
+									parsedData.push(element2);
+									parsedData.push(element3);
+									parsedData.push(element4);
+									parsedData.push(element5);
+									parsedData.push(element6);
+								}
 							});
+							console.log(parsedData)
+							callback(parsedData)
 
+
+					}
+
+					function createBarChart(parsedData) {
+
+						let elementWidth = parseInt(window.getComputedStyle(document.getElementById("viz2-body"), null).width);
+						elementWidth = Math.min(elementWidth * (parsedData.length / 24), elementWidth)
+
+						var margin = { top: 10, right: 20, bottom: 20, left: 60 },
+							width = elementWidth - margin.left - margin.right,
+							height = 500 - margin.top - margin.bottom;
+						var y0 = d3.scale.ordinal()
+							.rangeRoundBands([height, 0], .2);
+
+						var y1 = d3.scale.linear();
+
+						var x = d3.scale.ordinal()
+							.rangeRoundBands([0, width], .1, 0);
+
+						var xAxis = d3.svg.axis()
+							.scale(x)
+							.orient("bottom")
+							.tickFormat(function (d) { return d });
+
+						var tip = d3.tip()
+							.attr('class', 'd3-tip')
+							.offset([-8, -70])
+
+						var nest = d3.nest()
+							.key(function (d) { return d.group; });
+
+						var stack = d3.layout.stack()
+							.values(function (d) { return d.values; })
+							.x(function (d) { return d.name; })
+							.y(function (d) { return d.value; })
+							.out(function (d, y0) { d.valueOffset = y0; });
+
+						var colors = ["rgb(204, 235, 255)", "rgb(128, 204, 255)", "rgb(26, 163, 255)", "rgb(0, 122, 204)", "rgb(0, 92, 153)", "rgb(0, 61, 102)"];
+						var hours = ["00:00-06:00", "06:00-10:00", "10:00-14:00", "14:00-18:00", "18:00-21:00", "21:00-00:00"];
+
+						var svg = d3.select("#viz2").append("svg")
+							.attr("width", width)
+							.attr("id", "vis2-svg")
+							.attr("height", height + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+						svg.call(tip);
+
+						parsedData.forEach(function (d) {
+							d.value = +d.value;
+						});
+
+						var dataByGroup = nest.entries(parsedData);
+						stack(dataByGroup);
+						x.domain(dataByGroup[0].values.map(function (d) { return d.name }));
+						y0.domain(dataByGroup.map(function (d) { return d.key; }));
+						y1.domain([0, d3.max(parsedData, function (d) { return d.value; })]).range([y0.rangeBand(), 0]);
+
+						var group = svg.selectAll(".group")
+							.data(dataByGroup)
+							.enter().append("g")
+							.attr("class", "group")
+							.attr("transform", function (d) { return "translate(0," + y0(d.key) + ")"; });
+
+						group.append("text")
+							.attr("class", "group-label")
+							.attr("x", -6)
+							.attr("y", function (d) { return y1(d.values[0].value / 2); })
+							.attr("dy", ".35em")
+							.text(function (d) { return hours[d.key - 1]; });
+
+						var rects = group.selectAll("rect")
+							.data(function (d) { return d.values; })
+							.enter().append("rect")
+							.style("fill", function (d) { return colors[d.group - 1]; })
+							.attr("x", function (d) { return x(d.name); })
+							.attr("y", function (d) { return y1(d.value); })
+							.attr("width", x.rangeBand())
+							.attr("height", function (d) { return y0.rangeBand() - y1(d.value); })
+							.on('mouseover', tip.show)
+							.on('mouseout', tip.hide);
+
+						group.filter(function (d, i) { return !i; }).append("g")
+							.attr("class", "x axis")
+							.attr("transform", "translate(0," + y0.rangeBand() + ")")
+							.call(xAxis);
+
+						d3.selectAll("input").on("change", change);
+
+						var timeout = setTimeout(function () {
+							d3.select("input[value=\"stacked\"]").property("checked", true).each(change);
+						}, 2000);
+
+						function change() {
+							clearTimeout(timeout); console.log(this.value);
+							if (this.value === "option2") transitionMultiples();
+							else transitionStacked();
 						}
 
-						function createBarChart(parsedData) {
-
-							let elementWidth = parseInt(window.getComputedStyle(document.getElementById("viz2-body"), null).width);
-							elementWidth = Math.min(elementWidth * (parsedData.length / 24), elementWidth)
-
-							var margin = { top: 10, right: 20, bottom: 20, left: 60 },
-								width = elementWidth - margin.left - margin.right,
-								height = 500 - margin.top - margin.bottom;
-							var y0 = d3.scale.ordinal()
-								.rangeRoundBands([height, 0], .2);
-
-							var y1 = d3.scale.linear();
-
-							var x = d3.scale.ordinal()
-								.rangeRoundBands([0, width], .1, 0);
-
-							var xAxis = d3.svg.axis()
-								.scale(x)
-								.orient("bottom")
-								.tickFormat(function (d) { return d });
-
-							var tip = d3.tip()
-								.attr('class', 'd3-tip')
-								.offset([-8, -70])
-
-							var nest = d3.nest()
-								.key(function (d) { return d.group; });
-
-							var stack = d3.layout.stack()
-								.values(function (d) { return d.values; })
-								.x(function (d) { return d.name; })
-								.y(function (d) { return d.value; })
-								.out(function (d, y0) { d.valueOffset = y0; });
-
-							var colors = ["rgb(204, 235, 255)", "rgb(128, 204, 255)", "rgb(26, 163, 255)", "rgb(0, 122, 204)", "rgb(0, 92, 153)", "rgb(0, 61, 102)"];
-							var hours = ["00:00-06:00", "06:00-10:00", "10:00-14:00", "14:00-18:00", "18:00-21:00", "21:00-00:00"];
-
-							var svg = d3.select("#viz2").append("svg")
-								.attr("width", width)
-								.attr("id", "vis2-svg")
-								.attr("height", height + margin.top + margin.bottom)
-								.append("g")
-								.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-							svg.call(tip);
-
-							parsedData.forEach(function (d) {
-								d.value = +d.value;
-							});
-
-							var dataByGroup = nest.entries(parsedData);
-							stack(dataByGroup);
-							x.domain(dataByGroup[0].values.map(function (d) { return d.name }));
-							y0.domain(dataByGroup.map(function (d) { return d.key; }));
-							y1.domain([0, d3.max(parsedData, function (d) { return d.value; })]).range([y0.rangeBand(), 0]);
-
-							var group = svg.selectAll(".group")
-								.data(dataByGroup)
-								.enter().append("g")
-								.attr("class", "group")
-								.attr("transform", function (d) { return "translate(0," + y0(d.key) + ")"; });
-
-							group.append("text")
-								.attr("class", "group-label")
-								.attr("x", -6)
-								.attr("y", function (d) { return y1(d.values[0].value / 2); })
-								.attr("dy", ".35em")
-								.text(function (d) { return hours[d.key - 1]; });
-
-							var rects = group.selectAll("rect")
-								.data(function (d) { return d.values; })
-								.enter().append("rect")
-								.style("fill", function (d) { return colors[d.group - 1]; })
-								.attr("x", function (d) { return x(d.name); })
-								.attr("y", function (d) { return y1(d.value); })
-								.attr("width", x.rangeBand())
-								.attr("height", function (d) { return y0.rangeBand() - y1(d.value); })
-								.on('mouseover', tip.show)
-								.on('mouseout', tip.hide);
-
-							group.filter(function (d, i) { return !i; }).append("g")
-								.attr("class", "x axis")
-								.attr("transform", "translate(0," + y0.rangeBand() + ")")
-								.call(xAxis);
-
-							d3.selectAll("input").on("change", change);
-
-							var timeout = setTimeout(function () {
-								d3.select("input[value=\"stacked\"]").property("checked", true).each(change);
-							}, 2000);
-
-							function change() {
-								clearTimeout(timeout); console.log(this.value);
-								if (this.value === "option2") transitionMultiples();
-								else transitionStacked();
-							}
-
-							function transitionMultiples() {
-								var t = svg.transition().duration(750),
-									g = t.selectAll(".group").attr("transform", function (d) { return "translate(0," + y0(d.key) + ")"; });
-								g.selectAll("rect").attr("y", function (d) { return y1(d.value); });
-								g.select(".group-label").attr("y", function (d) { return y1(d.values[0].value / 2); })
-								tip.html(function (d) {
-									return "<strong style='color:white'>Number of trips:</strong> <span style='color:white'>" + d.value + "</span>";
-								});
-							}
-
-							function transitionStacked() {
-								var t = svg.transition().duration(750),
-									g = t.selectAll(".group").attr("transform", "translate(0," + y0(y0.domain()[0]) + ")");
-								g.selectAll("rect").attr("y", function (d) { return y1(d.value + d.valueOffset); });
-								g.select(".group-label").attr("y", function (d) { return y1(d.values[0].value / 2 + d.values[0].valueOffset); })
-								tip.html(function (d) {
-									return "<strong style='color:white'>Number of trips:</strong> <span style='color:white'>" + d.value + "</span>";
-								});
-							}
-
+						function transitionMultiples() {
+							var t = svg.transition().duration(750),
+								g = t.selectAll(".group").attr("transform", function (d) { return "translate(0," + y0(d.key) + ")"; });
+							g.selectAll("rect").attr("y", function (d) { return y1(d.value); });
+							g.select(".group-label").attr("y", function (d) { return y1(d.values[0].value / 2); })
 							tip.html(function (d) {
-									return "<strong style='color:white'>Number of trips:</strong> <span style='color:white'>" + d.value + "</span>";
-								});
+								return "<strong style='color:white'>Number of trips:</strong> <span style='color:white'>" + d.value + "</span>";
+							});
 						}
 
-					</script>
+						function transitionStacked() {
+							var t = svg.transition().duration(750),
+								g = t.selectAll(".group").attr("transform", "translate(0," + y0(y0.domain()[0]) + ")");
+							g.selectAll("rect").attr("y", function (d) { return y1(d.value + d.valueOffset); });
+							g.select(".group-label").attr("y", function (d) { return y1(d.values[0].value / 2 + d.values[0].valueOffset); })
+							tip.html(function (d) {
+								return "<span style='color:white'>" + d.value + "</span>";
+							});
+						}
+
+						tip.html(function (d) {
+							return "<span style='color:white'>" + d.value + "</span>";
+						});
+					}
+
+				</script>
 			</div>
 		</div>
 	</div>

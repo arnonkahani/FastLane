@@ -1,0 +1,207 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.5.1/leaflet.css" />
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.hexbin.v0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.5.1/leaflet-src.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/colorbrewer@1.1.0/index.min.js"></script>
+    <script type="text/javascript" src="leaflet.hexbin-layer.js"></script>
+
+    <style type="text/css">
+        #stops_heat {
+            min-height: 100%;
+            height: 100vh;
+            z-index: 0
+        }
+
+        .hexagon {
+            opacity: 0.7
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            height: auto;
+            padding: 10px 30px;
+            font: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+            border-radius: 0px;
+            border: 1px solid black;
+            pointer-events: none;
+            background: white;
+        }
+
+        div.tooltip:before {
+            right: 100%;
+            top: 50%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-color: rgba(255, 255, 255, 0);
+            border-right-color: black;
+            border-width: 10px;
+            margin-top: -10px;
+        }
+
+
+        .control {
+            padding: 2%;
+        }
+    </style>
+</head>
+
+
+
+<h2>Vis3</h2>
+<button data-target="#bs-dialog" data-toggle="modal" class="btn pmd-btn-fab pmd-ripple-effect btn-default pull-right" type="button">
+    <i class="material-icons md-dark pmd-sm">help_outline</i>
+</button>
+<div tabindex="-1" class="modal fade" id="bs-dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Info about vis3</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pmd-card pmd-z-depth">
+    <div class="pmd-card-body">
+        <form class="row" role="form">
+            <div class="col-sm-3">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Day</label>
+                    <select id="day_select" class="select-simple form-control pmd-select2">
+                        <option></option>
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Hour</label>
+                    <select id="hour_select" class="select-simple form-control pmd-select2">
+                        <option></option>
+                        <option value="0">00:00</option>
+                        <option value="1">01:00</option>
+                        <option value="2">02:00</option>
+                        <option value="3">03:00</option>
+                        <option value="4">04:00</option>
+                        <option value="5">05:00</option>
+                        <option value="6">06:00</option>
+                        <option value="7">07:00</option>
+                        <option value="8">08:00</option>
+                        <option value="9">09:00</option>
+                        <option value="10">10:00</option>
+                        <option value="11">11:00</option>
+                        <option value="12">12:00</option>
+                        <option value="13">13:00</option>
+                        <option value="14">14:00</option>
+                        <option value="15">15:00</option>
+                        <option value="16">16:00</option>
+                        <option value="17">17:00</option>
+                        <option value="18">18:00</option>
+                        <option value="19">19:00</option>
+                        <option value="20">20:00</option>
+                        <option value="21">21:00</option>
+                        <option value="22">22:00</option>
+                        <option value="23">23:00</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="pmd-card pmd-z-depth">
+    <div class="pmd-card-body">
+        <form class="row" role="form">
+            <div class="col-sm-3">
+                <div class="checkbox">
+                    <label class="pmd-checkbox pmd-checkbox-ripple-effect">
+                        <input value="" id="animate_select" type="checkbox"> Animate
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <label class="control">Current Time:
+                    <a id="time_view"></a>
+                </label>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" id="save_button" class="btn btn-primary pmd-ripple-effect">Save Config</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id='stops_heat' data-source="mock_data/data_arnon.json"></div>
+<script type="text/javascript">
+
+    var max, scale,
+        classes = 9,
+        scheme = colorbrewer["YlGnBu"][classes],
+        container = L.DomUtil.get('stops_heat'),
+        map = L.map(container).setView([32.070028993996694, 34.767823219299316], 13);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+
+    
+
+   /* d3.json({{{json data_viz}}}, function (collection) {
+        collection.data.trips
+        L.hexLayer(collection, {
+            tooltip: tooltip,
+            applyStyle: hex_style
+        }).addTo(map);
+    });*/
+
+    var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
+
+    function hex_style(hexagons) {
+        max = d3.max(hexagons.data(), function (d) { return d.length; });
+        scale = d3.scale.quantize()
+            .domain([max, max / 2, 0])
+            .range(d3.range(classes));
+        hexagons
+            .attr("stroke", scheme[classes - 1])
+            .attr("fill", function (d) {
+                return scheme[scale(d.length)];
+            });
+    }
+    
+    L.hexLayer({{{json data_viz}}}, {
+                tooltip: tooltip,
+                applyStyle: hex_style
+            }).addTo(map);
+    document.getElementById("save_button").onclick = () => {
+
+        new_config = {
+            "animate": document.getElementById("animate_select").checked,
+            "hour": document.getElementById("hour_select").value,
+            "day": document.getElementById("day_select").value,
+        }
+        map._layers[16].activateNewConfig(new_config)
+
+    }
+
+
+
+</script>

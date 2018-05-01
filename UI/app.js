@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const uuidv1 = require('uuid/v1');
 const {HttpReq} = require('./scripts/api.js');
 const formula = require('./routes/formula')(__dirname);
-
+const axios = require('axios')
 analytics_data = {}
 analytics_data_movment = {}
 
@@ -71,6 +71,24 @@ app.get("/vis3", function (req, res, next) {
     res.render('vis3');
 });
 
+app.get("/updatedVis3", function (req, res, next) {
+
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+      axios({
+          method: 'get',
+          url: 'http://132.73.214.26:3000/compute',
+          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+        })
+        .then(function (response) {
+            console.log(response.data.data.stops)
+          res.render('updatedVis3',{data_viz:response.data});
+        })
+        .catch(function (error) {
+            res.send(error)
+        });
+    
+});
+
 app.post("/analytics", function(req, res, next){
     let analytics = req.body
     sessionId = req.cookies.cookieName
@@ -117,33 +135,37 @@ app.get("/analytics", function (req, res, next) {
 
 app.get("/updatedVis1", function (req, res, next) {
 
-    res.render('updatedVis1',{stations:["\u05d3\u05d9\u05d6\u05e0\u05d2\u05d5\u05e3/\u05d2\u05d5\u05e8\u05d3\u05d5\u05df","\u05d3\u05d9\u05d6\u05e0\u05d2\u05d5\u05e3/\u05e9\u05d3' \u05d1\u05df \u05d2\u05d5\u05e8\u05d9\u05d5\u05df","\u05e9\u05d3' \u05d1\u05df \u05d2\u05d5\u05e8\u05d9\u05d5\u05df/\u05d3\u05d9\u05d6\u05e0\u05d2\u05d5\u05e3",
-    "\u05e8\u05d9\u05d9\u05e0\u05e1/\u05d2\u05d5\u05e8\u05d3\u05d5\u05df"]});
+     axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+      axios({
+          method: 'get',
+          url: 'http://132.73.214.26:3000/compute',
+          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+        })
+        .then(function (response) {
+            stations_view = response.data.data.stops.map(x => x.stop_name)
+          res.render('updatedVis1',{data_viz:response.data, stations:stations_view});
+        })
+        .catch(function (error) {
+            res.send(error)
+        });
 });
 
 app.get("/updatedVis2", function (req, res, next) {
-    
-        res.render('updatedVis2',{stations:["\u05ea\u05d7\u05e0\u05d4 \u05de\u05e8\u05db\u05d6\u05d9\u05ea \u05ea\u05dc \u05d0\u05d1\u05d9\u05d1 \u05e7\u05d5\u05de\u05d4 6/\u05e8\u05e6\u05d9\u05e4\u05d9\u05dd",
-       "\u05e9\u05d3' \u05d4\u05e8 \u05e6\u05d9\u05d5\u05df/\u05d3\u05e8\u05da \u05e9\u05dc\u05de\u05d4",
-       "\u05e9\u05d5\u05e7\u05df/\u05d1\u05e8 \u05d9\u05d5\u05d7\u05d0\u05d9",
-       "\u05e9\u05d3' \u05e8\u05d5\u05d8\u05e9\u05d9\u05dc\u05d3/\u05e9\u05d9\u05d9\u05e0\u05e7\u05d9\u05df",
-       "\u05d4\u05d7\u05e9\u05de\u05d5\u05e0\u05d0\u05d9\u05dd/\u05d9\u05d4\u05d5\u05d3\u05d4 \u05d4\u05dc\u05d5\u05d9",
-       "\u05d4\u05e1\u05d9\u05e0\u05de\u05d8\u05e7/\u05e7\u05e8\u05dc\u05d9\u05d1\u05da",
-       "\u05d0\u05d1\u05df \u05d2\u05d1\u05d9\u05e8\u05d5\u05dc/\u05e7\u05e8\u05dc\u05d9\u05d1\u05da",
-       "\u05d0\u05d1\u05df \u05d2\u05d1\u05d9\u05e8\u05d5\u05dc/\u05e9\u05d3' \u05e9\u05d0\u05d5\u05dc \u05d4\u05de\u05dc\u05da",
-       "\u05d4\u05e9\u05d5\u05de\u05e8\u05d5\u05df/\u05e9\u05d3' \u05d4\u05e8 \u05e6\u05d9\u05d5\u05df",
-       "\u05ea\u05d7\u05e0\u05d4 \u05de\u05e8\u05db\u05d6\u05d9\u05ea \u05ea''\u05d0/\u05dc\u05d5\u05d9\u05e0\u05e1\u05e7\u05d9",
-       "\u05ea\u05d7\u05e0\u05d4 \u05de\u05e8\u05db\u05d6\u05d9\u05ea \u05ea\u05dc \u05d0\u05d1\u05d9\u05d1 \u05e7\u05d5\u05de\u05d4 4/\u05d4\u05d5\u05e8\u05d3\u05d4",
-       "\u05d0\u05dc\u05e0\u05d1\u05d9/\u05dc\u05d9\u05dc\u05d9\u05e0\u05d1\u05dc\u05d5\u05dd",
-       "\u05d3\u05e8\u05da \u05e9\u05dc\u05de\u05d4/\u05e9\u05d3' \u05d4\u05e8 \u05e6\u05d9\u05d5\u05df",
-       "\u05d1\u05d9''\u05e1 \u05e9\u05d1\u05d7 \u05de\u05d5\u05e4\u05ea/\u05d4\u05de\u05e1\u05d2\u05e8",
-       "\u05d4\u05e9\u05dc\u05d5\u05dd",
-       "\u05ea\u05dc \u05d0\u05d1\u05d9\u05d1 \u05d4\u05d4\u05d2\u05e0\u05d4",
-       "\u05de\u05e1\u05d5\u05e3 2000/\u05e2\u05dc\u05d9\u05d4",
-       "\u05ea\u05d7\u05e0\u05d4 \u05de\u05e8\u05db\u05d6\u05d9\u05ea \u05ea\u05dc \u05d0\u05d1\u05d9\u05d1 \u05e7\u05d5\u05de\u05d4 6/\u05e8\u05e6\u05d9\u05e4\u05d9\u05dd",
-       "\u05ea\u05d7\u05e0\u05d4 \u05de\u05e8\u05db\u05d6\u05d9\u05ea \u05ea\u05dc \u05d0\u05d1\u05d9\u05d1 \u05e7\u05d5\u05de\u05d4 7/\u05e8\u05e6\u05d9\u05e4\u05d9\u05dd",
-       "\u05d0\u05d1\u05df \u05d2\u05d1\u05d9\u05e8\u05d5\u05dc/\u05de\u05d0\u05e0\u05d4",
-       "\u05db\u05d9\u05db\u05e8 \u05d4\u05e9\u05e2\u05d5\u05df/\u05de\u05e8\u05d6\u05d5\u05e7 \u05d5\u05e2\u05d6\u05e8"]});
+
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+      axios({
+          method: 'get',
+          url: 'http://132.73.214.26:3000/compute',
+          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+        })
+        .then(function (response) {
+            stations_view = response.data.data.stops.map(x => x.stop_name)
+          res.render('updatedVis2',{data_viz:response.data, stations:stations_view});
+        })
+        .catch(function (error) {
+            res.send(error)
+        });
+
     });
 
 app.listen(process.env.PORT ? process.env.PORT : 3000, () => console.log('Example app listening on port 3000!'));
