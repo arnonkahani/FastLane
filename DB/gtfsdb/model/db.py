@@ -51,8 +51,7 @@ class Database(object):
                     print("Creating table schema: {0}".format(cls.__table__))
                     cls.__table__.create(self.engine)
                     log.debug("Created table schema: {0}".format(cls.__table__))
-
-        except:
+        except Exception as e:
             print(StatusCode.DB_CREATE_ERROR)
             return StatusCode.DB_CREATE_ERROR
 

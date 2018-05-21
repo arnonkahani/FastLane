@@ -11,6 +11,12 @@ const axios = require('axios')
 analytics_data = {}
 analytics_data_movment = {}
 
+
+server_url = 'http://localhost:3002/compute'
+server_url_trips = 'http://localhost:3002/trips/path'
+small_data = [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+big_data = [[31.806400, 35.188504],[31.732295, 35.237836]]
+
 app.use(bodyParser.urlencoded({
     extended: true
   }));
@@ -76,8 +82,8 @@ app.get("/updatedVis3", function (req, res, next) {
       axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
       axios({
           method: 'get',
-          url: 'http://132.73.214.26:3000/compute',
-          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+          url: server_url,
+          data: big_data
         })
         .then(function (response) {
             console.log(response.data.data.stops)
@@ -87,6 +93,23 @@ app.get("/updatedVis3", function (req, res, next) {
             res.send(error)
         });
     
+});
+
+app.get("/vis4", function (req, res, next) {
+
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+      axios({
+          method: 'get',
+          url: server_url_trips,
+          data: small_data
+        })
+        .then(function (response) {
+          res.render('vis4',{data_viz:response.data});
+        })
+        .catch(function (error) {
+            res.send(error)
+        });
+
 });
 
 app.post("/analytics", function(req, res, next){
@@ -138,8 +161,8 @@ app.get("/updatedVis1", function (req, res, next) {
      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
       axios({
           method: 'get',
-          url: 'http://132.73.214.26:3000/compute',
-          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+          url: server_url,
+          data: big_data
         })
         .then(function (response) {
             stations_view = response.data.data.stops.map(x => x.stop_name)
@@ -155,8 +178,8 @@ app.get("/updatedVis2", function (req, res, next) {
       axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
       axios({
           method: 'get',
-          url: 'http://132.73.214.26:3000/compute',
-          data: [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
+          url: server_url,
+          data: big_data
         })
         .then(function (response) {
             stations_view = response.data.data.stops.map(x => x.stop_name)

@@ -24,9 +24,15 @@ def setDefaultHours():
 def getTrips(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
-    data = requests.post('http://132.73.194.168:3001/stops_times/square', json=jsonLineStringGeo)
+    data = requests.post('http://localhost:3001/stops_times/square', json=jsonLineStringGeo)
     return data.content
 
+
+def getTripsPaths(geoJson):
+    lineStringGeo = LineString(geoJson)
+    jsonLineStringGeo = json.dumps(lineStringGeo)
+    data = requests.post('http://localhost:3001/trips/area', json=jsonLineStringGeo)
+    return data.content
 
 def computeNumOfBusesForStation(pickleObj):
     stopTimes = pickle.loads(pickleObj)
@@ -51,7 +57,10 @@ def computeNumOfBusesForStation(pickleObj):
         daysCounter = 0
         for day in stopTime.trip.calenders[0].days:
             if day:
-                dt = datetime.strptime(arrivalTime, '%H:%M:%S')
+                try:
+                    dt = datetime.strptime(arrivalTime, '%H:%M:%S')
+                except:
+                    continue
                 stopResponse['rides'][daysCounter][dt.hour] += 1
             daysCounter += 1
         if not exists:
@@ -61,6 +70,24 @@ def computeNumOfBusesForStation(pickleObj):
     return json.dumps({
         'data': {
             'stops': stopArr
+        }
+    })
+
+
+def computeTripsPath(pickleObj):
+    trips = pickle.loads(pickleObj)
+    tripsArr = []
+
+    for trip in trips:
+        tripResponse = {}
+        tripResponse['trip_id'] = trip.id
+        tripResponse['trip_headsign'] = trip.headsign
+        tripResponse['path'] = shapely.geometry.mapping(trip.path.path_points)
+        tripsArr.append(tripResponse)
+
+    return json.dumps({
+        'data': {
+            'trips': tripsArr
         }
     })
 

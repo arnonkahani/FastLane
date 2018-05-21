@@ -2,13 +2,26 @@ import pickle
 from typing import Set
 
 from sqlalchemy.orm import Session
-from DB.gtfsdb import Stop, StopTime, Trip, Calendar
+from DB.gtfsdb import Stop, StopTime, Trip, Calendar, Pattern
+from SharedLayer.objects.Path import Path as PathObj
 from SharedLayer.objects.StopTime import StopTime as StopTimeObj
 from SharedLayer.objects.Trip import Trip as TripObj
 from SharedLayer.objects.Calender import Calender as CalenderObj
 from SharedLayer.objects.Stop import Stop as StopObj
 from geoalchemy2.shape import to_shape
 from geoalchemy2 import functions
+
+
+def query_trips_info_by_area(session: Session, line_string_2pt: str):
+    # Gets all stop_times and stop information in area
+    return session.query(Pattern) \
+        .with_entities(Pattern.shape_id,
+                       Trip.trip_headsign,
+                       Pattern.geom,
+                       Trip.trip_id) \
+        .filter(
+        Pattern.geom.intersects(line_string_2pt)) \
+        .join(Trip, Trip.shape_id == Pattern.shape_id)
 
 
 def query_stoptimes_info_by_area(session: Session, line_string_2pt: str):
@@ -22,6 +35,7 @@ def query_stoptimes_info_by_area(session: Session, line_string_2pt: str):
         .filter(
         Stop.geom.intersects(line_string_2pt)) \
         .join(StopTime, StopTime.stop_id == Stop.stop_id)
+
 
 def query_stoptimes_info_by_path(session: Session, line_string_path: str):
     # Gets all stop_times and stop information in path
@@ -97,8 +111,6 @@ def get_stoptimes_info_by_area(session: Session, line_string_2pt: str) -> pickle
 
         result.append(stop_time_obj)
 
-
-
     return pickle.dumps(result)
 
 
@@ -111,7 +123,66 @@ def get_stoptimes_info_by_path(session: Session, line_string_path: str):
     :returns:  StatusCode -- the return code.
     """
 
-    stop_stops_times_in_path = query_stoptimes_info_by_path(session,line_string_path)
+    stop_stops_times_in_path = query_stoptimes_info_by_path(session, line_string_path)
+
+    stops = {}
+    result = []
+
+    # constructs stop_times
+    for stop_time_res in stop_stops_times_in_path:
+
+        stop_id = stop_time_res[0]
+        stop_name = stop_time_res[1]
+        stop_geom = stop_time_res[2]
+        arrival_time = stop_time_res[3]
+
+        stop_time_obj = StopTimeObj(arrival_time=arrival_time)
+
+        if stop_id not in stops:
+            stops[stop_id] = StopObj(id=stop_id, name=stop_name, location=to_shape(stop_geom))
+        stop_time_obj.stop = stops[stop_id]
+
+        result.append(stop_time_obj)
+
+    return pickle.dumps(result)
+
+
+def get_trips_info_by_area(session: Session, line_string_2pt: str) -> pickle:
+    """This query returns pickled trips information from a square area defined by 2 points.
+    :param session: the current db session.
+    :type session: Session.
+    :param line_string_2pt: line string defined by 2 points.
+    :type line_string_2pt: str.
+    :returns:  StatusCode -- the return code.
+    """
+    trips_in_area = query_trips_info_by_area(session, line_string_2pt)
+
+    trips_in_area_res = list(trips_in_area)
+
+    result = []
+    # constructs trips
+    for trip_res in trips_in_area_res:
+
+        headsign = trip_res[1]
+        geom = trip_res[2]
+        trip_id = trip_res[3]
+
+        trip_path = PathObj(path_line=to_shape(geom))
+        trip_obj = TripObj(id=trip_id,headsign=headsign,path=trip_path)
+        result.append(trip_obj)
+
+    return pickle.dumps(result)
+
+def get_v_info_by_path(session, line_string_path):
+    """This query returns pickled stop_times information from a swuare area defined by 2 points.
+    :param session: the current db session.
+    :type session: Session.
+    :param line_string_2pt: line string defined by 2 points.
+    :type line_string_2pt: str.
+    :returns:  StatusCode -- the return code.
+    """
+
+    stop_stops_times_in_path = query_stoptimes_info_by_path(session, line_string_path)
 
     stops = {}
     result = []

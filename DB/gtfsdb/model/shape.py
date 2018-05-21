@@ -33,7 +33,7 @@ class Pattern(Base):
 
     def geom_from_shape(self, points):
         #TODO : double tiple quadrple check
-        coords = [Point(float(r[0]),float(r[1])) for r in points]
+        coords = [Point(float(r[1]),float(r[0])) for r in points]
         coords = ['{0} {1}'.format(r.x, r.y) for r in coords]
         self.geom = 'SRID={0};LINESTRING({1})'.format(config.SRID, ','.join(coords))
 

@@ -1,6 +1,4 @@
 import sys
-
-
 sys.path.append('../')
 
 from sqlalchemy.orm import sessionmaker
@@ -40,6 +38,8 @@ def construct_linestring(geoJSONCoordinates):
 @app.route('/stops_times/square', methods=['POST'])
 def stoptimes_info_by_area():
     sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
+    print(sq_area)
+    # sq_area = construct_linestring(request.get_json()['coordinates'])
     return get_stoptimes_info_by_area(session=server.session,line_string_2pt=sq_area)
 
 
@@ -47,6 +47,13 @@ def stoptimes_info_by_area():
 def stoptimes_info_by_path():
     map_path = construct_linestring(json.loads(request.get_json())['coordinates'])
     return get_stoptimes_info_by_path(session=server.session, line_string_path=map_path)
+
+@app.route('/trips/area', methods=['POST'])
+def trip_info_by_area():
+    sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
+    return get_trips_info_by_area(session=server.session, line_string_2pt=sq_area)
+
+
 
 
 def start_server():

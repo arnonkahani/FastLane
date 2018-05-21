@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../')
 from flask import Flask, redirect, url_for, request, jsonify , json
-from DP.logic import getTrips , computeNumForBusStops , computeNumOfBusesForStation
+from DP.logic import getTrips , computeNumForBusStops , computeNumOfBusesForStation,getTripsPaths,computeTripsPath
 
 app = Flask(__name__)
 
@@ -27,7 +27,15 @@ def login():
 def compute():
     geoJson = request.get_json()
     data = getTrips(geoJson)
+    print(data)
     return computeNumOfBusesForStation(data)
+
+@app.route('/trips/path')
+def trips_by_area():
+    geoJson = request.get_json()
+    data = getTripsPaths(geoJson)
+    print(data)
+    return computeTripsPath(data)
 
 
 @app.route('/coordinates')
@@ -39,4 +47,4 @@ def coordinates():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000, debug=True,use_reloader=False)
+    app.run(host='0.0.0.0', port=3002, debug=True,use_reloader=False)
