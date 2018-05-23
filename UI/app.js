@@ -12,8 +12,9 @@ analytics_data = {}
 analytics_data_movment = {}
 
 
-server_url = 'http://localhost:3002/compute'
-server_url_trips = 'http://localhost:3002/trips/path'
+server_url = 'http://10.100.102.8:3002/compute'
+server_url_V = 'http://10.100.102.8:3002/v/path'
+server_url_trips = 'http://10.100.102.8:3002/trips/path'
 small_data = [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
 big_data = [[31.806400, 35.188504],[31.732295, 35.237836]]
 
@@ -68,21 +69,7 @@ app.get("/", function (req, res, next) {
 });
 
 app.get("/updatedVis3", function (req, res, next) {
-
-      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
-      axios({
-          method: 'get',
-          url: server_url,
-          data: big_data
-        })
-        .then(function (response) {
-            console.log(response.data.data.stops)
-          res.render('updatedVis3',{data_viz:response.data});
-        })
-        .catch(function (error) {
-            res.send(error)
-        });
-    
+    res.render('updatedVis3'); 
 });
 
 app.get("/vis4", function (req, res, next) {
@@ -145,39 +132,69 @@ app.get("/analytics", function (req, res, next) {
     res.render('analytics',{data:analytics_view,movment_data:movment_view});
 });
 
+app.post("/vis_data", function (req, res, next) {
+         axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+          axios({
+              method: 'get',
+              url: server_url,
+              data: req.body
+            })
+            .then(function (response) {
+              res.send(response.data);
+            })
+            .catch(function (error) {
+                res.send(error)
+            });
+    });
+
+    app.post("/v_data", function (req, res, next) {
+        console.log(req.body);
+        axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+         axios({
+             method: 'get',
+             url: server_url_V,
+             data: req.body
+           })
+           .then(function (response) {
+             res.send(response.data);
+           })
+           .catch(function (error) {
+               res.send(error)
+           });
+   });
 
 app.get("/updatedVis1", function (req, res, next) {
-
-     axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
-      axios({
-          method: 'get',
-          url: server_url,
-          data: big_data
-        })
-        .then(function (response) {
-            stations_view = response.data.data.stops.map(x => x.stop_name)
-          res.render('updatedVis1',{data_viz:response.data, stations:stations_view});
-        })
-        .catch(function (error) {
-            res.send(error)
-        });
+    res.render('updatedVis1');
+    //  axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+    //   axios({
+    //       method: 'get',
+    //       url: server_url,
+    //       data: big_data
+    //     })
+    //     .then(function (response) {
+    //         stations_view = response.data.data.stops.map(x => x.stop_name)
+    //       res.render('updatedVis1',{data_viz:response.data, stations:stations_view});
+    //     })
+    //     .catch(function (error) {
+    //         res.send(error)
+    //     });
 });
 
 app.get("/updatedVis2", function (req, res, next) {
-
-      axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
-      axios({
-          method: 'get',
-          url: server_url,
-          data: big_data
-        })
-        .then(function (response) {
-            stations_view = response.data.data.stops.map(x => x.stop_name)
-          res.render('updatedVis2',{data_viz:response.data, stations:stations_view});
-        })
-        .catch(function (error) {
-            res.send(error)
-        });
+    res.render('updatedVis2');
+    //   axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+    //   axios({
+    //       method: 'get',
+    //       url: server_url,
+    //       data: big_data
+    //     })
+    //     .then(function (response) {
+    //         stations_view = response.data.data.stops.map(x => x.stop_name)
+    //       res.render('updatedVis2',{data_viz:response.data, stations:stations_view});
+    //     })
+    //     .catch(function (error) {
+    //         res.send(error)
+    //     });
 
     });
 
