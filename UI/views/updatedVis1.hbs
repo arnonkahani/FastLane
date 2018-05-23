@@ -18,8 +18,20 @@
         text.axis-worktime {
             fill: #000;
         }
+        #mapid {
+            min-height: 100%;
+            height: 50vh;
+            width: 50vw;
+            z-index: 0
+        }
     </style>
     <script src="http://d3js.org/d3.v3.js"></script>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+            crossorigin=""></script>
 </head>
 
 <h1 align="center" style="font-family: 'Cabin Sketch', cursive;">SINGLE STATION</h1>
@@ -35,22 +47,82 @@
         </div>
     </div>
 </div>
-<div class="col-md-9">
+
+			<div class="col-md-8 col-sm-6">
+				<h3 class="text-muted">Mark two points on the map below</h3>
+				<div class="pmd-card pmd-card-default pmd-z-depth">
+					<div class="pmd-card-body">
+						<div class="media-body">
+								<a href="javascript:void(0);">
+									<div id="mapid"></div>
+								</a>
+							</div>
+							<div class="media-right">
+								<button id="send_data" type="button" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-primary"><i class="material-icons pmd-sm">send</i></button>
+							</div>
+					</div>
+				</div>
+			</div>
+<script>
+
+	var mymap = L.map('mapid').setView([31.806400, 35.188504], 12);
+    var points = [];
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+		maxZoom: 18,
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		id: 'mapbox.streets'
+	}).addTo(mymap);
+
+    function addStationsToSelection(stations) {
+        var x = document.getElementById("options");
+        stations.forEach(function(station) {
+            var option = document.createElement("option");
+            option.text = station;
+            x.add(option);
+        })
+    
+    }
+    function onClickSendData(e){
+        axios.post('/vis_data', points).then(function (response) {
+            stations_view = response.data.data.stops.map(x => x.stop_name)
+            data_viz = response.data
+            stations =stations_view
+            addStationsToSelection(stations)
+            uploud_viz(stations,data_viz)
+        })
+    }
+    document.getElementById('send_data').onclick = onClickSendData
+
+    function onMapClick(e) {
+        if (points.length < 2) {
+            points.push([e.latlng.lat, e.latlng.lng]);
+            var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(mymap);
+        }
+        else alert("You have already choose 2 points");
+}
+
+mymap.on('click', onMapClick);
+</script>
+
+
+
+<div class="col-md-9 ">
 <div class="pmd-card pmd-z-depth pmd-card-custom-form">
     <div class="pmd-card-body">
         <div class="form-group pmd-textfield pmd-textfield-floating-label">
             <label>Select a station</label>
             <select id="options" class="select-with-search pmd-select2 form-control">
-                {{#each stations}}
+                {{!-- {{#each stations}}
                 <option>{{this}}
                 </option>
-                {{/each}}
+                {{/each}} --}}
             </select>
         </div>
     </div>
 </div>
 </div>
-
 
 
 <div class="col-md-12 col-sm-12">
@@ -61,6 +133,9 @@
                 <div id="chart"></div>
                 <div id="dataset-picker"></div>
                 <script type="text/javascript">
+
+                function uploud_viz(stations,data_viz){
+                    
                     var margin = { top: 50, right: 0, bottom: 100, left: 30 },
                         width = 850 - margin.left - margin.right,
                         height = 430 - margin.top - margin.bottom,
@@ -70,8 +145,8 @@
                         colors = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"], // alternatively colorbrewer.YlGnBu[9]
                         days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
                         times = ["1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12am", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12pm"];
-                    datasets = {{{json stations}}}
-
+                    //datasets = {{{json stations}}}
+                    datasets = stations
                     var svg = d3.select("#chart").append("svg")
                         .attr("width", width + margin.left + margin.right)
                         .attr("height", height + margin.top + margin.bottom)
@@ -99,7 +174,9 @@
                         .attr("class", function (d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
                     var heatmapChart = function (station) {
-                            jsonData = {{{json data_viz}}}
+                            
+                            jsonData = data_viz
+                            
                                 let d = jsonData.data;
                                 d = d.stops;
                                 let data = [];
@@ -173,7 +250,7 @@
 
                     };
 
-                    heatmapChart(datasets[0], 1);
+                    
 
 
                     function changeFunc() {
@@ -182,7 +259,7 @@
                         heatmapChart(selectedValue);
                     }
                     var _options = document.getElementById("options").onchange = changeFunc
-
+                }
                 </script>
             </div>
         </div>
