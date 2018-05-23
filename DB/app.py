@@ -1,3 +1,5 @@
+import sys
+sys.path.append("./")
 
 import DB.data_loader as data_loader
 from DB import config

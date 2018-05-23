@@ -16,3 +16,4 @@ class Trip:
         self.direction = direction
         self.headsign = headsign
         self.calenders = calenders
+        self.path = path
