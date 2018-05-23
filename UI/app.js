@@ -59,22 +59,12 @@ app.use(function (req, res, next) {
   });
 
 
-app.use('/formula',formula);
+app.get("/formula", function (req, res, next) {
+    res.render('formula');
+});
 
 app.get("/", function (req, res, next) {
     res.render('home');
-});
-
-app.get("/vis1", function (req, res, next) {
-    res.render('vis1');
-});
-
-app.get("/vis2", function (req, res, next) {
-    res.render('vis2');
-});
-
-app.get("/vis3", function (req, res, next) {
-    res.render('vis3');
 });
 
 app.get("/updatedVis3", function (req, res, next) {
