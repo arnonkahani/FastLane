@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import inspect
 from DB import config
-from DB.gtfsdb.utils.status import StatusCode
+from DB.db.utils.status import StatusCode
 
 
 class Database(object):
@@ -26,7 +26,7 @@ class Database(object):
 
     @property
     def classes(self):
-        from DB.gtfsdb.model.base import Base
+        from DB.db.model.base import Base
         if self.tables:
             return [c for c in Base.__subclasses__() if c.__tablename__ in self.tables]
         return Base.__subclasses__()
@@ -63,7 +63,7 @@ class Database(object):
 
     @property
     def metadata(self):
-        from DB.gtfsdb.model.base import Base
+        from DB.db.model.base import Base
         return Base.metadata
 
     @property

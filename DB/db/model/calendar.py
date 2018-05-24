@@ -1,7 +1,7 @@
 import logging
 
 from DB import config
-from DB.gtfsdb.model.base import Base
+from DB.db.model.base import Base
 from sqlalchemy import Column, Index
 from sqlalchemy.types import Boolean, Date, String
 import pandas as pd

@@ -2,12 +2,12 @@ import sys
 sys.path.append('../')
 
 from sqlalchemy.orm import sessionmaker
-from DB.gtfsdb import Base
-from DB.gtfsdb.gtfs_db import GTFS_DB
+from DB.db import Base
+from DB.db.db import Local_DB
 import json
 from flask import Flask, request
 from DB.queries import *
-
+import time
 app = Flask(__name__)
 
 headers = {'Content-Type': 'application/json'}
@@ -18,7 +18,7 @@ result = []
 
 class Server:
     def __init__(self):
-        a = GTFS_DB()
+        a = Local_DB()
         db = a.db
         Base.metadata.bind = db.engine
         DBSession = sessionmaker()
@@ -37,11 +37,13 @@ def construct_linestring(geoJSONCoordinates):
 
 @app.route('/stops_times/square', methods=['POST'])
 def stoptimes_info_by_area():
+    start = time.time()
     sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
     print(sq_area)
     # sq_area = construct_linestring(request.get_json()['coordinates'])
-    return get_stoptimes_info_by_area(session=server.session,line_string_2pt=sq_area)
-
+    res = get_stoptimes_info_by_area(session=server.session,line_string_2pt=sq_area)
+    print(time.time() - start)
+    return res
 
 @app.route('/stops_times/path', methods=['POST'])
 def stoptimes_info_by_path():
@@ -53,7 +55,10 @@ def trip_info_by_area():
     sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
     return get_trips_info_by_area(session=server.session, line_string_2pt=sq_area)
 
-
+@app.route('/stop/path', methods=['POST'])
+def v_info_by_path():
+    map_path = construct_linestring(json.loads(request.get_json())['coordinates'])
+    return get_v_info_by_path(session=server.session, line_string_path=map_path)
 
 
 def start_server():

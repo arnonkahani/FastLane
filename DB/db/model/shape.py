@@ -6,9 +6,9 @@ from geoalchemy2 import Geometry
 from shapely.geometry import Point
 from sqlalchemy import Column, Numeric, String
 from sqlalchemy.orm import relationship
-from DB.gtfsdb.model.db import Database
+from DB.db.model.db import Database
 from DB import config
-from DB.gtfsdb.model.base import Base
+from DB.db.model.base import Base
 
 __all__ = ['Pattern']
 

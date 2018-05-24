@@ -1,0 +1,155 @@
+<head>
+
+    <title>Quick Start - Leaflet</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico"/>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+            crossorigin=""></script>
+
+    <style type="text/css">
+        #mapid {
+            min-height: 100%;
+            height: 100vh;
+            z-index: 0
+        }
+
+
+
+    </style>
+
+
+</head>
+
+
+<h2>Vis4</h2>
+<button data-target="#bs-dialog" data-toggle="modal" class="btn pmd-btn-fab pmd-ripple-effect btn-default pull-right"
+        type="button">
+    <i class="material-icons md-dark pmd-sm">help_outline</i>
+</button>
+<div tabindex="-1" class="modal fade" id="bs-dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Info about vis3</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pmd-card pmd-z-depth">
+    <div class="pmd-card-body">
+        <form class="row" role="form">
+            <div class="col-sm-3">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Day</label>
+                    <select id="day_select" class="select-simple form-control pmd-select2">
+                        <option></option>
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Hour</label>
+                    <select id="hour_select" class="select-simple form-control pmd-select2">
+                        <option></option>
+                        <option value="0">00:00</option>
+                        <option value="1">01:00</option>
+                        <option value="2">02:00</option>
+                        <option value="3">03:00</option>
+                        <option value="4">04:00</option>
+                        <option value="5">05:00</option>
+                        <option value="6">06:00</option>
+                        <option value="7">07:00</option>
+                        <option value="8">08:00</option>
+                        <option value="9">09:00</option>
+                        <option value="10">10:00</option>
+                        <option value="11">11:00</option>
+                        <option value="12">12:00</option>
+                        <option value="13">13:00</option>
+                        <option value="14">14:00</option>
+                        <option value="15">15:00</option>
+                        <option value="16">16:00</option>
+                        <option value="17">17:00</option>
+                        <option value="18">18:00</option>
+                        <option value="19">19:00</option>
+                        <option value="20">20:00</option>
+                        <option value="21">21:00</option>
+                        <option value="22">22:00</option>
+                        <option value="23">23:00</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="pmd-card pmd-z-depth">
+    <div class="pmd-card-body">
+        <form class="row" role="form">
+            <div class="col-sm-3">
+                <div class="checkbox">
+                    <label class="pmd-checkbox pmd-checkbox-ripple-effect">
+                        <input value="" id="animate_select" type="checkbox"> Animate
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <label class="control">Current Time:
+                    <a id="time_view"></a>
+                </label>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" id="save_button" class="btn btn-primary pmd-ripple-effect">Save Config</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="mapid"></div>
+<script>
+
+	var baseURL = 'http://{s}.tile.cloudmade.com/{API}/{map_style}/256/{z}/{x}/{y}.png';
+
+    var base = L.tileLayer(baseURL, {
+        API: your-api,
+        map_style: '44094'
+        });
+
+    //Halifax, Nova Scotia
+    var map = L.map('map', {layers: [base]}).setView([44.65, -63.57], 12);
+
+    L.control.scale().addTo(map);
+
+    //custom size for this example, and autoresize because map style has a percentage width
+    var heatmap = new L.TileLayer.WebGLHeatMap({size: 1000, autoresize: true});
+
+    // dataPoints is an array of arrays: [[lat, lng, intensity]...]
+    var dataPoints = [[44.6674, -63.5703, 37], [44.6826, -63.7552, 34], [44.6325, -63.5852, 41], [44.6467, -63.4696, 67], [44.6804, -63.487, 64], [44.6622, -63.5364, 40], [44.603, - 63.743, 52] ...];
+    for (var i = 0, len = dataPoints.length; i < len; i++) {
+        var point = dataPoints[i];
+        heatmap.addDataPoint(point[0],
+             point[1],
+             point[2]);
+    }
+    // alternatively, you can skip the for loop and add the whole dataset with heatmap.setData(dataPoints)
+
+    map.addLayer(heatmap);
+
+
+
+
+</script>

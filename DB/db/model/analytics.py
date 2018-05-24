@@ -4,7 +4,7 @@ from sqlalchemy import Column, Sequence
 from sqlalchemy.types import Integer, String
 
 from DB import config
-from DB.gtfsdb.model.base import Base
+from DB.db.model.base import Base
 
 __all__ = ['Analytics']
 
