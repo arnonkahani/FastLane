@@ -9,7 +9,11 @@ from SharedLayer.objects.StopTime import StopTime as StopTimeObj
 from SharedLayer.objects.Trip import Trip as TripObj
 from SharedLayer.objects.Calender import Calender as CalenderObj
 from SharedLayer.objects.Stop import Stop as StopObj
+from shapely.geometry import LineString as ShapelyLineString, Point,mapping
 import requests
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 server_ip = 'https://fastlanes-data-processing.herokuapp.com'
 headers = {'Content-Type': 'application/json'}
@@ -32,6 +36,13 @@ def getTripsPaths(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
     data = requests.post('http://localhost:3001/trips/area', json=jsonLineStringGeo)
+    return data.content
+
+def getStopsByPath(geoJson):
+    points_from_json = list(map(lambda point: (point['lat'],point['lng']),geoJson))
+    lineStringGeo = ShapelyLineString(points_from_json)
+    jsonLineStringGeo = json.dumps(mapping(lineStringGeo))
+    data = requests.post('http://localhost:3001/stop/path', json=jsonLineStringGeo)
     return data.content
 
 def computeNumOfBusesForStation(pickleObj):
@@ -123,3 +134,84 @@ def computeNumForBusStops(jsonObj):
         retval.append(record)
     jsonVal = json.dumps(retval)
     return jsonVal
+
+
+def computeV(pickleObj,geoJson):
+    stops = pickle.loads(pickleObj)
+    stop_loc_in_lin = {}
+    markers = geoJson[0]
+
+    points_from_json = list(map(lambda point: (point['lat'], point['lng']), markers))
+    line = ShapelyLineString(points_from_json)
+
+    def pairs(lst):
+        for i in range(1, len(lst)):
+            yield lst[i - 1], lst[i], i
+
+    def update_locs(new_loc):
+        for key, value in stop_loc_in_lin.items():
+            if value >= new_loc:
+                stop_loc_in_lin[key] = value + 1
+
+    stop_locations = []
+    for stop in stops:
+        stop_locations.append([stop.location.xy[0][0], stop.location.xy[1][0]])
+
+    closeset_points = list(
+        map(lambda stop: line.interpolate(line.project(Point(stop.location.xy[1][0], stop.location.xy[0][0]))), stops))
+
+    stop_locations_on_line = []
+    for p in closeset_points:
+        stop_locations_on_line.append([p.xy[1][0], p.xy[0][0]])
+
+    marked_path = []
+    old_line = list(zip(*line.coords.xy))
+    for x, y in old_line:
+        marked_path.append([y, x])
+
+    stop_locations_on_line = np.array(stop_locations_on_line)
+    marked_path = np.array(marked_path)
+
+
+    current_line = marked_path.tolist()
+    for stop_idx, point in enumerate(stop_locations_on_line):
+        new_line = []
+        shapely_point = Point(point)
+        for first, second, idx in pairs(current_line):
+            if ShapelyLineString([first, second]).distance(shapely_point) < 2.2939795370745424e-14:
+                new_line = current_line[0:idx]
+                new_line.append(list(zip(*shapely_point.coords.xy))[0])
+                new_line += current_line[idx:]
+                update_locs(idx)
+                stop_loc_in_lin[stop_idx] = idx
+                break
+        if new_line != []:
+            current_line = new_line
+
+    marked_line_with_stops = np.array(current_line)
+
+    all_stop_loc = stop_loc_in_lin.items()
+    all_stop_loc = sorted(all_stop_loc, key=lambda x: x[1])
+    all_stop_loc = np.array(all_stop_loc)
+
+
+    sections = []
+    for idx, (station, station_idx) in enumerate(all_stop_loc):
+        if idx == 0:
+            points = marked_line_with_stops[0:station_idx + 1]
+            sections.append(points)
+        else:
+            points = marked_line_with_stops[all_stop_loc[idx - 1][1]:station_idx + 1]
+            sections.append(points)
+    sections = np.array(sections)
+
+    v = list(map(lambda v: v * 10,range(1,len(sections)+1)))
+    stop_loc = list(map(lambda stop: mapping(Point(stop.xy[1][0],stop.xy[0][0])), closeset_points))
+
+    return json.dumps({
+        'data': {
+            'v':v,
+            'sections' : sections.tolist(),
+            'stops' : stop_loc
+        }
+    })

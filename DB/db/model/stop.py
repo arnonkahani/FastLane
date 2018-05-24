@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from DB import config
-from DB.gtfsdb.model.base import Base
+from DB.db.model.base import Base
 
 log = logging.getLogger(__name__)
 

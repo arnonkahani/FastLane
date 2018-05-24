@@ -2,13 +2,13 @@ import logging
 import os
 import time
 from typing import List
-from DB.gtfsdb.model.db import Database
+from DB.db.model.db import Database
 
 log = logging.getLogger(__name__)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import object_session
 import pandas as pd
-from DB.gtfsdb.utils.status import StatusCode
+from DB.db.utils.status import StatusCode
 
 
 class _Base(object):

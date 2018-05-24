@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
 
 from DB import config
-from DB.gtfsdb.model.base import Base
+from DB.db.model.base import Base
 
 
 class Agency(Base):
