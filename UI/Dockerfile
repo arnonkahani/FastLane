@@ -4,4 +4,4 @@ COPY package.json /UI
 RUN npm install
 COPY . /UI
 CMD node app.js
-EXPOSE 3000
+EXPOSE 8080
