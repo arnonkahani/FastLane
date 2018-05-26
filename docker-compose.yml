@@ -4,13 +4,16 @@ services:
     image: mdillon/postgis
   DB:
     build: ./DB
+    image: db_service
     ports:
      - "3001:3001"
   DP:
     build: ./DP
+    image: dp_service
     ports:
      - "3000:3000"
   UI:
     build: ./UI
+    image: ui_service
     ports:
      - "8080:8080"
