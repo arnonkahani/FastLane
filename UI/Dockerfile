@@ -1,4 +1,4 @@
-FROM node:7
+FROM node:slim
 WORKDIR /UI
 COPY package.json /UI
 RUN npm install

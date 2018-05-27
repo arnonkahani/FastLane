@@ -2,18 +2,28 @@ version: '3'
 services:
   postgis:
     image: mdillon/postgis
-  DB:
-    build: ./DB
-    image: db_service
+    environment:
+    - POSTGRES_USER=fastlanes
+    - POSTGRES_PASS=1234
+    - POSTGRES_DBNAME=fastlanes
+    - ALLOW_IP_RANGE=0.0.0.0/0
+    #volumes:
+     # - data-volume:/var/lib/db
+  db:
+    build:
+      context: https://github.com/arnonkahani/FastLane.git
+      dockerfile: DB/Dockerfile
     ports:
      - "3001:3001"
-  DP:
-    build: ./DP
-    image: dp_service
+  dp:
+    build:
+      context: https://github.com/arnonkahani/FastLane.git
+      dockerfile: DP/Dockerfile
     ports:
-     - "3000:3000"
-  UI:
-    build: ./UI
-    image: ui_service
+     - "3002:3002"
+  ui:
+    build:
+      context: https://github.com/arnonkahani/FastLane.git
+      dockerfile: UI/Dockerfile
     ports:
      - "8080:8080"

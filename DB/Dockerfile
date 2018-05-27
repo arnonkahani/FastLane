@@ -1,9 +1,6 @@
-FROM ubuntu:latest
-RUN apt-get update -y
-RUN apt-get install -y python3-pip python3-dev
-COPY . /DB
-WORKDIR /DB
-RUN pip3 install -r requirements.txt
+FROM python:3.5-slim
+COPY . /db
+RUN pip3 install -r ./DB/requirements.txt
 EXPOSE 3001
 ENTRYPOINT ["python"]
-CMD ["./app.py"]
+CMD ["./db/app.py"]
