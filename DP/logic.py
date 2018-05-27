@@ -12,7 +12,7 @@ from SharedLayer.objects.Stop import Stop as StopObj
 from shapely.geometry import LineString as ShapelyLineString, Point,mapping
 import requests
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 server_ip = 'https://fastlanes-data-processing.herokuapp.com'
