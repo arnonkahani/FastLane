@@ -7,12 +7,12 @@ services:
     - POSTGRES_PASS=1234
     - POSTGRES_DBNAME=fastlanes
     - ALLOW_IP_RANGE=0.0.0.0/0
-    volumes:
-      - data-volume:/var/lib/db
+    #volumes:
+     # - data-volume:/var/lib/db
   db:
     build:
       context: https://github.com/arnonkahani/FastLane.git
-      dockerfile: DB/Dockerfile
+      dockerfile: DockerfileDB
     ports:
      - "3001:3001"
   dp:
@@ -23,7 +23,7 @@ services:
      - "3002:3002"
   ui:
     build:
-      context: https://github.com/arnonkahani/FastLane.git/UI
-      dockerfile: Dockerfile
+      context: https://github.com/arnonkahani/FastLane.git
+      dockerfile: UI/Dockerfile
     ports:
      - "8080:8080"
