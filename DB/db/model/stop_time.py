@@ -1,4 +1,7 @@
 import logging
+import pandas as pd
+
+from DB.db import Database
 
 log = logging.getLogger(__name__)
 
@@ -7,7 +10,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, Numeric, String
 from DB import config
 from DB.db.model.base import Base
-
 
 class StopTime(Base):
     datasource = config.DATASOURCE_GTFS
@@ -59,4 +61,18 @@ class StopTime(Base):
         print("finished preprocess")
         return df
 
+    @classmethod
+    def load_table_db(cls, db: Database, file_path: str):
+        df = pd.read_csv(filepath_or_buffer=file_path)
+        df = cls.transform_data(df)
+        conn = db.engine.raw_connection()
+        with open("tmp/temp_csv.csv",mode='w') as temp_file:
+            df.to_csv(temp_file, index=False)
+        with conn.cursor() as cur,open("tmp/temp_csv.csv", 'r') as f:
+            columns = ','.join(cls.get_csv_table_columns())
+            sql = "COPY {table_name} ({columns}) FROM STDIN WITH (FORMAT CSV, HEADER TRUE)".format(table_name=cls.__tablename__,columns=columns)
+            cur.copy_expert(sql, f)
+        conn.commit()
 
+
+'trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type,shape_dist_traveled'

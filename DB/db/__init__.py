@@ -7,4 +7,6 @@ from DB.db.model.shape import *
 from DB.db.model.stop import Stop
 from DB.db.model.stop_time import StopTime
 from DB.db.model.trip import Trip
+from DB.db.model.user import Users
+from DB.db.model.analytics import Analytics
 from DB.db.model.base import Base
