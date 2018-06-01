@@ -1,7 +1,7 @@
-FROM node:7
-WORKDIR /app
-COPY package.json /app
+FROM node:slim
+WORKDIR /UI
+COPY package.json /UI
 RUN npm install
-COPY . /app
+COPY . /UI
 CMD node app.js
-EXPOSE 3000
+EXPOSE 8080

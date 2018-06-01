@@ -7,6 +7,7 @@ import pickle
 from shapely.geometry import LineString as ShapelyLineString, Point,mapping
 import numpy as np
 import random
+#import matplotlib.pyplot as plt
 
 server_ip = 'https://fastlanes-data-processing.herokuapp.com'
 headers = {'Content-Type': 'application/json'}

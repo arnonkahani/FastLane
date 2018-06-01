@@ -1,9 +1,6 @@
-FROM ubuntu:latest
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
-COPY . /app
-WORKDIR /app
-RUN pip install -r ./DP/requirements.txt
+FROM python:3.5-slim
+COPY . /db
+RUN pip3 install -r ./DB/requirements.txt
 EXPOSE 3001
 ENTRYPOINT ["python"]
-CMD ["./DB/app.py"]
+CMD ["./db/app.py"]

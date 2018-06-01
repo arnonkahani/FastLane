@@ -198,4 +198,4 @@ app.get("/updatedVis2", function (req, res, next) {
 
     });
 
-app.listen(process.env.PORT ? process.env.PORT : 3000, () => console.log('Example app listening on port 3000!'));
+app.listen(process.env.PORT ? process.env.PORT : 3000, () => console.log('Example app listening on port 8080!'));
