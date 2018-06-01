@@ -12,7 +12,7 @@ services:
   db:
     build:
       context: https://github.com/arnonkahani/FastLane.git
-      dockerfile: DB/Dockerfile
+      dockerfile: DockerfileDB
     ports:
      - "3001:3001"
   dp:
