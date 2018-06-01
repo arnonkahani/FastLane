@@ -1,8 +1,6 @@
 FROM node:slim
-WORKDIR /UI
-COPY UI/package.json /UI
+COPY UI/package.json .
 RUN npm install
-RUN cd /UI
-COPY . /UI
+COPY /UI .
 CMD node app.js
 #EXPOSE 8080
