@@ -6,16 +6,17 @@ from DB import config
 from DB.db.model.base import Base
 
 
-class Analytics(Base):
+class Users(Base):
     datasource = config.DATASOURCE_GTFS
 
-    __tablename__ = 'analytics'
+    __tablename__ = 'users'
 
-    id = Column(Integer, Sequence(None, optional=True), primary_key=True, nullable=True)
-    timestamp = Column(DateTime, default=func.now()),
-    user_id = Column(String(37), index=True, nullable=False)
-    url = Column(String(30), nullable=False)
-    event = Column(JSON, nullable=False)
+    user_id = Column(String(37), primary_key=True,index=True, nullable=False)
+    events = relationship(
+        'Analytics',
+        primaryjoin='Users.user_id==Analytics.user_id',
+        foreign_keys='(Analytics.user_id)',
+        uselist=False, viewonly=True)
 
 
     @classmethod

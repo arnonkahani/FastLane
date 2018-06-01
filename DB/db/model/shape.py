@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship
 from DB.db.model.db import Database
 from DB import config
 from DB.db.model.base import Base
+import pandas as pd
 
 __all__ = ['Pattern']
 
@@ -31,38 +32,47 @@ class Pattern(Base):
         foreign_keys='(Pattern.shape_id)',
         uselist=True, viewonly=True)
 
+    @classmethod
+    def get_csv_table_columns(self):
+        return self.__table__.columns.keys()
+
+    @classmethod
     def geom_from_shape(self, points):
         #TODO : double tiple quadrple check
-        coords = [Point(float(r[1]),float(r[0])) for r in points]
-        coords = ['{0} {1}'.format(r.x, r.y) for r in coords]
-        self.geom = 'SRID={0};LINESTRING({1})'.format(config.SRID, ','.join(coords))
+        return 'SRID={0};LINESTRING({1})'.format(config.SRID, ','.join(points))
 
     @classmethod
     def load_table_db(cls, db: Database, file_path: str):
         with open(file_path,mode='r',encoding="utf-8") as f:
             session = db.session
             s = csv.reader(f)
+            df = pd.DataFrame(columns=cls.get_csv_table_columns())
             next(s)
             shapes = {}
             for row in s:
                 if row[0] not in shapes:
                     shapes[row[0]] = []
-                shapes[row[0]].append((row[1], row[2], int(row[3])))
-            for k in shapes.keys():
-                shapes[k] = sorted(shapes[k], key=itemgetter(2))
+                shapes[row[0]].append(('{0} {1}'.format(row[1], row[2]),int(row[3])))
+
+            for k,v in shapes.items():
+                df.append([k ,0,cls.geom_from_shape(map(lambda x: x[0],sorted(v, key=itemgetter(1))))])
             count = 0
             print(len(shapes))
-            for shape_id, shape in shapes.items():
-                count += 1
-                pattern = cls()
-                pattern.shape_id = shape_id
-                if hasattr(cls, 'geom'):
-                    pattern.geom_from_shape(shape)
-                session.add(pattern)
-                if count % 500 == 0:
-                    print(count)
-            session.commit()
-            session.close()
+            df.to_sql(con=db.engine, index_label=cls.get_csv_table_index(), name=cls.__table__.name, index=False,
+                      if_exists='append')
+            # def create_pattren_row(shape):
+            #     return [shape[0],cls.geom_from_shape(shape[1])]
+            #
+            # list(map(create_pattren_row,shapes.items()))
+            # print(1)
+            # for shape_id, shape in :
+            #     count += 1
+            #     pattern = cls()
+            #     pattern.shape_id = shape_id
+            #     if hasattr(cls, 'geom'):
+            #         pattern.geom_from_shape(shape)
+            #     if count % 500 == 0:
+            #         print(count)
 
 
 

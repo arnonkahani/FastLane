@@ -7,9 +7,10 @@ from DB import config
 from DB.server import start_server
 
 
-if config.SHOULD_LOAD_DATA:
-    data_loader.data_loader()
+
 
 
 if __name__ == '__main__':
+    if config.SHOULD_LOAD_DATA:
+        data_loader.data_loader()
     start_server()

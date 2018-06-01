@@ -10,18 +10,22 @@ from DB import config
 
 log = logging.getLogger(__name__)
 
-class_not_to_load = [
-    'Agency',
-    'Calendar',
-    'Route',
-    'Stop',
-    'Pattern',
-    'Trip',
-    'StopTime',
+class_to_load_flagged = [
+    ['Agency',1],
+    ['Calendar',1],
+    ['Route',1],
+    ['Stop',1],
+    ['Pattern',1],
+    ['Trip',1],
+    ['StopTime',1],
+    ['PassengerCount',1],
+    ['User',0],
+    ['Analytics',0]
 ]
 
-class_not_to_load = []
 
+class_not_to_load_enumerated = list(filter(lambda x: not x[1], class_to_load_flagged))
+class_not_to_load = list(map(lambda x: x[1],class_not_to_load_enumerated))
 
 class GTFS(object):
 
@@ -58,4 +62,6 @@ class GTFS(object):
                     z.extractall(path)
             except Exception as e:
                 log.warning(e)
+            return path
+        else:
             return path

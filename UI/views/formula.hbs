@@ -157,7 +157,7 @@
 <div class="col-md-12">
         <div id="map"></div>
             <script>
-                var map = L.map('map').setView([31.806400, 35.188504], 13);
+                var map = L.map('map').setView([32.092739, 34.770454], 13);
                 map.setMaxBounds(map.getBounds());
                 mapLink = 
                 '<a href="http://openstreetmap.org">OpenStreetMap</a>';
@@ -240,13 +240,9 @@
                 var max = vArray[0],
                 min = 0,
                 classes = 5,
-                scheme = colorbrewer["YlGnBu"][classes];
+                scheme = colorbrewer["RdYlGn"][classes];
 
-                for (v in vArray){
-                        if (v < min) min = v;
-                        else if (v > max) max = v;
-                    }
-                 max = vArray[0];
+                 max = Math.max(...vArray);
                     
                 var scale = d3.scale.quantize()
                         .domain([max, 0])
@@ -255,20 +251,19 @@
                        // .attr("class", "tooltip")
                        // .style("opacity", 0);
 
-                
+
 
                 for (var i=0; i<sections.length; i++){
                     var section = sections[i],
                     v = vArray[i];
-                    var latlngs = section
-                    //var polyline = L.polyline(latlngs, {color: scheme[scale(v)]}).addTo(map);
-                    var polyline = L.polyline(latlngs, {color: 'rgba(0,255,0,'+ 0.001*v +')'}).addTo(map);
+                    var latlngs = section.map(point => [point[1],point[0]])
+                    var polyline = L.polyline(latlngs, {color: scheme[scale(v)],smoothFactor: 1, opacity: 1 }).addTo(map);
                 }
 
                 for (var i=0; i<stations.length; i++){
                     var station = stations[i]
                     console.log(station)
-                    var newMarker = new L.circleMarker([station.coordinates[1],station.coordinates[0]], {radius: 6}).addTo(markersLayer);
+                    var newMarker = new L.circleMarker([station[1],station[0]], {radius: 6}).addTo(markersLayer);
                     markersLayer.addTo(map);
                 }
                 

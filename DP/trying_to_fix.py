@@ -36,15 +36,22 @@ def update_locs(new_loc):
         if value >= new_loc:
             stop_loc_in_lin[key] = value + 1
 
-EPS = 0.0000000063
+EPS = 0.000362003592
 mean = []
+
+stops = list(filter(lambda stop: line.distance(Point(stop.location.xy[1][0],stop.location.xy[0][0])) < EPS,stops))
+
 stop_locations = []
 for stop in stops:
     stop_locations.append([stop.location.xy[0][0],stop.location.xy[1][0]])
 print(len(stop_locations))
 
 
+
 closeset_points = list(map(lambda stop: line.interpolate(line.project(Point(stop.location.xy[1][0],stop.location.xy[0][0]))), stops))
+
+
+
 
 stop_locations_on_line = []
 for p in closeset_points:
