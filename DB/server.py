@@ -18,6 +18,8 @@ result = []
 
 class Server:
     def __init__(self):
+        print("inited server")
+    def load(self):
         a = Local_DB()
         db = a.db
         Base.metadata.bind = db.engine
@@ -54,12 +56,15 @@ def stoptimes_info_by_path():
 def trip_info_by_area():
     sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
     return get_trips_info_by_area(session=server.session, line_string_2pt=sq_area)
-
 @app.route('/stop/path', methods=['POST'])
 def v_info_by_path():
     map_path = construct_linestring(json.loads(request.get_json())['coordinates'])
     return get_v_info_by_path(session=server.session, line_string_path=map_path)
 
+@app.route('/analytics', methods=['POST'])
+def add_analytics():
+    return add_user_data(session=server.session,user_data=request.get_json())
 
 def start_server():
+    server.load()
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=3001)

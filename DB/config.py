@@ -6,9 +6,9 @@ import os
 from dotenv import load_dotenv
 # OR, explicitly providing path to '.env'
 from pathlib import Path  # python3 only
+
 env_path = os.path.dirname(os.path.realpath(__file__)) + '/.env'
 load_dotenv(dotenv_path=env_path)
-
 
 '''Parse configuration file and setup logging'''
 config = ConfigParser()
@@ -16,7 +16,6 @@ ini_file = os.path.join(os.getcwd(), 'configs/app.ini')
 config.read(ini_file)
 if config.has_section('loggers'):
     logging.config.fileConfig(ini_file, disable_existing_loggers=False)
-
 
 '''Application defaults'''
 BATCH_SIZE = 200000
@@ -41,7 +40,11 @@ SORTED_CLASS_NAMES = [
     'Trip',
     'StopTime',
     'RouteStop',
-    'PassengerCount'
+    'PassengerCount',
+'Analytics',
+    "Users"
+
+
 ]
 
 SHOULD_DROP_ALL_TABELS = bool(int(os.getenv("SHOULD_DROP_ALL_TABELS")))

@@ -3,7 +3,7 @@ import pickle
 from typing import Set
 
 from sqlalchemy.orm import Session
-from DB.db import Stop, StopTime, Trip, Calendar, Pattern
+from DB.db import Stop, StopTime, Trip, Calendar, Pattern, Users, Analytics
 from SharedLayer.objects.Path import Path as PathObj
 from SharedLayer.objects.StopTime import StopTime as StopTimeObj
 from SharedLayer.objects.Trip import Trip as TripObj
@@ -255,3 +255,25 @@ def get_v_info_by_path(session, line_string_path):
 
 
     return pickle.dumps(result)
+
+def get_all_analytics(session):
+    all_users = session.query(Users)
+    return all_users
+
+def add_user_data(session,user_data):
+    user = list(session.query(Users).filter(Users.user_id == user_data["user_id"]))
+    if not user:
+        user = Users()
+        user.user_id = user_data["user_id"]
+        session.add(user)
+        session.commit()
+
+    analytics = Analytics()
+    analytics.user_id = user_data["user_id"]
+    analytics.event = user_data["event"]
+    analytics.url = user_data["url"]
+    session.add(analytics)
+    session.commit()
+    return user_data
+
+
