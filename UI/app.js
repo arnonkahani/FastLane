@@ -129,7 +129,7 @@ app.get("/analytics", function (req, res, next) {
     })
 
     console.log(analytics_data_movment)
-    res.render('analytics',{data:analytics_view,movment_data:movment_view});
+    res.render('analytics2',{data:analytics_view,movment_data:movment_view});
 });
 
 app.post("/vis_data", function (req, res, next) {
