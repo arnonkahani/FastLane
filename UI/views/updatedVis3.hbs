@@ -109,10 +109,8 @@
 	}).addTo(mymap);
 
     function onClickSendData(e){
-    console.log("click")
         axios.post('/vis_data', points).then(function (response) {
             data_viz = response.data
-            console.log(data_viz)
             uploud_viz(data_viz)
         })
     }
@@ -217,6 +215,7 @@ mymap.on('click', onMapClick);
 <script type="text/javascript">
 var container = L.DomUtil.get('stops_heat')
 var map = L.map(container).setView([32.092739, 34.770454], 13);
+
 function uploud_viz(data_viz){
     var max, scale,
         classes = 9,
@@ -226,9 +225,6 @@ function uploud_viz(data_viz){
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-
-
-    
 
    /* d3.json({{{json data_viz}}}, function (collection) {
         collection.data.trips
@@ -241,8 +237,6 @@ function uploud_viz(data_viz){
     var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
-
-
 
     function hex_style(hexagons) {
         max = d3.max(hexagons.data(), function (d) { return d.length; });
@@ -260,17 +254,18 @@ function uploud_viz(data_viz){
                 tooltip: tooltip,
                 applyStyle: hex_style
             }).addTo(map);
+
+}
+
     document.getElementById("save_button").onclick = () => {
 
-        new_config = {
+        var new_config = {
             "animate": document.getElementById("animate_select").checked,
             "hour": document.getElementById("hour_select").value,
             "day": document.getElementById("day_select").value,
         }
-        map._layers[16].activateNewConfig(new_config)
+        map._layers[25].activateNewConfig(new_config)
 
     }
-
-}
 
 </script>
