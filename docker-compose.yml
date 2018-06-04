@@ -4,17 +4,27 @@ services:
     image: mdillon/postgis
     environment:
     - POSTGRES_USER=fastlanes
-    - POSTGRES_PASS=1234
-    - POSTGRES_DBNAME=fastlanes
-    - ALLOW_IP_RANGE=0.0.0.0/0
-    #volumes:
-     # - data-volume:/var/lib/db
+    - POSTGRES_PASSWORD=1234
+    - POSTGRES_DB=fastlanes
+    volumes:
+       - ./data/postgres:/var/lib/postgresql/data
+    ports:
+     - "5433:5432"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5433"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   db:
     build:
       context: https://github.com/arnonkahani/FastLane.git
       dockerfile: DockerfileDB
     ports:
      - "3001:3001"
+    depends_on:
+      - postgis
+    restart: on-failure
+    network_mode: "host"
   dp:
     build:
       context: https://github.com/arnonkahani/FastLane.git
