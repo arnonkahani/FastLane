@@ -7,9 +7,7 @@ import pickle
 from shapely.geometry import LineString as ShapelyLineString, Point,mapping
 import numpy as np
 import random
-#import matplotlib.pyplot as plt
 
-server_ip = 'https://fastlanes-data-processing.herokuapp.com'
 headers = {'Content-Type': 'application/json'}
 
 def setDefaultHours():
@@ -196,3 +194,32 @@ def computeV(pickleObj,geoJson):
             'stops' : stop_locations
         }
     })
+
+def process_analytics(data):
+    users = pickle.loads(data)
+    url_dict = {}
+    for user in users:
+        url_dict[user.user_id] = {}
+        for analytic in user.analytics:
+            url_dict[user.user_id][analytic.url] = {'clicks':{},'movement':{}}
+        for analytic in user.analytics:
+            analytic_json = json.loads(analytic.event)
+            event_type = analytic_json['event_type']
+            if not analytic_json["uuid"] in url_dict[user.user_id][analytic.url][event_type]:
+                url_dict[user.user_id][analytic.url][event_type][analytic_json["uuid"]] = []
+            url_dict[user.user_id][analytic.url][event_type][analytic_json["uuid"]].append(analytic)
+
+        for url_key in url_dict[user.user_id].keys():
+            user_movment_dict = url_dict[user.user_id][url_key]['movement']
+            for uuid_key in user_movment_dict.keys():
+                sorted_list = list(sorted(user_movment_dict[uuid_key],key=lambda x : x.timestamp))
+                movement = []
+                for captured_movment in sorted_list:
+                    analytic_json = json.loads(captured_movment.event)
+                    event_data = analytic_json['event_data']
+                    movement += event_data
+                    user_movment_dict[uuid_key] = movement
+
+    return json.dumps(url_dict)
+
+

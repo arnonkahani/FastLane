@@ -2,6 +2,18 @@
 
 <div id="content" class="pmd-content inner-page">
     <h3 class="text-muted"></h3>
+        <div class="col-md-12">
+        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+            <div class="pmd-card-body">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select a session ID</label>
+                    <select id="options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section id="table-analytics" class="row component-section">
         <div class="col-md-12">
             <div class="component-box">
@@ -15,15 +27,7 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody>
-                            {{#each data}}
-                                <tr>
-                                    <td data-title="Session ID">{{this.sessionId}}</td>
-                                    <td data-title="Buttton 1">{{this.button_clicks}}</td>
-                                    <td data-title=""><a href="javascript:void(0);"><i
-                                            class="material-icons md-dark pmd-sm">more_vert</i></a></td>
-                                </tr>
-                            {{/each}}
+                            <tbody id="table_body">
                             </tbody>
                         </table>
                     </div>
@@ -32,21 +36,7 @@
 
         </div>
     </section>
-    <div class="col-md-12">
-        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
-            <div class="pmd-card-body">
-                <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                    <label>Select a session ID</label>
-                    <select id="options" class="select-with-search pmd-select2 form-control">
-                        {{#each movment_data}}
-                            <option>{{@key}}
-                            </option>
-                        {{/each}}
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <div class="col-md-12">
         <div class="pmd-card pmd-z-depth pmd-card-custom-form">
@@ -62,10 +52,62 @@
 
 <script>
 
+function getId(id) {
+return document.getElementById(id);
+}
 
+function cleanTableBody(){
+ var table_body = getId('table_body')
+    while (table_body.firstChild) {
+    table_body.removeChild(table_body.firstChild);
+    }
+}
+function fillTableBody(selectedValue){
+    for (const user_id in selectedValue) {
+        for (const url in selectedValue[user_id]) {
+          const clicks = selectedValue[user_id][url].clicks;
+          for (const click in clicks){
+            console.log(click);
+          }
+        }
+    }
 
+/*{{#each data}}
+                                <tr>
+                                    <td data-title="Session ID">{{this.sessionId}}</td>
+                                    <td data-title="Buttton 1">{{this.button_clicks}}</td>
+                                    <td data-title=""><a href="javascript:void(0);"><i
+                                            class="material-icons md-dark pmd-sm">more_vert</i></a></td>
+                                </tr>
+                            {{/each}}*/
 
+}
 var movment_data = {{{json movment_data}}}
+
+
+
+
+
+function changeFunc() {
+    var selectBox = getId("options");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    fillTableBody(selectBox.options[selectBox.selectedIndex].value);
+    draw_movment_analytics(movment_data[selectedValue])
+}
+var _options = getId("options").onchange = changeFunc
+var selectBox = document.getElementById("options");
+var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+console.log(movment_data[selectedValue])
+console.log(movment_data)
+console.log(selectedValue)
+draw_movment_analytics(movment_data[selectedValue])
+
+
+
+
+
+
+
 
 var draw_movment_analytics = function(data){
 var canvas = document.getElementById('canvas');
@@ -79,7 +121,6 @@ ratio = (width_img / 1901)
 ctx.canvas.width  = width_img
 ctx.canvas.height = height_img;
 
-console.log(data)
 
 var x_y = []
 data.forEach(function(loc) {
@@ -125,18 +166,7 @@ function plot(){
 init();
 }
 
-function changeFunc() {
-    var selectBox = document.getElementById("options");
-    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    draw_movment_analytics(movment_data[selectedValue])
-}
-var _options = document.getElementById("options").onchange = changeFunc
-var selectBox = document.getElementById("options");
-var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-console.log(movment_data[selectedValue])
-console.log(movment_data)
-console.log(selectedValue)
-draw_movment_analytics(movment_data[selectedValue])
+
 
 
 
