@@ -100,9 +100,8 @@ simpleheat.prototype = {
         if (!this._grad) this.gradient(this.defaultGradient);
 
         var ctx = this._ctx;
-        this.resize()
-//        ctx.fillStyle = 'white';
-//        ctx.fillRect(10, 10, 100, 100);
+
+        ctx.clearRect(0, 0, this._width, this._height);
 
         // draw a grayscale heatmap by putting a blurred circle at each data point
         for (var i = 0, len = this._data.length, p; i < len; i++) {

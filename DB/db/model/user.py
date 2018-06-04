@@ -16,7 +16,7 @@ class Users(Base):
         'Analytics',
         primaryjoin='Users.user_id==Analytics.user_id',
         foreign_keys='(Analytics.user_id)',
-        uselist=False, viewonly=True)
+        uselist=True, viewonly=True)
 
 
     @classmethod

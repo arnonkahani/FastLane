@@ -2,6 +2,29 @@
 
 <div id="content" class="pmd-content inner-page">
     <h3 class="text-muted"></h3>
+
+        <div class="col-md-12">
+        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+            <div class="pmd-card-body">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select a User ID</label>
+                    <select id="options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select a URL</label>
+                    <select id="url_options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select session ID</label>
+                    <select id="session_options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section id="table-analytics" class="row component-section">
         <div class="col-md-12">
             <div class="component-box">
@@ -16,14 +39,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each data}}
-                                <tr>
-                                    <td data-title="Session ID">{{this.sessionId}}</td>
-                                    <td data-title="Buttton 1">{{this.button_clicks}}</td>
-                                    <td data-title=""><a href="javascript:void(0);"><i
-                                            class="material-icons md-dark pmd-sm">more_vert</i></a></td>
-                                </tr>
-                            {{/each}}
                             </tbody>
                         </table>
                     </div>
@@ -32,26 +47,15 @@
 
         </div>
     </section>
-    <div class="col-md-12">
-        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
-            <div class="pmd-card-body">
-                <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                    <label>Select a session ID</label>
-                    <select id="options" class="select-with-search pmd-select2 form-control">
-                        {{#each movment_data}}
-                            <option>{{@key}}
-                            </option>
-                        {{/each}}
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <div class="col-md-12">
         <div class="pmd-card pmd-z-depth pmd-card-custom-form">
             <div class="pmd-card-body" id="movment-card">
-                <canvas id="canvas"></canvas>
+                <div id="canvas_div">
+                <canvas id="canvas" style="z-index:1;position: absolute"></canvas>
+                <canvas id="canvas2" style="z-index:2;position: absolute"></canvas>
+</div>
             </div>
         </div>
     </div>
@@ -62,16 +66,168 @@
 <script src="simpleheat.js"></script>
 <script>
 
+function get(id) {
+    return document.getElementById(id);
+}
 
 
 
-var movment_data = {{{json movment_data}}}
 
+function loadUserSelection(){
+    movement_data = window.analytics_movement_data
+    users_keys = Object.keys(movement_data);
+    var x = get("options");
+    for(var index in users_keys){
+            var option = document.createElement("option");
+            option.text = users_keys[index];
+            x.add(option);
+        }
+
+    }
+
+function loadURLSelection(user_id){
+    movement_data = window.analytics_movement_data[user_id];
+    urls_keys = Object.keys(movement_data);
+    var x = get("url_options");
+    for(var index in urls_keys){
+            var option = document.createElement("option");
+            option.text = urls_keys[index];
+            x.add(option);
+        }
+
+    }
+
+function loadSessionSelection(user_id,url){
+    movement_data = window.analytics_movement_data[user_id][url].movement;
+    urls_keys = Object.keys(movement_data);
+    var x = get("session_options");
+    for(var index in urls_keys){
+            var option = document.createElement("option");
+            option.text = urls_keys[index];
+            x.add(option);
+        }
+
+    }
+
+function clearSessionSelection(){
+var myNode = get("session_options");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+}
+
+function clearURLSelection(){
+var myNode = get("url_options");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+
+}
+
+function loadAnalytics(){
+
+    get("options").onchange = function(e){
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    clearURLSelection();
+    clearSessionSelection();
+
+    loadURLSelection(choosen_user);
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    loadSessionSelection(choosen_user,choosen_url);
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+
+    }
+
+    get("url_options").onchange = function(e){
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    clearSessionSelection();
+    loadSessionSelection(choosen_user,choosen_url);
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+    }
+
+    get("session_options").onchange = function(e){
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+    }
+
+    loadUserSelection();
+    console.log(window.analytics_movement_data);
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    loadURLSelection(choosen_user);
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    loadSessionSelection(choosen_user,choosen_url);
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+}
+
+function toCSSvalue(scale) {
+return ""+scale+"px";
+}
+function loadAnalyticsViz(user_id,url,session){
+    movement_data = window.analytics_movement_data[user_id][url].movement[session]
+
+
+var frame_count = 0
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var style1 = window.getComputedStyle(document.getElementById("movment-card"), null);
 width_img = parseInt(style1.width.substring(0, style1.width.length-2)) - 32;
 height_img = parseInt((width_img / 1901) * 966)
+
+ratio = (width_img / 1901)
+
+
+var x_y = []
+movement_data.forEach(function(loc) {
+x_y.push([parseInt(loc[0]*ratio),parseInt(loc[1]*ratio)])
+})
+
+var amount_of_data = x_y.length
+
+get("canvas_div").style.height = toCSSvalue(height_img);
+
+
+get("canvas2").getContext('2d').canvas.width  = width_img
+get("canvas2").getContext('2d').canvas.height = height_img;
+
+
+
+
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                               window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+var heat = simpleheat('canvas2').data([]).max(18),
+    frame;
+function draw() {
+    var current_idx = frame_count % amount_of_data
+    if ( current_idx == 0) {
+    heat.clear()
+    frame_count = frame_count + 1;
+    }else{
+        current_pos = x_y[current_idx];
+        heat.add([current_pos[0], current_pos[1], 1]);
+        frame_count = frame_count + 1;
+    }
+
+    heat.draw();
+    frame = null;
+    frame = frame || window.requestAnimationFrame(draw);
+}
+draw();
+
+
+
+
+
+/*get('canvas2').onmousemove = function (e) {
+    heat.add([e.layerX, e.layerY, 1]);
+    frame = frame || window.requestAnimationFrame(draw);
+};*/
 
 var img = new Image();
 img.src = 'assets/images/window1.png';
@@ -82,44 +238,13 @@ img.onload = function(){
     ctx.drawImage(this, 0,0,width_img,height_img);
 }
 
-
-//ratio = (width_img / 1901)
-
-//ctx.canvas.width  = width_img
-//ctx.canvas.height = height_img;
-console.log(ctx)
-
-var data = [[15,12]]
-
-
-window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                               window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-function get(id) {
-    return document.getElementById(id);
 }
-var heat = simpleheat('canvas').data(data).max(18),
-    frame;
-function draw() {
 
-    console.time('draw');
-    heat.draw();
-    console.timeEnd('draw');
-    frame = null;
-}
-draw();
-get('canvas').onmousemove = function (e) {
-    heat.add([e.layerX, e.layerY, 1]);
-    frame = frame || window.requestAnimationFrame(draw);
-};
-var radius = get('radius'),
-    blur = get('blur'),
-    changeType = 'oninput' in radius ? 'oninput' : 'onchange';
-
-radius[changeType] = blur[changeType] = function (e) {
-    heat.radius(+radius.value, +blur.value);
-    frame = frame || window.requestAnimationFrame(draw);
-};
-
-
+axios.get('/analytics_data').then(function (response) {
+            console.log(response.data)
+            window.analytics_movement_data = response.data;
+            console.log("dgs")
+            loadAnalytics();
+        })
 
 </script>

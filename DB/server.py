@@ -63,7 +63,11 @@ def v_info_by_path():
 
 @app.route('/analytics', methods=['POST'])
 def add_analytics():
-    return add_user_data(session=server.session,user_data=request.get_json())
+    return add_user_data(session=server.session, user_data=request.get_json())
+
+@app.route('/analytics', methods=['GET'])
+def get_analytics():
+    return get_all_analytics(server.session)
 
 def start_server():
     server.load()

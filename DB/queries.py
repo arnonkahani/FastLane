@@ -1,7 +1,7 @@
 import inspect
 import pickle
 from typing import Set
-
+from flask import jsonify
 from sqlalchemy.orm import Session
 from DB.db import Stop, StopTime, Trip, Calendar, Pattern, Users, Analytics
 from SharedLayer.objects.Path import Path as PathObj
@@ -9,12 +9,15 @@ from SharedLayer.objects.StopTime import StopTime as StopTimeObj
 from SharedLayer.objects.Trip import Trip as TripObj
 from SharedLayer.objects.Calender import Calender as CalenderObj
 from SharedLayer.objects.Stop import Stop as StopObj
+from SharedLayer.objects.Analytics import Analytics as AnalyticsObj
+from SharedLayer.objects.User import User as UserObj
 from geoalchemy2.shape import to_shape
 from geoalchemy2 import functions
+from datetime import datetime
 import os
+import json
 
-
-demo_flag = False
+demo_flag = True
 
     
 
@@ -258,7 +261,14 @@ def get_v_info_by_path(session, line_string_path):
 
 def get_all_analytics(session):
     all_users = session.query(Users)
-    return all_users
+    users = []
+    for user in all_users:
+        c_user = UserObj(user.user_id)
+        c_analytics = list(map(lambda analytics: AnalyticsObj(analytics.timestamp,analytics.url,analytics.event),user.events))
+        c_user.analytics = c_analytics
+        users.append(c_user)
+
+    return pickle.dumps(users)
 
 def add_user_data(session,user_data):
     user = list(session.query(Users).filter(Users.user_id == user_data["user_id"]))
@@ -270,10 +280,11 @@ def add_user_data(session,user_data):
 
     analytics = Analytics()
     analytics.user_id = user_data["user_id"]
-    analytics.event = user_data["event"]
-    analytics.url = user_data["url"]
+    analytics.event = json.dumps({"event_data":user_data["event_data"],"event_type":user_data['event_type'],"uuid":user_data["event_uuid"]})
+    analytics.url = user_data["event_url"]
+    analytics.timestamp = datetime.now()
     session.add(analytics)
     session.commit()
-    return user_data
+    return jsonify({})
 
 

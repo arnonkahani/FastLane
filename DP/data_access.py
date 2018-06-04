@@ -52,4 +52,4 @@ def addAnalytics(analytics):
 
 def getAnalytics():
     data = requests.get('http://localhost:3001/analytics')
-    return data
+    return data.content

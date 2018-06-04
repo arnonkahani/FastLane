@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('../')
 from flask import Flask, redirect, url_for, request, jsonify, json
-from logic import computeNumForBusStops, computeNumOfBusesForStation, computeTripsPath, computeV
+from logic import computeNumForBusStops, computeNumOfBusesForStation, computeTripsPath, computeV,process_analytics
 from data_access import getTrips, getTripsPaths, getStopsByPath,addAnalytics,getAnalytics
 import os
 
@@ -32,6 +32,7 @@ def login():
 @app.route('/compute')
 def compute():
     frame = inspect.currentframe()
+
     function_name = inspect.getframeinfo(frame).function
     function_json = function_name + '.json'
     if not (demo_flag and os.path.isfile(function_json)):
@@ -44,6 +45,7 @@ def compute():
     else:
         with open(function_json, 'r') as handle:
             res = json.load(handle)
+    print("end compute")
     return res
 
 
@@ -76,14 +78,13 @@ def coordinates():
 def add_analytics():
     analytics = request.json
     addAnalytics(analytics)
-    return []
+    return jsonify(analytics)
 
 @app.route('/analytics',methods=['GET'])
 def get_analytics():
-    geoJson = request.json
-    print(geoJson)
-    data = getTrips(geoJson)
-    return jsonify(data)
+    data = getAnalytics()
+    processed_data = process_analytics(data)
+    return processed_data
 
 
 

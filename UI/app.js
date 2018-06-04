@@ -8,13 +8,12 @@ const uuidv1 = require('uuid/v1');
 const {HttpReq} = require('./scripts/api.js');
 const formula = require('./routes/formula')(__dirname);
 const axios = require('axios')
-analytics_data = {}
-analytics_data_movment = {}
 
 
 server_url = 'http://localhost:3002/compute'
 server_url_V = 'http://localhost:3002/v/path'
 server_url_trips = 'http://localhost:3002/trips/path'
+server_url_analytics = 'http://localhost:3002/analytics'
 small_data = [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
 big_data = [[31.806400, 35.188504],[31.732295, 35.237836]]
 
@@ -89,47 +88,46 @@ app.get("/vis4", function (req, res, next) {
 
 });
 
+
+
 app.post("/analytics", function(req, res, next){
-    let analytics = req.body
-    sessionId = req.cookies.cookieName
-    analytics.time = new Date().getTime()
-    if(analytics_data[sessionId]){
-        analytics_data[sessionId].push(analytics)
-    }else{
-        analytics_data[sessionId] = [analytics]
-    }
-
-
-})
-
-
-app.post("/analytics/movment", function(req, res, next){
-    let analytics = req.body
-    sessionId = req.cookies.cookieName
-    analytics.time = new Date().getTime()
-    if(analytics_data_movment[sessionId]){
-        analytics_data_movment[sessionId] = analytics_data_movment[sessionId].concat(analytics.movment_data)
-    }else{
-        analytics_data_movment[sessionId] = [analytics.movment_data]
-    }
-
-
+    let analytics = req.body;
+    sessionId = req.cookies.cookieName;
+    analytics.user_id = sessionId;
+    console.log(analytics)
+    axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
+      axios({
+          method: 'post',
+          url: server_url_analytics,
+          data: analytics
+        })
+        res.send([]);
 })
 
 app.get("/analytics", function (req, res, next) {
-    analytics_view = []
-    Object.entries(analytics_data).forEach(function(value, key, map){
-    user = {sessionId: value[0],button_clicks: value[1].length}
-    analytics_view.push(user)
-    })
 
-    movment_view = {}
-    Object.entries(analytics_data_movment).forEach(function(value, key, map){
-    movment_view[value[0]] = value[1]
-    })
+    res.render('analytics2');
 
-    console.log(analytics_data_movment)
-    res.render('analytics2',{data:analytics_view,movment_data:movment_view});
+
+
+
+});
+
+app.get("/analytics_data", function (req, res, next) {
+
+    axios({
+          method: 'get',
+          url: server_url_analytics,
+        }).then(function (response) {
+        console.log(response.data)
+        res.send(response.data)
+        })
+        .catch(function (error) {
+            res.send(error)
+        });
+
+
+
 });
 
 app.post("/vis_data", function (req, res, next) {
@@ -181,7 +179,7 @@ app.get("/updatedVis1", function (req, res, next) {
 });
 
 app.get("/updatedVis2", function (req, res, next) {
-    res.render('updatedVis2');
+    res.render('updatedVis2',{uuid: uuidv1()});
     //   axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
     //   axios({
     //       method: 'get',
