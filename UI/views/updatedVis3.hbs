@@ -134,7 +134,7 @@ function onClickClearData(e){
 
 mymap.on('click', onMapClick);
 </script>
-
+<div class="pmd-card-body">
 <div class="pmd-card pmd-z-depth">
     <div class="pmd-card-body">
         <form class="row" role="form">
@@ -212,6 +212,7 @@ mymap.on('click', onMapClick);
 </div>
 
 <div id='stops_heat' data-source="mock_data/data_arnon.json"></div>
+
 <script type="text/javascript">
 var container = L.DomUtil.get('stops_heat')
 var map = L.map(container).setView([32.092739, 34.770454], 13);
