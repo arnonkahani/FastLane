@@ -244,6 +244,7 @@ mymap.on('click', onMapClick);
 				<script src="html2canvas.min.js"></script>
 				<script>
 window.analytics_handlers.log_movment(document,{{{json uuid}}})
+window.analytics_handlers.clickWrapper(document.getElementById("sendData"))
 function uploud_viz(stations,data_viz){
 
 					$("#sendData").click(function () {
@@ -257,7 +258,7 @@ function uploud_viz(stations,data_viz){
 						loadData(parsedList, createBarChart);
 
 					});
-					clickWrapper(document.getElementById("sendData"))
+
 
 
 					function loadData(selectedItems, callback) {

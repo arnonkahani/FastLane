@@ -2,7 +2,7 @@
 
 <div id="content" class="pmd-content inner-page">
     <h3 class="text-muted"></h3>
-
+<section id="table-analytics" class="row component-section">
         <div class="col-md-12">
         <div class="pmd-card pmd-z-depth pmd-card-custom-form">
             <div class="pmd-card-body">
@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-
+</section>
     <section id="table-analytics" class="row component-section">
         <div class="col-md-12">
             <div class="component-box">
@@ -33,12 +33,12 @@
                         <table cellspacing="0" cellpadding="0" class="table pmd-table" id="table-propeller">
                             <thead>
                             <tr>
-                                <th>Session ID</th>
-                                <th>Buttton 1</th>
+                                <th>Button ID</th>
+                                <th>Number of clicks</th>
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="table_body">
                             </tbody>
                         </table>
                     </div>
@@ -121,6 +121,13 @@ var myNode = get("url_options");
 while (myNode.firstChild) {
     myNode.removeChild(myNode.firstChild);
 }
+}
+function clearButtonClicksTable(){
+var myNode = get("table_body");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+
 
 }
 
@@ -165,10 +172,58 @@ function loadAnalytics(){
     loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
 }
 
+function load_clicks_table(data){
+    clearButtonClicksTable()
+    if (!data) return;
+    button_clicks = {}
+    data.forEach((button_id) => {
+        if(!button_clicks[button_id])  button_clicks[button_id] = 0;
+        button_clicks[button_id] = button_clicks[button_id]  + 1;
+
+    })
+    console.log(data)
+    console.log(button_clicks)
+
+    var data_tabel = get("table_body")
+    keys = Object.keys(button_clicks)
+    for(var index in keys){
+            var tr = document.createElement("tr");
+            var button_id = document.createElement("td");
+            var number_of_clicks = document.createElement("td");
+            var button_id_text  = keys[index]
+            console.log(button_id_text)
+            button_id.innerText = button_id_text;
+            button_id.setAttribute("data-title","Button ID")
+            number_of_clicks.innerText = button_clicks[button_id_text]
+            number_of_clicks.setAttribute("data-title","Number of clicks")
+
+            tr.appendChild(button_id)
+            tr.appendChild(number_of_clicks)
+
+
+            data_tabel.appendChild(tr);
+        }
+
+    /*{{#each data}}
+                                <tr>
+                                    <td data-title="Session ID">{{this.sessionId}}</td>
+                                    <td data-title="Buttton 1">{{this.button_clicks}}</td>
+                                    <td data-title=""><a href="javascript:void(0);"><i
+                                            class="material-icons md-dark pmd-sm">more_vert</i></a></td>
+                                </tr>
+                            {{/each}}*/
+
+
+}
+
 function toCSSvalue(scale) {
 return ""+scale+"px";
 }
 function loadAnalyticsViz(user_id,url,session){
+    clicks_data = window.analytics_movement_data[user_id][url]['button_click'][session]
+    load_clicks_table(clicks_data)
+
+
     movement_data = window.analytics_movement_data[user_id][url].movement[session]
 
 
@@ -222,12 +277,6 @@ draw();
 
 
 
-
-
-/*get('canvas2').onmousemove = function (e) {
-    heat.add([e.layerX, e.layerY, 1]);
-    frame = frame || window.requestAnimationFrame(draw);
-};*/
 
 var img = new Image();
 img.src = 'assets/images/window1.png';

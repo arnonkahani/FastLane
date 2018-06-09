@@ -72,14 +72,7 @@ function fillTableBody(selectedValue){
         }
     }
 
-/*{{#each data}}
-                                <tr>
-                                    <td data-title="Session ID">{{this.sessionId}}</td>
-                                    <td data-title="Buttton 1">{{this.button_clicks}}</td>
-                                    <td data-title=""><a href="javascript:void(0);"><i
-                                            class="material-icons md-dark pmd-sm">more_vert</i></a></td>
-                                </tr>
-                            {{/each}}*/
+
 
 }
 var movment_data = {{{json movment_data}}}
@@ -140,8 +133,6 @@ window.requestAnimationFrame(draw);
 function draw() {
   var ctx = document.getElementById('canvas').getContext('2d');
 
-  //ctx.globalCompositeOperation = 'destination-over';
-  //ctx.save();
   ctx.drawImage(windows, 0,0,width_img,height_img);
 
 

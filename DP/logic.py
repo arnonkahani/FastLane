@@ -201,7 +201,7 @@ def process_analytics(data):
     for user in users:
         url_dict[user.user_id] = {}
         for analytic in user.analytics:
-            url_dict[user.user_id][analytic.url] = {'clicks':{},'movement':{}}
+            url_dict[user.user_id][analytic.url] = {'button_click':{},'movement':{}}
         for analytic in user.analytics:
             analytic_json = json.loads(analytic.event)
             event_type = analytic_json['event_type']
@@ -218,7 +218,18 @@ def process_analytics(data):
                     analytic_json = json.loads(captured_movment.event)
                     event_data = analytic_json['event_data']
                     movement += event_data
-                    user_movment_dict[uuid_key] = movement
+                user_movment_dict[uuid_key] = movement
+
+        for url_key in url_dict[user.user_id].keys():
+            user_click_dict = url_dict[user.user_id][url_key]['button_click']
+            for uuid_key in user_click_dict.keys():
+                clicks_list_list = list(user_click_dict[uuid_key])
+                clicks = []
+                for captured_movment in clicks_list_list:
+                    analytic_json = json.loads(captured_movment.event)
+                    event_data = analytic_json['event_data']
+                    clicks.append(event_data['id'])
+                user_click_dict[uuid_key] = clicks
 
     return json.dumps(url_dict)
 

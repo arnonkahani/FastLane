@@ -1,21 +1,19 @@
-function clickWrapper(button){
+function clickWrapper(button,uuid){
     
-    
+    console.log("senging click")
     button.addEventListener('click',function(args){
-        
-        let data = {
-            url: document.URL,
-            buttonId: button.id
-        }
+
          let data = {
             event_url: document.URL,
+            event_uuid: window.uuid,
             event_type: 'button_click',
             event_data: {
-            x:e.clientX,
-            y:e.clientY,
+            x:args.clientX,
+            y:args.clientY,
             id:button.id
             }
         }
+        console.log("senging click")
         axios.post('/analytics', data)
 
     })
