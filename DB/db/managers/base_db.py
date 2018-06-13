@@ -5,13 +5,13 @@ log = logging.getLogger(__file__)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import inspect
-from DB import config
+from DB.config.fastlanes_config import FastlanesConfig
 from DB.db.utils.status import StatusCode
 
 
 class Database(object):
 
-    def __init__(self, tables, db_url):
+    def __init__(self, tables, db_url,config):
         """
         keyword arguments:
             is_geospatial: if database supports geo functions
@@ -19,6 +19,7 @@ class Database(object):
             tables: limited list of tables to load into database
             url: SQLAlchemy database url
         """
+        self.config = config
         self.tables = tables
         self.url = db_url
         self.is_geospatial = True
@@ -98,7 +99,7 @@ class Database(object):
     @property
     def sorted_classes(self):
         classes = []
-        for class_name in config.SORTED_CLASS_NAMES:
+        for class_name in self.config.SORTED_CLASS_NAMES:
             cls = next((c for c in self.classes if c.__name__ == class_name), None)
             if cls:
                 classes.append(cls)

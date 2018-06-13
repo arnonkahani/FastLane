@@ -6,14 +6,14 @@ from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
 
-from DB import config
+
 from DB.db.model.base import Base
 
 __all__ = ['Route']
 
 
 class Route(Base):
-    datasource = config.DATASOURCE_GTFS
+
     filename = 'routes.txt'
 
     __tablename__ = 'routes'

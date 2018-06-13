@@ -9,7 +9,7 @@ from DB.db.model.base import Base
 
 
 class Trip(Base):
-    datasource = config.DATASOURCE_GTFS
+
     filename = 'trips.txt'
 
     __tablename__ = 'trips'

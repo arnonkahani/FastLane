@@ -9,7 +9,7 @@ from DB.db.model.base import Base
 
 
 class Analytics(Base):
-    datasource = config.DATASOURCE_GTFS
+
 
     __tablename__ = 'analytics'
 

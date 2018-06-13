@@ -1,13 +1,11 @@
 from sqlalchemy import Column, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, String
-
-from DB import config
 from DB.db.model.base import Base
 
 
 class Agency(Base):
-    datasource = config.DATASOURCE_GTFS
+
     filename = 'agency.txt'
 
     __tablename__ = 'agency'
