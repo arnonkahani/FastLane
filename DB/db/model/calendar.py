@@ -1,6 +1,5 @@
 import logging
 
-from DB import config
 from DB.db.model.base import Base
 from sqlalchemy import Column, Index
 from sqlalchemy.types import Boolean, Date, String
@@ -13,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class Calendar(Base):
-    datasource = config.DATASOURCE_GTFS
+
     filename = 'calendar.txt'
 
     __tablename__ = 'calendar'
