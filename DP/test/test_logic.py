@@ -19,7 +19,7 @@ class TestLogic(unittest.TestCase):
     Test the logic layer of the data processing service
     """
 
-    def test_computeNumOfBusesForStation(self):
+    def test_compute_num_of_buses_for_station(self):
         """
         Test computeNumOfBusesForStation function
         @:param : pickle object which include all the stations and the stop times for each bus
@@ -41,7 +41,7 @@ class TestLogic(unittest.TestCase):
     def test_computeV(self):
         """
         Test computeV function
-        @:param : pickle object and lat and lng for each point in the trip
+        @:param : pickle object and array of points (lat and lng) according to the marks on the map
         @:return: object which include an array of all the relevant bus trips
         """
         one_station_linestring = [[
@@ -53,7 +53,7 @@ class TestLogic(unittest.TestCase):
         self.assertEqual(len(result['data']['stops']), 3)
 
 
-    def test_setDefaultHours(self):
+    def test_set_default_hours(self):
         """
         Test setDefaultHours function
         @:param : none
