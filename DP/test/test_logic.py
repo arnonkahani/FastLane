@@ -1,7 +1,6 @@
 import DP.logic as logic
 from flask import json
 import pickle
-from shapely.geometry import LineString,Point
 import unittest
 
 
