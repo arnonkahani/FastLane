@@ -17,7 +17,7 @@ services:
       retries: 20
   db:
     build:
-      context: .
+      context: https://github.com/arnonkahani/FastLane.git
       dockerfile: DockerfileDB
     ports:
      - "3001:3001"
@@ -34,13 +34,13 @@ services:
     restart: on-failure
   dp:
     build:
-      context: .
+      context: https://github.com/arnonkahani/FastLane.git
       dockerfile: DockerfileDP
     ports:
      - "3002:3002"
   ui:
     build:
-      context: .
+      context: https://github.com/arnonkahani/FastLane.git
       dockerfile: UI/Dockerfile
     ports:
      - "8080:8080"
