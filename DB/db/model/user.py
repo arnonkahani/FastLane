@@ -7,7 +7,7 @@ from DB.db.model.base import Base
 
 
 class Users(Base):
-    datasource = config.DATASOURCE_GTFS
+
 
     __tablename__ = 'users'
 

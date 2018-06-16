@@ -3,7 +3,7 @@ sys.path.append('../')
 
 from sqlalchemy.orm import sessionmaker
 from DB.db import Base
-from DB.db.db import Local_DB
+from DB.db.managers.db_manager import DBManager
 import json
 from flask import Flask, request
 from DB.queries import *
@@ -19,8 +19,10 @@ result = []
 class Server:
     def __init__(self):
         print("inited server")
+    def set_config(self,config):
+        self.config = config
     def load(self):
-        a = Local_DB()
+        a = DBManager(self.config)
         db = a.db
         Base.metadata.bind = db.engine
         DBSession = sessionmaker()
@@ -69,6 +71,7 @@ def add_analytics():
 def get_analytics():
     return get_all_analytics(server.session)
 
-def start_server():
+def start_server(config):
+    server.set_config(config)
     server.load()
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=3001)

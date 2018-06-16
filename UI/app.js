@@ -10,10 +10,10 @@ const formula = require('./routes/formula')(__dirname);
 const axios = require('axios')
 
 
-server_url = 'http://localhost:3002/compute'
-server_url_V = 'http://localhost:3002/v/path'
-server_url_trips = 'http://localhost:3002/trips/path'
-server_url_analytics = 'http://localhost:3002/analytics'
+server_url = 'http://dp:3002/compute'
+server_url_V = 'http://dp:3002/v/path'
+server_url_trips = 'http://dp:3002/trips/path'
+server_url_analytics = 'http://dp:3002/analytics'
 small_data = [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
 big_data = [[31.806400, 35.188504],[31.732295, 35.237836]]
 

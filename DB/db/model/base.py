@@ -2,7 +2,7 @@ import logging
 import os
 import time
 from typing import List
-from DB.db.model.db import Database
+from DB.db.managers.base_db import Database
 
 log = logging.getLogger(__name__)
 from sqlalchemy.ext.declarative import declarative_base

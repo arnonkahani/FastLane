@@ -1,14 +1,14 @@
 
 from typing import List
 
-from DB import config
+from DB.config.fastlanes_config import FastlanesConfig
 from DB.db.model.base import Base
-from DB.db.model.db import Database
-from DB.db.model.gtfs import GTFS
+from DB.db.managers.base_db import Database
 
 
-class Local_DB():
-    def __init__(self):
+class DBManager():
+    def __init__(self,config : FastlanesConfig):
+        self.config = config
         tables = sorted([t.name for t in Base.metadata.sorted_tables])
         self.db = self.database_load(db_url=config.DATABSE_URL, tables=tables)
 
@@ -21,10 +21,10 @@ class Local_DB():
         :type tables: list[str].
         :returns:  Database -- the database instance.
         """
-        db = Database(db_url=db_url, tables=tables)
+        db = Database(db_url=db_url, tables=tables,config=self.config)
         return db
 
     def load_schemas(self):
         """This creates a db schemas.
         """
-        self.db.create_schema(drop_all_tabels=config.SHOULD_DROP_ALL_TABELS)
+        self.db.create_schema(drop_all_tabels=self.config.SHOULD_DROP_ALL_TABELS)
