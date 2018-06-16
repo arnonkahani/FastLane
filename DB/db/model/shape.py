@@ -36,7 +36,6 @@ class Pattern(Base):
 
     @classmethod
     def geom_from_shape(self, points):
-        # TODO : double tiple quadrple check
         return 'SRID={0};LINESTRING({1})'.format(FastlanesConfig.SRID, ','.join(points))
 
     @classmethod
@@ -47,7 +46,6 @@ class Pattern(Base):
     def load_table_db(cls, db: Database, file_path: str):
         with open(file_path, mode='r', encoding="utf-8") as f:
             s = csv.reader(f)
-            # df = pd.DataFrame(columns=cls.get_csv_table_columns())
             next(s)
             shapes = {}
             for row in s:
@@ -55,18 +53,11 @@ class Pattern(Base):
                     shapes[row[0]] = []
                 shapes[row[0]].append(('{0} {1}'.format(row[1], row[2]), int(row[3])))
 
-            # df = pd.concat([pd.DataFrame([k, 0, cls.geom_from_shape(map(lambda x: x[0], sorted(v, key=itemgetter(1))))] for k, v in shapes.items()], columns=cls.get_csv_table_columns(), ignore_index=True)
-
             def geom_from_shape_helper(v):
                 return cls.geom_from_shape(map(lambda x: x[0], sorted(v, key=itemgetter(1))))
             df_list = [pd.DataFrame([[k, 0, geom_from_shape_helper(v)]], columns=cls.get_csv_table_columns()) for k, v in
                  shapes.items()]
             df = pd.concat(df_list,ignore_index=True)
 
-            # for k, v in shapes.items():
-            #     df2 = pd.DataFrame([k, 0, cls.geom_from_shape(map(lambda x: x[0], sorted(v, key=itemgetter(1))))],
-            #                        columns=cls.get_csv_table_columns())
-            #     df = df.append(df2, ignore_index=True)
-            #     print(len(shapes))
             df.to_sql(con=db.engine, index_label=cls.get_csv_table_index(), name=cls.__table__.name, index=False,
                       if_exists='append')

@@ -1,19 +1,11 @@
 import sys
 sys.path.append('../')
-from flask import jsonify,json
-from datetime import datetime
+from flask import json
 from geojson import LineString
-import shapely.geometry
-import pickle
-from SharedLayer.objects.StopTime import StopTime as StopTimeObj
-from SharedLayer.objects.Trip import Trip as TripObj
-from SharedLayer.objects.Calender import Calender as CalenderObj
-from SharedLayer.objects.Stop import Stop as StopObj
-from shapely.geometry import LineString as ShapelyLineString, Point,mapping
+from shapely.geometry import LineString as ShapelyLineString, mapping
 import requests
-import numpy as np
-#import matplotlib.pyplot as plt
-import random
+
+
 
 server_ip = 'https://fastlanes-data-processing.herokuapp.com'
 headers = {'Content-Type': 'application/json'}
