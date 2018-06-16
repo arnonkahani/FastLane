@@ -22,36 +22,43 @@ class TestLogic(unittest.TestCase):
 
     def test_computeNumOfBusesForStation(self):
         """
-        Test that the addition of two integers returns the correct total
+        Test computeNumOfBusesForStation function
+        @:param : pickle object which include all the stations and the stop times for each bus
+        @:return: object which include an array of all the relevant bus stations and the number of the buses per
+        day and hour
         """
         result = json.loads(logic.computeNumOfBusesForStation(open_file("./mock_results/get_stoptimes_info_by_area.pkl")))
-        self.assertEqual(len(result['data']['stops']), 48)
+        self.assertEqual(len(result['data']['stops']), 2)
 
     def test_computeTripsPath(self):
-       # get_trips_info_by_area.pkl
         """
-        Test the addition of two strings returns the two string as one
-        concatenated string
+        Test computeNumOfBusesForStation function
+        @:param : pickle object which include all the trips
+        @:return: object which include an array of all the relevant bus trips
         """
         result = json.loads(logic.computeTripsPath(open_file("./mock_results/get_trips_info_by_area.pkl")))
-        self.assertEqual(len(result['data']['trips']), 0)
+        self.assertEqual(len(result['data']['trips']), 4025)
 
     def test_computeV(self):
-       # get_v_info_by_path.pkl
         """
-        Test the addition of two strings returns the two string as one
-        concatenated string
+        Test computeV function
+        @:param : pickle object and lat and lng for each point in the trip
+        @:return: object which include an array of all the relevant bus trips
         """
-        one_station_linestring = LineString([Point(0, 0), Point(1, 1)])
+        one_station_linestring = [[
+            {'lat': 35.22933, 'lng': 31.78803},
+            {'lat': 35.23027, 'lng': 31.78700},
+            {'lat': 35.23152, 'lng': 31.78503},
+        ]]
         result = json.loads(logic.computeV(open_file("./mock_results/get_v_info_by_path.pkl"), one_station_linestring))
-        self.assertEqual(result, 'abcdef')
+        self.assertEqual(len(result['data']['stops']), 3)
 
 
     def test_setDefaultHours(self):
-       # get_v_info_by_path.pkl
         """
-        Test the addition of two strings returns the two string as one
-        concatenated string
+        Test setDefaultHours function
+        @:param : none
+        @:return: two dimensional array represent a week (7 days and 24 hours for day)
         """
         result = logic.setDefaultHours()
         self.assertEqual(len(result), 24)
