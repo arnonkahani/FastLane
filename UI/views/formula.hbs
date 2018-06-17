@@ -4,9 +4,9 @@
     <script src="https://d3js.org/d3.hexbin.v0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.5.1/leaflet-src.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/colorbrewer@1.1.0/index.min.js"></script>
- 
+
     <script type="text/javascript" src="leaflet.hexbin-layer.js"></script>
-  
+
 
     <style>
         #map {
@@ -155,122 +155,123 @@
 </div>
 
 <div class="col-md-12">
-        <div id="map"></div>
-            <script>
-                var map = L.map('map').setView([32.092739, 34.770454], 13);
-                map.setMaxBounds(map.getBounds());
-                mapLink = 
-                '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-                L.tileLayer(
-                'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([32.092739, 34.770454], 13);
+        map.setMaxBounds(map.getBounds());
+        mapLink =
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; ' + mapLink + ' Contributors',
                 maxZoom: 18,
-                }).addTo(map);
-                        
-            /* Initialize the SVG layer */
-            map._initPathRoot()    
+            }).addTo(map);
 
-            var svg = d3.select("#map").select("svg"),
-                g = svg.append("g");
+        /* Initialize the SVG layer */
+        map._initPathRoot()
 
-            map.on('click', addMarker);
+        var svg = d3.select("#map").select("svg"),
+            g = svg.append("g");
 
-            var markers = [];
-            var markersLayer = new L.LayerGroup();
-            var linesLayer = new L.LayerGroup();
+        map.on('click', addMarker);
 
-            function addMarker(e){
-                var newMarker = new L.circleMarker(e.latlng, {radius: 6}).addTo(markersLayer);
-                    markersLayer.addTo(map);
-                    markers.push([e.latlng.lat, e.latlng.lng]);
-                    if (markers.length > 1){
-                        var polyline = new L.Polyline(markers, {
-                            color: 'red',
-                            weight: 2.5,
-                            opacity: 0.5,
-                            smoothFactor: 1
-                            });
-                        polyline.addTo(linesLayer);
-                        linesLayer.addTo(map);
-                    }
+        var markers = [];
+        var markersLayer = new L.LayerGroup();
+        var linesLayer = new L.LayerGroup();
+
+        function addMarker(e) {
+            var newMarker = new L.circleMarker(e.latlng, { radius: 6 }).addTo(markersLayer);
+            markersLayer.addTo(map);
+            markers.push([e.latlng.lat, e.latlng.lng]);
+            if (markers.length > 1) {
+                var polyline = new L.Polyline(markers, {
+                    color: 'red',
+                    weight: 2.5,
+                    opacity: 0.5,
+                    smoothFactor: 1
+                });
+                polyline.addTo(linesLayer);
+                linesLayer.addTo(map);
             }
+        }
 
-            function clearData(){
-                markersLayer.clearLayers();
-                linesLayer.clearLayers();
-                markers = [];
+        function clearData() {
+            markersLayer.clearLayers();
+            linesLayer.clearLayers();
+            markers = [];
+        }
+
+        function onSubmitV(e) {
+            if (markers.length == 0) {
+                alert("Please mark a rout on the map below");
             }
-
-            function onSubmitV(e){
-                if(markers.length == 0){
-                    alert("Please mark a rout on the map below");
-                }
-                else{
-                    var l = document.getElementById("select-l-V");
-                    var selected_l = l.options[l.selectedIndex].value;
-                    var v = document.getElementById("select-v-V");
-                    var selected_v = v.options[v.selectedIndex].value;
-                    var L = document.getElementById("select-L-V");
-                    var selected_L = L.options[L.selectedIndex].value;
-                    let latlng = markers.map(function(x) {
-                         return [x['lat'],x['lng']]   
-                    })
-                   /* let data = []
-                    for(let i = 1; i < latlng.length;i++){
-                        data.push([latlng[i-1],latlng[i]])
-                    }
-                    console.log(data)
-                        //uploud_viz([50,40,20,10],data)
-                        console.log(markers);*/
-                    axios.post('/v_data', [markers, selected_l, selected_v, selected_L]).then(function (response) {
-                        console.log(response);
-                        var vArray = response.data.data.v,
+            else {
+                var l = document.getElementById("select-l-V");
+                var selected_l = l.options[l.selectedIndex].value;
+                var v = document.getElementById("select-v-V");
+                var selected_v = v.options[v.selectedIndex].value;
+                var L = document.getElementById("select-L-V");
+                var selected_L = L.options[L.selectedIndex].value;
+                let latlng = markers.map(function (x) {
+                    return [x['lat'], x['lng']]
+                })
+                /* let data = []
+                 for(let i = 1; i < latlng.length;i++){
+                     data.push([latlng[i-1],latlng[i]])
+                 }
+                 console.log(data)
+                     //uploud_viz([50,40,20,10],data)
+                     console.log(markers);*/
+                axios.post('/v_data', [markers, selected_l, selected_v, selected_L]).then(function (response) {
+                    console.log(response);
+                    var vArray = response.data.data.v,
                         sections = response.data.data.sections,
                         stops = response.data.data.stops;
-                        console.log("vArray: "+vArray)
-                        console.log("sections: "+sections)
-                        console.log("stops: "+stops)
-                        uploud_viz(vArray,sections,stops);
-                    })
-                }
+                    console.log("vArray: " + vArray)
+                    console.log("sections: " + sections)
+                    console.log("stops: " + stops)
+                    uploud_viz(vArray, sections, stops);
+                })
             }
+        }
 
-            function uploud_viz(vArray, sections,stations){
-                clearData();
-                var max = vArray[0],
+        function uploud_viz(vArray, sections, stations) {
+            clearData();
+            var max = vArray[0],
                 min = 0,
                 classes = 5,
                 scheme = colorbrewer["RdYlGn"][classes];
 
-                 max = Math.max(...vArray);
-                    
-                var scale = d3.scale.quantize()
-                        .domain([max, 0])
-                        .range(d3.range(classes));
-                //var tooltip = d3.select("body").append("div")
-                       // .attr("class", "tooltip")
-                       // .style("opacity", 0);
+            max = Math.max(...vArray);
+
+            var scale = d3.scale.quantize()
+                .domain([max, 0])
+                .range(d3.range(classes));
+            //var tooltip = d3.select("body").append("div")
+            // .attr("class", "tooltip")
+            // .style("opacity", 0);
 
 
 
-                for (var i=0; i<sections.length; i++){
-                    var section = sections[i],
+            for (var i = 0; i < sections.length; i++) {
+                var section = sections[i],
                     v = vArray[i];
-                    var latlngs = section.map(point => [point[1],point[0]])
-                    var polyline = L.polyline(latlngs, {color: scheme[scale(v)],smoothFactor: 1, opacity: 1 }).addTo(map);
-                }
-
-                for (var i=0; i<stations.length; i++){
-                    var station = stations[i]
-                    console.log(station)
-                    var newMarker = new L.circleMarker([station[1],station[0]], {radius: 6}).addTo(markersLayer);
-                    markersLayer.addTo(map);
-                }
-                
+                var latlngs = section.map(point => [point[1], point[0]])
+                var polyline = L.polyline(latlngs, { color: scheme[scale(v)], smoothFactor: 1, opacity: 1 }).addTo(map);
             }
 
-            document.getElementById('send_V_data').onclick = onSubmitV;
+            for (var i = 0; i < stations.length; i++) {
+                var station = stations[i]
+                console.log(station)
+                var newMarker = new L.circleMarker([station[1], station[0]], { radius: 6 }).addTo(markersLayer);
+                markersLayer.addTo(map);
+            }
+
+        }
+
+        document.getElementById('send_V_data').onclick = onSubmitV;
+        document.getElementById('send_P_data').onclick = onSubmitV;
 
 
-        </script>
+    </script>
 </div>

@@ -109,10 +109,17 @@
 	}).addTo(mymap);
 
     function onClickSendData(e){
-        axios.post('/vis_data', points).then(function (response) {
+        if (points.length < 2)
+        {
+            alert("You have to mark 2 points on the map");
+        }
+        else
+        {
+            axios.post('/vis_data', points).then(function (response) {
             data_viz = response.data
             uploud_viz(data_viz)
         })
+        }
     }
 	
     document.getElementById('send_data').onclick = onClickSendData

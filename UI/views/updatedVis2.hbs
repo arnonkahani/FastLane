@@ -158,13 +158,21 @@
     
     }
     function onClickSendData(e){
-        axios.post('/vis_data', points).then(function (response) {
+		if (points.length < 2)
+		{
+			alert("You have to mark 2 points on the map");
+		}
+		else
+		{
+			axios.post('/vis_data', points).then(function (response) {
             stations_view = response.data.data.stops.map(x => x.stop_name)
             data_viz = response.data
             stations =stations_view
             addStationsToSelection(stations)
             uploud_viz(stations,data_viz)
         })
+		}
+        
     }
 	
     document.getElementById('send_data').onclick = onClickSendData
