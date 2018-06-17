@@ -9,22 +9,29 @@ services:
     volumes:
        - ./data/postgres:/var/lib/postgresql/data
     ports:
-     - "5433:5432"
+     - "5434:5432"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5433"]
+      test: ["CMD", "curl", "-f", "http://localhost:5434"]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 20
   db:
     build:
       context: https://github.com/arnonkahani/FastLane.git
       dockerfile: DockerfileDB
     ports:
      - "3001:3001"
+    environment:
+    - DATABSE_URL=postgresql+psycopg2://fastlanes:1234@postgis:5432/fastlanes
+    - SHOULD_DROP_ALL_TABELS=0
+    - GTFS_FILE_PATH=/DB/data/small_mock.zip
+    - PASSENGER_COUNT_FILE_PATH=/DB/data/passenger_count.csv
+    - SHOULD_LOAD_GTFS_DATA=0
+    - SHOULD_PASSENGER_LOAD_DATA=0
+    - SHOULD_OVERWRITE_ZIP_FILES=0
     depends_on:
       - postgis
     restart: on-failure
-    network_mode: "host"
   dp:
     build:
       context: https://github.com/arnonkahani/FastLane.git

@@ -1,0 +1,299 @@
+<body>
+
+<div id="content" class="pmd-content inner-page">
+    <h3 class="text-muted"></h3>
+<section id="table-analytics" class="row component-section">
+        <div class="col-md-12">
+        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+            <div class="pmd-card-body">
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select a User ID</label>
+                    <select id="options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select a URL</label>
+                    <select id="url_options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <label>Select session ID</label>
+                    <select id="session_options" class="select-with-search pmd-select2 form-control">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <section id="table-analytics" class="row component-section">
+        <div class="col-md-12">
+            <div class="component-box">
+                <div class="pmd-card pmd-z-depth pmd-card-custom-view">
+                    <div class="table-responsive">
+                        <table cellspacing="0" cellpadding="0" class="table pmd-table" id="table-propeller">
+                            <thead>
+                            <tr>
+                                <th>Button ID</th>
+                                <th>Number of clicks</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="table_body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <div class="col-md-12">
+        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+            <div class="pmd-card-body" id="movment-card">
+                <div id="canvas_div">
+                <canvas id="canvas" style="z-index:1;position: absolute"></canvas>
+                <canvas id="canvas2" style="z-index:2;position: absolute"></canvas>
+</div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="simpleheat.js"></script>
+<script>
+
+function get(id) {
+    return document.getElementById(id);
+}
+
+
+
+
+function loadUserSelection(){
+    movement_data = window.analytics_movement_data
+    users_keys = Object.keys(movement_data);
+    var x = get("options");
+    for(var index in users_keys){
+            var option = document.createElement("option");
+            option.text = users_keys[index];
+            x.add(option);
+        }
+
+    }
+
+function loadURLSelection(user_id){
+    movement_data = window.analytics_movement_data[user_id];
+    urls_keys = Object.keys(movement_data);
+    var x = get("url_options");
+    for(var index in urls_keys){
+            var option = document.createElement("option");
+            option.text = urls_keys[index];
+            x.add(option);
+        }
+
+    }
+
+function loadSessionSelection(user_id,url){
+    movement_data = window.analytics_movement_data[user_id][url].movement;
+    urls_keys = Object.keys(movement_data);
+    var x = get("session_options");
+    for(var index in urls_keys){
+            var option = document.createElement("option");
+            option.text = urls_keys[index];
+            x.add(option);
+        }
+
+    }
+
+function clearSessionSelection(){
+var myNode = get("session_options");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+}
+
+function clearURLSelection(){
+var myNode = get("url_options");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+}
+function clearButtonClicksTable(){
+var myNode = get("table_body");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+
+
+}
+
+function loadAnalytics(){
+
+    get("options").onchange = function(e){
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    clearURLSelection();
+    clearSessionSelection();
+
+    loadURLSelection(choosen_user);
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    loadSessionSelection(choosen_user,choosen_url);
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+
+    }
+
+    get("url_options").onchange = function(e){
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    clearSessionSelection();
+    loadSessionSelection(choosen_user,choosen_url);
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+    }
+
+    get("session_options").onchange = function(e){
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+    }
+
+    loadUserSelection();
+    console.log(window.analytics_movement_data);
+    var choosen_user = get("options").options[get("options").selectedIndex].text
+    loadURLSelection(choosen_user);
+    var choosen_url = get("url_options").options[get("url_options").selectedIndex].text
+    loadSessionSelection(choosen_user,choosen_url);
+    var choosen_session = get("session_options").options[get("session_options").selectedIndex].text
+    loadAnalyticsViz(choosen_user,choosen_url,choosen_session);
+}
+
+function load_clicks_table(data){
+    clearButtonClicksTable()
+    if (!data) return;
+    button_clicks = {}
+    data.forEach((button_id) => {
+        if(!button_clicks[button_id])  button_clicks[button_id] = 0;
+        button_clicks[button_id] = button_clicks[button_id]  + 1;
+
+    })
+    console.log(data)
+    console.log(button_clicks)
+
+    var data_tabel = get("table_body")
+    keys = Object.keys(button_clicks)
+    for(var index in keys){
+            var tr = document.createElement("tr");
+            var button_id = document.createElement("td");
+            var number_of_clicks = document.createElement("td");
+            var button_id_text  = keys[index]
+            console.log(button_id_text)
+            button_id.innerText = button_id_text;
+            button_id.setAttribute("data-title","Button ID")
+            number_of_clicks.innerText = button_clicks[button_id_text]
+            number_of_clicks.setAttribute("data-title","Number of clicks")
+
+            tr.appendChild(button_id)
+            tr.appendChild(number_of_clicks)
+
+
+            data_tabel.appendChild(tr);
+        }
+
+    /*{{#each data}}
+                                <tr>
+                                    <td data-title="Session ID">{{this.sessionId}}</td>
+                                    <td data-title="Buttton 1">{{this.button_clicks}}</td>
+                                    <td data-title=""><a href="javascript:void(0);"><i
+                                            class="material-icons md-dark pmd-sm">more_vert</i></a></td>
+                                </tr>
+                            {{/each}}*/
+
+
+}
+
+function toCSSvalue(scale) {
+return ""+scale+"px";
+}
+function loadAnalyticsViz(user_id,url,session){
+    clicks_data = window.analytics_movement_data[user_id][url]['button_click'][session]
+    load_clicks_table(clicks_data)
+
+
+    movement_data = window.analytics_movement_data[user_id][url].movement[session]
+
+
+var frame_count = 0
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+var style1 = window.getComputedStyle(document.getElementById("movment-card"), null);
+width_img = parseInt(style1.width.substring(0, style1.width.length-2)) - 32;
+height_img = parseInt((width_img / 1901) * 966)
+
+ratio = (width_img / 1901)
+
+
+var x_y = []
+movement_data.forEach(function(loc) {
+x_y.push([parseInt(loc[0]*ratio),parseInt(loc[1]*ratio)])
+})
+
+var amount_of_data = x_y.length
+
+get("canvas_div").style.height = toCSSvalue(height_img);
+
+
+get("canvas2").getContext('2d').canvas.width  = width_img
+get("canvas2").getContext('2d').canvas.height = height_img;
+
+
+
+
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                               window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+var heat = simpleheat('canvas2').data([]).max(18),
+    frame;
+function draw() {
+    var current_idx = frame_count % amount_of_data
+    if ( current_idx == 0) {
+    heat.clear()
+    frame_count = frame_count + 1;
+    }else{
+        current_pos = x_y[current_idx];
+        heat.add([current_pos[0], current_pos[1], 1]);
+        frame_count = frame_count + 1;
+    }
+
+    heat.draw();
+    frame = null;
+    frame = frame || window.requestAnimationFrame(draw);
+}
+draw();
+
+
+
+
+var img = new Image();
+img.src = 'assets/images/window1.png';
+img.onload = function(){
+    ratio = (width_img / 1901)
+    ctx.canvas.width  = width_img
+    ctx.canvas.height = height_img;
+    ctx.drawImage(this, 0,0,width_img,height_img);
+}
+
+}
+
+axios.get('/analytics_data').then(function (response) {
+            console.log(response.data)
+            window.analytics_movement_data = response.data;
+            console.log("dgs")
+            loadAnalytics();
+        })
+
+</script>

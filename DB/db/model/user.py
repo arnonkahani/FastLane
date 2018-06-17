@@ -7,7 +7,7 @@ from DB.db.model.base import Base
 
 
 class Users(Base):
-    datasource = config.DATASOURCE_GTFS
+
 
     __tablename__ = 'users'
 
@@ -16,7 +16,7 @@ class Users(Base):
         'Analytics',
         primaryjoin='Users.user_id==Analytics.user_id',
         foreign_keys='(Analytics.user_id)',
-        uselist=False, viewonly=True)
+        uselist=True, viewonly=True)
 
 
     @classmethod

@@ -4,14 +4,14 @@ from geoalchemy2 import Geometry
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from DB import config
+from DB.config.fastlanes_config import FastlanesConfig
 from DB.db.model.base import Base
 
 log = logging.getLogger(__name__)
 
 
 class Stop(Base):
-    datasource = config.DATASOURCE_GTFS
+
     filename = 'stops.txt'
 
     __tablename__ = 'stops'
@@ -23,7 +23,7 @@ class Stop(Base):
     zone_id = Column(String(50))
     location_type = Column(Integer, index=True, default=0)
     parent_station = Column(String(255))
-    geom = Column(Geometry(geometry_type='POINT', srid=config.SRID))
+    geom = Column(Geometry(geometry_type='POINT', srid=FastlanesConfig.SRID))
 
     stop_times = relationship(
         'StopTime',
@@ -34,7 +34,7 @@ class Stop(Base):
 
     @classmethod
     def add_geom_to_dict(cls, row):
-        args = (config.SRID, row['stop_lon'], row['stop_lat'])
+        args = (FastlanesConfig.SRID, row['stop_lon'], row['stop_lat'])
         row['geom'] = 'SRID={0};POINT({1} {2})'.format(*args)
 
     @classmethod
@@ -47,7 +47,7 @@ class Stop(Base):
 
     @classmethod
     def transform_data(self, df):
-        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(config.SRID, x.stop_lon, x.stop_lat), axis=1)
+        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(FastlanesConfig.SRID, x.stop_lon, x.stop_lat), axis=1)
 
         if 'zone_id' not in df.columns:
             df['zone_id'] = ""

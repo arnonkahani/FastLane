@@ -33,7 +33,7 @@ class PassengerCount(Base):
     PassengersContinue_rounded_sofi --> passengers_continue
 
     '''
-    datasource = config.DATASOURCE_PASSENGERCOUNT
+
     filename = 'passenger_count.csv'
 
     __tablename__ = 'passenger_count'

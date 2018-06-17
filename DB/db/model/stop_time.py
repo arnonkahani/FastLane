@@ -8,11 +8,11 @@ log = logging.getLogger(__name__)
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, Numeric, String
-from DB import config
+
 from DB.db.model.base import Base
 
 class StopTime(Base):
-    datasource = config.DATASOURCE_GTFS
+
     filename = 'stop_times.txt'
 
     __tablename__ = 'stop_times'
