@@ -31,12 +31,6 @@ class Stop(Base):
         foreign_keys='(Stop.stop_id)',
         uselist=True, viewonly=True)
 
-
-    @classmethod
-    def add_geom_to_dict(cls, row):
-        args = (FastlanesConfig.SRID, row['stop_lon'], row['stop_lat'])
-        row['geom'] = 'SRID={0};POINT({1} {2})'.format(*args)
-
     @classmethod
     def get_csv_table_columns(self):
         return self.__table__.columns.keys()
@@ -47,7 +41,7 @@ class Stop(Base):
 
     @classmethod
     def transform_data(self, df):
-        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(FastlanesConfig.SRID, x.stop_lon, x.stop_lat), axis=1)
+        df['geom'] = df.apply(lambda x: 'SRID={0};POINT({1} {2})'.format(FastlanesConfig.SRID, x.stop_lat, x.stop_lon), axis=1)
 
         if 'zone_id' not in df.columns:
             df['zone_id'] = ""

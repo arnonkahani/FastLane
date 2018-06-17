@@ -41,12 +41,8 @@ def construct_linestring(geoJSONCoordinates):
 
 @app.route('/stops_times/square', methods=['POST'])
 def stoptimes_info_by_area():
-    start = time.time()
     sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
-    print(sq_area)
-    # sq_area = construct_linestring(request.get_json()['coordinates'])
     res = get_stoptimes_info_by_area(session=server.session,line_string_2pt=sq_area)
-    print(time.time() - start)
     return res
 
 @app.route('/stops_times/path', methods=['POST'])
@@ -74,4 +70,4 @@ def get_analytics():
 def start_server(config):
     server.set_config(config)
     server.load()
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=3001)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=3001,threaded=True)
