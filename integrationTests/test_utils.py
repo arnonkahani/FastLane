@@ -50,4 +50,4 @@ def create_gtfs_db():
 
 def create_server(db_manager):
     config = FastlanesConfig(env_path="./.testenv")
-    server.start_server(config)
+    server.start_server(config,db_manager)

@@ -24,6 +24,8 @@ class Server:
     def set_db_manger(self,db_manager = None):
         if db_manager == None:
             self.db_manager = DBManager(self.config)
+        else:
+            self.db_manager=db_manager
         Base.metadata.bind = self.db_manager.db.engine
         DBSession = sessionmaker()
         self.session = DBSession()
