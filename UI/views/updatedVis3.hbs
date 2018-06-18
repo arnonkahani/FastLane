@@ -4,7 +4,6 @@
     <script src="https://d3js.org/d3.hexbin.v0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.5.1/leaflet-src.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/colorbrewer@1.1.0/index.min.js"></script>
- 
     <script type="text/javascript" src="leaflet.hexbin-layer.js"></script>
 
     <style type="text/css">
@@ -48,10 +47,10 @@
             margin-top: -10px;
         }
 
-
         .control {
             padding: 2%;
         }
+
         #mapid {
             min-height: 100%;
             height: 50vh;
@@ -60,14 +59,16 @@
         }
     </style>
 
-    
 </head>
 
-
+<!-- Title -->
 <h1 align="center" style="font-family: 'Cabin Sketch', cursive;">AREA DENSITY</h1>
+
+<!-- Info button starts-->
 <button data-target="#bs-dialog" data-toggle="modal" class="btn pmd-btn-fab pmd-ripple-effect btn-default pull-right" type="button">
     <i class="material-icons md-dark pmd-sm">help_outline</i>
 </button>
+
 <div tabindex="-1" class="modal fade" id="bs-dialog" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -77,193 +78,206 @@
         </div>
     </div>
 </div>
+<!-- Info button ends-->
 
+<!-- Map section starts-->
 <div class="col-md-8 col-sm-6">
-				<h3 class="text-muted">Mark two points on the map below</h3>
-				<div class="pmd-card pmd-card-default pmd-z-depth">
-					<div class="pmd-card-body">
-						<div class="media-body">
-								<a href="javascript:void(0);">
-									<div id="mapid"></div>
-								</a>
-							</div>
-							<div class="media-right">
-								<button id="send_data" type="button" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-primary"><i class="material-icons pmd-sm">send</i></button>
-								<button id="clear_data" type="button" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-primary"><i class="material-icons pmd-sm">clear</i></button>
-							</div>
-					</div>
-				</div>
-			</div>
-<script>
+    <h3 class="text-muted">Mark two points on the map below</h3>
+    <div class="pmd-card pmd-card-default pmd-z-depth">
+        <div class="pmd-card-body">
+            <div class="media-body">
+                <a href="javascript:void(0);">
+                    <div id="mapid"></div>
+                </a>
+            </div>
+            <div class="media-right">
+                <button id="send_data" type="button" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-primary">
+                    <i class="material-icons pmd-sm">send</i>
+                </button>
+                <button id="clear_data" type="button" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-primary">
+                    <i class="material-icons pmd-sm">clear</i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Map section ends-->
 
-	var mymap = L.map('mapid').setView([32.092739, 34.770454], 12);
+<!-- Selection section starts-->
+<div class="pmd-card-body">
+    <div class="pmd-card pmd-z-depth">
+        <div class="pmd-card-body">
+            <form class="row" role="form">
+                <div class="col-sm-3">
+                    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                        <label>Day</label>
+                        <select id="day_select" class="select-simple form-control pmd-select2">
+                            <option></option>
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                        <label>Hour</label>
+                        <select id="hour_select" class="select-simple form-control pmd-select2">
+                            <option></option>
+                            <option value="0">00:00</option>
+                            <option value="1">01:00</option>
+                            <option value="2">02:00</option>
+                            <option value="3">03:00</option>
+                            <option value="4">04:00</option>
+                            <option value="5">05:00</option>
+                            <option value="6">06:00</option>
+                            <option value="7">07:00</option>
+                            <option value="8">08:00</option>
+                            <option value="9">09:00</option>
+                            <option value="10">10:00</option>
+                            <option value="11">11:00</option>
+                            <option value="12">12:00</option>
+                            <option value="13">13:00</option>
+                            <option value="14">14:00</option>
+                            <option value="15">15:00</option>
+                            <option value="16">16:00</option>
+                            <option value="17">17:00</option>
+                            <option value="18">18:00</option>
+                            <option value="19">19:00</option>
+                            <option value="20">20:00</option>
+                            <option value="21">21:00</option>
+                            <option value="22">22:00</option>
+                            <option value="23">23:00</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="pmd-card pmd-z-depth">
+        <div class="pmd-card-body">
+            <form class="row" role="form">
+                <div class="col-sm-3">
+                    <div class="checkbox">
+                        <label class="pmd-checkbox pmd-checkbox-ripple-effect">
+                            <input value="" id="animate_select" type="checkbox"> Animate
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <label class="control">Current Time:
+                        <a id="time_view"></a>
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" id="save_button" class="btn btn-primary pmd-ripple-effect">Save Config</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Selection section ends-->
+
+<!-- Visualization section starts-->
+<div id='stops_heat' data-source="mock_data/data_arnon.json"></div>
+<!-- Visualization section ends-->
+
+<!-- Script starts-->
+<script type="text/javascript">
+
+    //Create a map for area selection
+    var mymap = L.map('mapid').setView([32.092739, 34.770454], 12);
     var points = [];
-	var markersArray = [];
+    var markersArray = [];
 
-	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-		id: 'mapbox.streets'
-	}).addTo(mymap);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        id: 'mapbox.streets'
+    }).addTo(mymap);
 
-    function onClickSendData(e){
-        if (points.length < 2)
-        {
-            alert("You have to mark 2 points on the map");
-        }
-        else
-        {
-            axios.post('/vis_data', points).then(function (response) {
-            data_viz = response.data
-            uploud_viz(data_viz)
-        })
-        }
-    }
-	
+    //Enable route marking on the map
+    mymap.on('click', onMapClick);
+
+    //Link button to function
     document.getElementById('send_data').onclick = onClickSendData
-	document.getElementById('clear_data').onclick = onClickClearData
+    document.getElementById('clear_data').onclick = onClickClearData
+
     var markerGroup = L.layerGroup().addTo(mymap);
-	function onMapClick(e) {
+
+    //Create a map for visualization section
+    var container = L.DomUtil.get('stops_heat')
+    var map = L.map(container).setView([32.092739, 34.770454], 13);
+
+    //Add a point on the map
+    function onMapClick(e) {
         if (points.length < 2) {
             points.push([e.latlng.lat, e.latlng.lng]);
             var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(markerGroup);
-			
+
         }
         else alert("You have already choose 2 points");
-}
+    }
 
-function onClickClearData(e){
-		points = [];
-	markerGroup.clearLayers();
-	}
+    //Clear all points from the map
+    function onClickClearData(e) {
+        points = [];
+        markerGroup.clearLayers();
+    }
 
-mymap.on('click', onMapClick);
-</script>
-<div class="pmd-card-body">
-<div class="pmd-card pmd-z-depth">
-    <div class="pmd-card-body">
-        <form class="row" role="form">
-            <div class="col-sm-3">
-                <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                    <label>Day</label>
-                    <select id="day_select" class="select-simple form-control pmd-select2">
-                        <option></option>
-                        <option value="0">Sunday</option>
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Thursday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                    <label>Hour</label>
-                    <select id="hour_select" class="select-simple form-control pmd-select2">
-                        <option></option>
-                        <option value="0">00:00</option>
-                        <option value="1">01:00</option>
-                        <option value="2">02:00</option>
-                        <option value="3">03:00</option>
-                        <option value="4">04:00</option>
-                        <option value="5">05:00</option>
-                        <option value="6">06:00</option>
-                        <option value="7">07:00</option>
-                        <option value="8">08:00</option>
-                        <option value="9">09:00</option>
-                        <option value="10">10:00</option>
-                        <option value="11">11:00</option>
-                        <option value="12">12:00</option>
-                        <option value="13">13:00</option>
-                        <option value="14">14:00</option>
-                        <option value="15">15:00</option>
-                        <option value="16">16:00</option>
-                        <option value="17">17:00</option>
-                        <option value="18">18:00</option>
-                        <option value="19">19:00</option>
-                        <option value="20">20:00</option>
-                        <option value="21">21:00</option>
-                        <option value="22">22:00</option>
-                        <option value="23">23:00</option>
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+    //Prepare the request and send it to the DP
+    function onClickSendData(e) {
+        if (points.length < 2) {
+            alert("You have to mark 2 points on the map");
+        }
+        else {
+            axios.post('/vis_data', points).then(function (response) {
+                data_viz = response.data
+                uploud_viz(data_viz)
+            })
+        }
+    }
 
-<div class="pmd-card pmd-z-depth">
-    <div class="pmd-card-body">
-        <form class="row" role="form">
-            <div class="col-sm-3">
-                <div class="checkbox">
-                    <label class="pmd-checkbox pmd-checkbox-ripple-effect">
-                        <input value="" id="animate_select" type="checkbox"> Animate
-                    </label>
-                </div>
-            </div>
-            <div class="col-sm-7">
-                <label class="control">Current Time:
-                    <a id="time_view"></a>
-                </label>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" id="save_button" class="btn btn-primary pmd-ripple-effect">Save Config</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id='stops_heat' data-source="mock_data/data_arnon.json"></div>
-
-<script type="text/javascript">
-var container = L.DomUtil.get('stops_heat')
-var map = L.map(container).setView([32.092739, 34.770454], 13);
-
-function uploud_viz(data_viz){
-    var max, scale,
-        classes = 9,
-        scheme = colorbrewer["YlGnBu"][classes]
+    //Visualization presentation
+    function uploud_viz(data_viz) {
+        var max, scale,
+            classes = 9,
+            scheme = colorbrewer["YlGnBu"][classes]
 
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-   /* d3.json({{{json data_viz}}}, function (collection) {
-        collection.data.trips
-        L.hexLayer(collection, {
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        function hex_style(hexagons) {
+            max = d3.max(hexagons.data(), function (d) { return d.length; });
+            scale = d3.scale.quantize()
+                .domain([max, max / 2, 0])
+                .range(d3.range(classes));
+            hexagons
+                .attr("stroke", scheme[classes - 1])
+                .attr("fill", function (d) {
+                    return scheme[scale(d.length)];
+                });
+        }
+
+        L.hexLayer(data_viz, {
             tooltip: tooltip,
             applyStyle: hex_style
         }).addTo(map);
-    });*/
 
-    var tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
-    function hex_style(hexagons) {
-        max = d3.max(hexagons.data(), function (d) { return d.length; });
-        scale = d3.scale.quantize()
-            .domain([max, max / 2, 0])
-            .range(d3.range(classes));
-        hexagons
-            .attr("stroke", scheme[classes - 1])
-            .attr("fill", function (d) {
-                return scheme[scale(d.length)];
-            });
     }
-    
-    L.hexLayer(data_viz, {
-                tooltip: tooltip,
-                applyStyle: hex_style
-            }).addTo(map);
-
-}
 
     document.getElementById("save_button").onclick = () => {
 
@@ -273,7 +287,7 @@ function uploud_viz(data_viz){
             "day": document.getElementById("day_select").value,
         }
         map._layers[25].activateNewConfig(new_config)
-
     }
 
 </script>
+<!-- Script ends-->

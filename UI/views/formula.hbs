@@ -4,9 +4,7 @@
     <script src="https://d3js.org/d3.hexbin.v0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.5.1/leaflet-src.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/colorbrewer@1.1.0/index.min.js"></script>
-
     <script type="text/javascript" src="leaflet.hexbin-layer.js"></script>
-
 
     <style>
         #map {
@@ -17,30 +15,24 @@
         }
     </style>
 
-
 </head>
 
-
+<!-- Title -->
 <h1 align="center" style="font-family: 'Cabin Sketch', cursive;">
     CREATE YOUR OWN FORMULA</h1>
 
+<!-- Parameters section starts -->
 <div class="col-md-9">
-
-    <!--Simple Bootstrap Accordion code and example  -->
     <div class="component-box">
-        <!--Simple Bootstrap Accordion example -->
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
+            <!-- V variable section starts -->
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingOne">
-
                     <h4 class="panel-title">
-
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                             Calculate V variable
                         </a>
                     </h4>
-
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
@@ -87,9 +79,11 @@
                         </div>
                         <button id="send_V_data" class="btn btn-sm pmd-btn-raised pmd-ripple-effect btn-primary" type="button">Submit</button>
                     </div>
-
                 </div>
             </div>
+            <!-- V variable section ends -->
+
+            <!-- P variable section starts -->
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingTwo">
                     <h4 class="panel-title">
@@ -144,19 +138,22 @@
                         </div>
                         <button id="send_P_data" class="btn btn-sm pmd-btn-raised pmd-ripple-effect btn-primary" type="button">Submit</button>
                     </div>
-
                 </div>
             </div>
+            <!-- P variable section ends -->
         </div>
-        <!--Simple Bootstrap Accordion example end-->
-
     </div>
-    <!--Simple Bootstrap Accordion code and example end -->
 </div>
+<!-- Parameters section ends -->
 
+<!-- Map section starts -->
 <div class="col-md-12">
     <div id="map"></div>
+
+    <!-- Script starts -->
     <script>
+
+        //Create a map
         var map = L.map('map').setView([32.092739, 34.770454], 13);
         map.setMaxBounds(map.getBounds());
         mapLink =
@@ -167,18 +164,19 @@
                 maxZoom: 18,
             }).addTo(map);
 
-        /* Initialize the SVG layer */
         map._initPathRoot()
 
         var svg = d3.select("#map").select("svg"),
             g = svg.append("g");
 
+        //Enable route marking on the map
         map.on('click', addMarker);
 
         var markers = [];
         var markersLayer = new L.LayerGroup();
         var linesLayer = new L.LayerGroup();
 
+        //Add a point on the map
         function addMarker(e) {
             var newMarker = new L.circleMarker(e.latlng, { radius: 6 }).addTo(markersLayer);
             markersLayer.addTo(map);
@@ -195,16 +193,17 @@
             }
         }
 
+        //Clear all points from the map
         function clearData() {
             markersLayer.clearLayers();
             linesLayer.clearLayers();
             markers = [];
         }
 
+        //Prepare the request and send it to the DP
         function onSubmitV(e) {
             if (markers.length < 2) {
                 alert("Please mark a rout on the map below");
-                console.log()
             }
             else {
                 var l = document.getElementById("select-l-V");
@@ -216,26 +215,16 @@
                 let latlng = markers.map(function (x) {
                     return [x['lat'], x['lng']]
                 })
-                /* let data = []
-                 for(let i = 1; i < latlng.length;i++){
-                     data.push([latlng[i-1],latlng[i]])
-                 }
-                 console.log(data)
-                     //uploud_viz([50,40,20,10],data)
-                     console.log(markers);*/
                 axios.post('/v_data', [markers, selected_l, selected_v, selected_L]).then(function (response) {
-                    console.log(response);
                     var vArray = response.data.data.v,
                         sections = response.data.data.sections,
                         stops = response.data.data.stops;
-                    console.log("vArray: " + vArray)
-                    console.log("sections: " + sections)
-                    console.log("stops: " + stops)
                     uploud_viz(vArray, sections, stops);
                 })
             }
         }
 
+        //Visualization presentation
         function uploud_viz(vArray, sections, stations) {
             clearData();
             var max = vArray[0],
@@ -248,11 +237,6 @@
             var scale = d3.scale.quantize()
                 .domain([max, 0])
                 .range(d3.range(classes));
-            //var tooltip = d3.select("body").append("div")
-            // .attr("class", "tooltip")
-            // .style("opacity", 0);
-
-
 
             for (var i = 0; i < sections.length; i++) {
                 var section = sections[i],
@@ -263,16 +247,17 @@
 
             for (var i = 0; i < stations.length; i++) {
                 var station = stations[i]
-                console.log(station)
                 var newMarker = new L.circleMarker([station[1], station[0]], { radius: 6 }).addTo(markersLayer);
                 markersLayer.addTo(map);
             }
 
         }
 
+        //Link button to function
         document.getElementById('send_V_data').onclick = onSubmitV;
         document.getElementById('send_P_data').onclick = onSubmitV;
 
-
     </script>
+    <!-- Script ends -->
 </div>
+<!-- Map section ends -->
