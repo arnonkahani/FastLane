@@ -17,7 +17,7 @@ class GTFSLoadTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.config, cls.engine, cls.db_manager, cls.session = create_gtfs_db()
-        create_server()
+        create_server(cls.db_manager)
 
     def test_get_stoptimes_info_by_path(self):
         result = pickle.loads(get_stoptimes_info_by_path(session=self.session, line_string_path=path_query_linestring))

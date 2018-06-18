@@ -21,10 +21,10 @@ class Server:
         print("inited server")
     def set_config(self,config):
         self.config = config
-    def load(self):
-        a = DBManager(self.config)
-        db = a.db
-        Base.metadata.bind = db.engine
+    def set_db_manger(self,db_manager = None):
+        if db_manager == None:
+            self.db_manager = DBManager(self.config)
+        Base.metadata.bind = self.db_manager.db.engine
         DBSession = sessionmaker()
         self.session = DBSession()
 
@@ -67,7 +67,7 @@ def add_analytics():
 def get_analytics():
     return get_all_analytics(server.session)
 
-def start_server(config):
+def start_server(config,db_managar=None):
     server.set_config(config)
-    server.load()
+    server.set_db_manger(db_managar)
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=3001,threaded=True)

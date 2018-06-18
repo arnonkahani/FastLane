@@ -48,6 +48,6 @@ def create_gtfs_db():
     return config, engine, db_manager,session
 
 
-def create_server():
+def create_server(db_manager):
     config = FastlanesConfig(env_path="./.testenv")
     server.start_server(config)
