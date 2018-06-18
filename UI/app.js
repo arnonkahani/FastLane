@@ -5,8 +5,6 @@ var cookieParser = require('cookie-parser')
 const exphbs  = require('express-handlebars');
 const bodyParser = require('body-parser');
 const uuidv1 = require('uuid/v1');
-const {HttpReq} = require('./scripts/api.js');
-const formula = require('./routes/formula')(__dirname);
 const axios = require('axios')
 
 
@@ -58,7 +56,6 @@ app.use(function (req, res, next) {
     next();
   });
 
-
 app.get("/formula", function (req, res, next) {
     res.render('formula');
 });
@@ -85,16 +82,12 @@ app.get("/vis4", function (req, res, next) {
         .catch(function (error) {
             res.send(error)
         });
-
 });
-
-
 
 app.post("/analytics", function(req, res, next){
     let analytics = req.body;
     sessionId = req.cookies.cookieName;
     analytics.user_id = sessionId;
-    console.log(analytics)
     axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
       axios({
           method: 'post',
@@ -105,12 +98,7 @@ app.post("/analytics", function(req, res, next){
 })
 
 app.get("/analytics", function (req, res, next) {
-
     res.render('analytics2');
-
-
-
-
 });
 
 app.get("/analytics_data", function (req, res, next) {
@@ -125,9 +113,6 @@ app.get("/analytics_data", function (req, res, next) {
         .catch(function (error) {
             res.send(error)
         });
-
-
-
 });
 
 app.post("/vis_data", function (req, res, next) {
@@ -146,7 +131,6 @@ app.post("/vis_data", function (req, res, next) {
     });
 
     app.post("/v_data", function (req, res, next) {
-        console.log(req.body);
         axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
          axios({
              method: 'get',
@@ -163,37 +147,10 @@ app.post("/vis_data", function (req, res, next) {
 
 app.get("/updatedVis1", function (req, res, next) {
     res.render('updatedVis1');
-    //  axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
-    //   axios({
-    //       method: 'get',
-    //       url: server_url,
-    //       data: big_data
-    //     })
-    //     .then(function (response) {
-    //         stations_view = response.data.data.stops.map(x => x.stop_name)
-    //       res.render('updatedVis1',{data_viz:response.data, stations:stations_view});
-    //     })
-    //     .catch(function (error) {
-    //         res.send(error)
-    //     });
 });
 
 app.get("/updatedVis2", function (req, res, next) {
     res.render('updatedVis2',{uuid: uuidv1()});
-    //   axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*"
-    //   axios({
-    //       method: 'get',
-    //       url: server_url,
-    //       data: big_data
-    //     })
-    //     .then(function (response) {
-    //         stations_view = response.data.data.stops.map(x => x.stop_name)
-    //       res.render('updatedVis2',{data_viz:response.data, stations:stations_view});
-    //     })
-    //     .catch(function (error) {
-    //         res.send(error)
-    //     });
-
     });
 
 app.listen(process.env.PORT ? process.env.PORT : 8080, () => console.log('Example app listening on port 8080!'));

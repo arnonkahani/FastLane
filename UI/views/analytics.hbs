@@ -1,161 +1,161 @@
 <body>
 
-<div id="content" class="pmd-content inner-page">
-    <h3 class="text-muted"></h3>
+    <div id="content" class="pmd-content inner-page">
+        <h3 class="text-muted"></h3>
         <div class="col-md-12">
-        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
-            <div class="pmd-card-body">
-                <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                    <label>Select a session ID</label>
-                    <select id="options" class="select-with-search pmd-select2 form-control">
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <section id="table-analytics" class="row component-section">
-        <div class="col-md-12">
-            <div class="component-box">
-                <div class="pmd-card pmd-z-depth pmd-card-custom-view">
-                    <div class="table-responsive">
-                        <table cellspacing="0" cellpadding="0" class="table pmd-table" id="table-propeller">
-                            <thead>
-                            <tr>
-                                <th>Session ID</th>
-                                <th>Buttton 1</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody id="table_body">
-                            </tbody>
-                        </table>
+            <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+                <div class="pmd-card-body">
+                    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                        <label>Select a session ID</label>
+                        <select id="options" class="select-with-search pmd-select2 form-control">
+                        </select>
                     </div>
                 </div>
             </div>
-
         </div>
-    </section>
+
+        <section id="table-analytics" class="row component-section">
+            <div class="col-md-12">
+                <div class="component-box">
+                    <div class="pmd-card pmd-z-depth pmd-card-custom-view">
+                        <div class="table-responsive">
+                            <table cellspacing="0" cellpadding="0" class="table pmd-table" id="table-propeller">
+                                <thead>
+                                    <tr>
+                                        <th>Session ID</th>
+                                        <th>Buttton 1</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table_body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
 
 
-    <div class="col-md-12">
-        <div class="pmd-card pmd-z-depth pmd-card-custom-form">
-            <div class="pmd-card-body" id="movment-card">
-                <canvas id="canvas"></canvas>
+        <div class="col-md-12">
+            <div class="pmd-card pmd-z-depth pmd-card-custom-form">
+                <div class="pmd-card-body" id="movment-card">
+                    <canvas id="canvas"></canvas>
+                </div>
             </div>
         </div>
+
+
     </div>
-
-
-</div>
 </body>
 
 <script>
 
-function getId(id) {
-return document.getElementById(id);
-}
-
-function cleanTableBody(){
- var table_body = getId('table_body')
-    while (table_body.firstChild) {
-    table_body.removeChild(table_body.firstChild);
+    function getId(id) {
+        return document.getElementById(id);
     }
-}
-function fillTableBody(selectedValue){
-    for (const user_id in selectedValue) {
-        for (const url in selectedValue[user_id]) {
-          const clicks = selectedValue[user_id][url].clicks;
-          for (const click in clicks){
-            console.log(click);
-          }
+
+    function cleanTableBody() {
+        var table_body = getId('table_body')
+        while (table_body.firstChild) {
+            table_body.removeChild(table_body.firstChild);
         }
     }
+    function fillTableBody(selectedValue) {
+        for (const user_id in selectedValue) {
+            for (const url in selectedValue[user_id]) {
+                const clicks = selectedValue[user_id][url].clicks;
+                for (const click in clicks) {
+                    console.log(click);
+                }
+            }
+        }
 
 
 
-}
-var movment_data = {{{json movment_data}}}
-
-
-
-
-
-function changeFunc() {
-    var selectBox = getId("options");
-    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    fillTableBody(selectBox.options[selectBox.selectedIndex].value);
-    draw_movment_analytics(movment_data[selectedValue])
-}
-var _options = getId("options").onchange = changeFunc
-var selectBox = document.getElementById("options");
-var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-console.log(movment_data[selectedValue])
-console.log(movment_data)
-console.log(selectedValue)
-draw_movment_analytics(movment_data[selectedValue])
-
-
-
-
-
-
-
-
-var draw_movment_analytics = function(data){
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-var style1 = window.getComputedStyle(document.getElementById("movment-card"), null);
-width_img = parseInt(style1.width.substring(0, style1.width.length-2)) - 32;
-height_img = parseInt((width_img / 1901) * 966)
-
-ratio = (width_img / 1901)
-
-ctx.canvas.width  = width_img
-ctx.canvas.height = height_img;
-
-
-var x_y = []
-data.forEach(function(loc) {
-x_y.push([parseInt(loc[0]*ratio),parseInt(loc[1]*ratio)])
-})
-console.log(x_y)
-var count = x_y.length
-var windows = new Image();
-var index = 0
-
-function init(){
-windows.src = 'assets/images/window1.png';
-
-window.requestAnimationFrame(draw);
-}
-
-function draw() {
-  var ctx = document.getElementById('canvas').getContext('2d');
-
-  ctx.drawImage(windows, 0,0,width_img,height_img);
-
-
-   index = (index + 1) % count
-   for(var i = 0;i<index;i = i + 2){
-    ctx.fillStyle = 'rgba(200, 0, 0, 0.05)';
-    ctx.fillRect(x_y[i][0],x_y[i][1],20,20)
     }
+    var movment_data = {{{ json movment_data }}}
 
 
 
 
-  window.requestAnimationFrame(draw);
-}
 
-function plot(){
+    function changeFunc() {
+        var selectBox = getId("options");
+        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+        fillTableBody(selectBox.options[selectBox.selectedIndex].value);
+        draw_movment_analytics(movment_data[selectedValue])
+    }
+    var _options = getId("options").onchange = changeFunc
+    var selectBox = document.getElementById("options");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    console.log(movment_data[selectedValue])
+    console.log(movment_data)
+    console.log(selectedValue)
+    draw_movment_analytics(movment_data[selectedValue])
 
 
 
-}
 
-init();
-}
+
+
+
+
+    var draw_movment_analytics = function (data) {
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        var style1 = window.getComputedStyle(document.getElementById("movment-card"), null);
+        width_img = parseInt(style1.width.substring(0, style1.width.length - 2)) - 32;
+        height_img = parseInt((width_img / 1901) * 966)
+
+        ratio = (width_img / 1901)
+
+        ctx.canvas.width = width_img
+        ctx.canvas.height = height_img;
+
+
+        var x_y = []
+        data.forEach(function (loc) {
+            x_y.push([parseInt(loc[0] * ratio), parseInt(loc[1] * ratio)])
+        })
+        console.log(x_y)
+        var count = x_y.length
+        var windows = new Image();
+        var index = 0
+
+        function init() {
+            windows.src = 'assets/images/window1.png';
+
+            window.requestAnimationFrame(draw);
+        }
+
+        function draw() {
+            var ctx = document.getElementById('canvas').getContext('2d');
+
+            ctx.drawImage(windows, 0, 0, width_img, height_img);
+
+
+            index = (index + 1) % count
+            for (var i = 0; i < index; i = i + 2) {
+                ctx.fillStyle = 'rgba(200, 0, 0, 0.05)';
+                ctx.fillRect(x_y[i][0], x_y[i][1], 20, 20)
+            }
+
+
+
+
+            window.requestAnimationFrame(draw);
+        }
+
+        function plot() {
+
+
+
+        }
+
+        init();
+    }
 
 
 
