@@ -4,8 +4,8 @@ import sys
 
 sys.path.append('../')
 from flask import Flask, redirect, url_for, request, jsonify, json
-from logic import computeNumForBusStops, computeNumOfBusesForStation, computeTripsPath, computeV,process_analytics
-from data_access import getTrips, getTripsPaths, getStopsByPath,addAnalytics,getAnalytics
+from DP.logic import computeNumForBusStops, computeNumOfBusesForStation, computeTripsPath, computeV,process_analytics
+from DP.data_access import getTrips, getTripsPaths, getStopsByPath,addAnalytics,getAnalytics
 import os
 
 demo_flag = False

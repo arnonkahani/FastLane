@@ -1,6 +1,5 @@
 from shapely.geometry import LineString
 
-from SharedLayer.objects.PathPoint import PathPoint
 from typing import List
 
 

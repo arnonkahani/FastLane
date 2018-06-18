@@ -5,8 +5,8 @@ var cookieParser = require('cookie-parser')
 const exphbs  = require('express-handlebars');
 const bodyParser = require('body-parser');
 const uuidv1 = require('uuid/v1');
-const {HttpReq} = require('./scripts/api.js');
-const formula = require('./routes/formula')(__dirname);
+//const {HttpReq} = require('./scripts/api.js');
+//const formula = require('./routes/formula')(__dirname);
 const axios = require('axios')
 
 
@@ -196,4 +196,4 @@ app.get("/updatedVis2", function (req, res, next) {
 
     });
 
-app.listen(process.env.PORT ? process.env.PORT : 8080, () => console.log('Example app listening on port 8080!'));
+app.listen(process.env.PORT ? process.env.PORT : 8081, () => console.log('Example app listening on port 8081!'));
