@@ -7,6 +7,7 @@ from sqlalchemy_utils import create_database, database_exists, drop_database
 from DB.config.fastlanes_config import FastlanesConfig
 from DB.db.managers.db_manager import DBManager
 from DB.db.managers.gtfs_db import GTFSDB
+import DB.server as server
 
 
 def create_test_db_without_schemas():
@@ -45,3 +46,8 @@ def create_gtfs_db():
     gtfs_db = GTFSDB(db_manager.db, config)
     gtfs_db.load_data()
     return config, engine, db_manager,session
+
+
+def create_server():
+    config = FastlanesConfig(env_path="./.testenv")
+    server.start_server(config)

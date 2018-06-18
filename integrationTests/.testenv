@@ -1,4 +1,4 @@
-DATABSE_URL=postgresql+psycopg2://postgres:k1k2k3d4@localhost:5432/test_db
+DATABSE_URL=postgresql+psycopg2://postgres:postgres@localhost:5433/test_db
 SHOULD_DROP_ALL_TABELS=0
 GTFS_FILE_PATH=data/small_mock.zip
 PASSENGER_COUNT_FILE_PATH=data/passenger_count.csv
