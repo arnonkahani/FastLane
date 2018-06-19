@@ -4,7 +4,7 @@ import pandas as pd
 from DB.db import Database
 
 log = logging.getLogger(__name__)
-
+import os
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, Numeric, String
@@ -66,6 +66,8 @@ class StopTime(Base):
         df = pd.read_csv(filepath_or_buffer=file_path)
         df = cls.transform_data(df)
         conn = db.engine.raw_connection()
+        if not os.path.isdir("./tmp"):
+            os.mkdir("tmp")
         with open("tmp/temp_csv.csv",mode='w') as temp_file:
             df.to_csv(temp_file, index=False)
         with conn.cursor() as cur,open("tmp/temp_csv.csv", 'r') as f:
@@ -75,4 +77,4 @@ class StopTime(Base):
         conn.commit()
 
 
-'trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type,shape_dist_traveled'
+# 'trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type,shape_dist_traveled'

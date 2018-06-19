@@ -40,6 +40,7 @@ class _Base(object):
         :type gtfs_directory: str.
         :returns:  StatusCode -- StatusCode.
         """
+        print("loading table {0}".format(cls.__name__))
         log = logging.getLogger(cls.__module__)
         start_time = time.time()
         directory = gtfs_directory
@@ -91,6 +92,7 @@ class _Base(object):
         :param file_path: the current table txt file.
         :type file_path: str.
         """
+        print("loading table {0}".format(cls.__name__))
         df = pd.read_csv(filepath_or_buffer=file_path)
         df = cls.transform_data(df)
         df.to_sql(con=db.engine, index_label=cls.get_csv_table_index(), name=cls.__table__.name, index=False,

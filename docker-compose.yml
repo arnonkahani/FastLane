@@ -23,12 +23,12 @@ services:
      - "3001:3001"
     environment:
     - DATABSE_URL=postgresql+psycopg2://fastlanes:1234@postgis:5432/fastlanes
-    - SHOULD_DROP_ALL_TABELS=0
-    - GTFS_FILE_PATH=/DB/data/small_mock.zip
-    - PASSENGER_COUNT_FILE_PATH=/DB/data/passenger_count.csv
-    - SHOULD_LOAD_GTFS_DATA=0
-    - SHOULD_PASSENGER_LOAD_DATA=0
-    - SHOULD_OVERWRITE_ZIP_FILES=0
+    - SHOULD_DROP_ALL_TABELS=1
+    - GTFS_FILE_PATH=DB/data/gtfs.zip
+    - PASSENGER_COUNT_FILE_PATH=DB/data/passenger_count.csv
+    - SHOULD_LOAD_GTFS_DATA=1
+    - SHOULD_PASSENGER_LOAD_DATA=1
+    - SHOULD_OVERWRITE_ZIP_FILES=1
     depends_on:
       - postgis
     restart: on-failure
