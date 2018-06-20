@@ -13,7 +13,7 @@ server_url_V = 'http://dp:3002/v/path'
 server_url_trips = 'http://dp:3002/trips/path'
 server_url_analytics = 'http://dp:3002/analytics'
 
-
+count = 0
 //server_url = 'http://localhost:3005/compute'
 //server_url_V = 'http://localhost:3005/v/path'
 //server_url_trips = 'http://localhost:3005/trips/path'
@@ -93,6 +93,8 @@ app.get("/vis4", function (req, res, next) {
 });
 
 app.post("/analytics", function(req, res, next){
+    if(count < 10){
+    count = count + 1
     let analytics = req.body;
     sessionId = req.cookies.cookieName;
     analytics.user_id = sessionId;
@@ -103,6 +105,9 @@ app.post("/analytics", function(req, res, next){
           data: analytics
         })
         res.send([]);
+        }else{
+        res.send([]);
+        }
 })
 
 app.get("/analytics", function (req, res, next) {
