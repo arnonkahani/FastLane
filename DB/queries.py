@@ -139,7 +139,7 @@ def get_stoptimes_info_by_area(session: Session, line_string_2pt: str) -> pickle
     else:
         with open(function_pkl, 'rb') as handle:
             result = pickle.load(handle)
-    print("There are {0} objects in the request result".format(result))
+    print("There are {0} objects in the request result".format(len(result)))
     return pickle.dumps(result)
 
 
