@@ -34,7 +34,7 @@ server = Server()
 def construct_linestring(geoJSONCoordinates):
     linestring = ""
     for geo_point in geoJSONCoordinates:
-        linestring += str(geo_point[1]) + " " + str(geo_point[0]) + ","
+        linestring += str(geo_point[0]) + " " + str(geo_point[1]) + ","
     linestring = linestring[0:-2]
     return 'LINESTRING(' + linestring + ')'
 
@@ -42,6 +42,7 @@ def construct_linestring(geoJSONCoordinates):
 @app.route('/stops_times/square', methods=['POST'])
 def stoptimes_info_by_area():
     sq_area = construct_linestring(json.loads(request.get_json())['coordinates'])
+    print(sq_area)
     res = get_stoptimes_info_by_area(session=server.session,line_string_2pt=sq_area)
     return res
 

@@ -9,12 +9,11 @@ from pathlib import Path  # python3 only
 
 
 class FastlanesConfig:
-
     '''Geometry constants'''
     SRID = '4326'
 
     '''Order list of class names, used for creating & populating tables'''
-    SORTED_CLASS_NAMES =  [
+    SORTED_CLASS_NAMES = [
         'Agency',
         'Calendar',
         'Route',
@@ -46,7 +45,6 @@ class FastlanesConfig:
 
         '''Application defaults'''
         self.DATABSE_URL = os.getenv("DATABSE_URL")
-
 
         self.SHOULD_DROP_ALL_TABELS = bool(int(os.getenv("SHOULD_DROP_ALL_TABELS")))
         self.GTFS_FILE_PATH = os.getenv("GTFS_FILE_PATH")

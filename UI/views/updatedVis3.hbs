@@ -184,7 +184,7 @@
 <!-- Selection section ends-->
 
 <!-- Visualization section starts-->
-<div id='stops_heat' data-source="mock_data/data_arnon.json"></div>
+<div id='stops_heat'></div>
 <!-- Visualization section ends-->
 
 <!-- Script starts-->
@@ -247,6 +247,7 @@
 
     //Visualization presentation
     function uploud_viz(data_viz) {
+        console.log(data_viz)
         var max, scale,
             classes = 9,
             scheme = colorbrewer["YlGnBu"][classes]

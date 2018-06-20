@@ -12,6 +12,14 @@ server_url = 'http://dp:3002/compute'
 server_url_V = 'http://dp:3002/v/path'
 server_url_trips = 'http://dp:3002/trips/path'
 server_url_analytics = 'http://dp:3002/analytics'
+
+
+//server_url = 'http://localhost:3005/compute'
+//server_url_V = 'http://localhost:3005/v/path'
+//server_url_trips = 'http://localhost:3005/trips/path'
+//server_url_analytics = 'http://localhost:3005/analytics'
+
+
 small_data = [[31.793292315858235,35.22995926314252],[31.791536887611592,35.23259812066226]]
 big_data = [[31.806400, 35.188504],[31.732295, 35.237836]]
 
@@ -154,3 +162,4 @@ app.get("/updatedVis2", function (req, res, next) {
     });
 
 app.listen(process.env.PORT ? process.env.PORT : 8080, () => console.log('Example app listening on port 8080!'));
+//app.listen(8081, () => console.log('Example app listening on port 8081!'));

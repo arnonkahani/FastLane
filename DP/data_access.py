@@ -7,7 +7,8 @@ import requests
 
 
 
-server_ip = 'https://fastlanes-data-processing.herokuapp.com'
+server_ip = 'db:3001'
+# server_ip = 'localhost:3006'
 headers = {'Content-Type': 'application/json'}
 
 def setDefaultHours():
@@ -20,28 +21,28 @@ def setDefaultHours():
 def getTrips(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
-    data = requests.post('http://db:3001/stops_times/square', json=jsonLineStringGeo)
+    data = requests.post('http://{server_ip}/stops_times/square'.format(server_ip=server_ip), json=jsonLineStringGeo)
     return data.content
 
 
 def getTripsPaths(geoJson):
     lineStringGeo = LineString(geoJson)
     jsonLineStringGeo = json.dumps(lineStringGeo)
-    data = requests.post('http://db:3001/trips/area', json=jsonLineStringGeo)
+    data = requests.post('http://{server_ip}/trips/area'.format(server_ip=server_ip), json=jsonLineStringGeo)
     return data.content
 
 def getStopsByPath(geoJson):
     points_from_json = list(map(lambda point: (point['lat'],point['lng']),geoJson))
     lineStringGeo = ShapelyLineString(points_from_json)
     jsonLineStringGeo = json.dumps(mapping(lineStringGeo))
-    data = requests.post('http://db:3001/stop/path', json=jsonLineStringGeo)
+    data = requests.post('http://{server_ip}/stop/path'.format(server_ip=server_ip), json=jsonLineStringGeo)
     return data.content
 
 
 def addAnalytics(analytics):
-    data = requests.post('http://db:3001/analytics', json=analytics)
+    data = requests.post('http://{server_ip}/analytics'.format(server_ip=server_ip), json=analytics)
     return data
 
 def getAnalytics():
-    data = requests.get('http://db:3001/analytics')
+    data = requests.get('http://{server_ip}/analytics'.format(server_ip=server_ip))
     return data.content

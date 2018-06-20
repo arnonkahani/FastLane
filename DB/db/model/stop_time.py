@@ -2,7 +2,6 @@ import logging
 import pandas as pd
 
 from DB.db import Database
-
 log = logging.getLogger(__name__)
 import os
 from sqlalchemy import Column
@@ -66,10 +65,11 @@ class StopTime(Base):
         df = pd.read_csv(filepath_or_buffer=file_path)
         df = cls.transform_data(df)
         conn = db.engine.raw_connection()
-        if not os.path.isdir("./tmp"):
+        if not os.path.isdir("tmp"):
             os.mkdir("tmp")
         with open("tmp/temp_csv.csv",mode='w') as temp_file:
             df.to_csv(temp_file, index=False)
+        print("Loading csv")
         with conn.cursor() as cur,open("tmp/temp_csv.csv", 'r') as f:
             columns = ','.join(cls.get_csv_table_columns())
             sql = "COPY {table_name} ({columns}) FROM STDIN WITH (FORMAT CSV, HEADER TRUE)".format(table_name=cls.__tablename__,columns=columns)

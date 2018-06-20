@@ -7,7 +7,7 @@ import pickle
 from shapely.geometry import LineString as ShapelyLineString, Point,mapping
 import numpy as np
 import random
-
+import time
 headers = {'Content-Type': 'application/json'}
 
 def setDefaultHours():
@@ -20,6 +20,8 @@ def setDefaultHours():
 
 
 def computeNumOfBusesForStation(pickleObj):
+    print("Start compute")
+    start_time = time.time()
     stopTimes = pickle.loads(pickleObj)
     days = 7
     hours = 24
@@ -52,6 +54,7 @@ def computeNumOfBusesForStation(pickleObj):
             stopArr.append(stopResponse)
         else:
             stopArr = replaceStop(stopArr, stopResponse)
+    print("Total compute time {0}".format(start_time - time.time()))
     return json.dumps({
         'data': {
             'stops': stopArr
@@ -82,6 +85,7 @@ def replaceStop(stopArr, stopResponse):
 
 
 def computeNumForBusStops(jsonObj):
+
     retval = []
     dic = json.loads(jsonObj)
     data = dic['data']
@@ -107,6 +111,7 @@ def computeNumForBusStops(jsonObj):
         record['lng'] = geoPoint['coordinates'][0]
         retval.append(record)
     jsonVal = json.dumps(retval)
+
     return jsonVal
 
 
@@ -129,23 +134,23 @@ def computeV(pickleObj,geoJson):
 
     EPS = 0.000362003592
 
-    stops = list(filter(lambda stop: line.distance(Point(stop.location.xy[1][0], stop.location.xy[0][0])) < EPS, stops))
+    stops = list(filter(lambda stop: line.distance(Point(stop.location.xy[0][0], stop.location.xy[1][0])) < EPS, stops))
 
     stop_locations = []
     for stop in stops:
         stop_locations.append([stop.location.xy[0][0], stop.location.xy[1][0]])
 
     closeset_points = list(
-        map(lambda stop: line.interpolate(line.project(Point(stop.location.xy[1][0], stop.location.xy[0][0]))), stops))
+        map(lambda stop: line.interpolate(line.project(Point(stop.location.xy[0][0], stop.location.xy[1][0]))), stops))
 
     stop_locations_on_line = []
     for p in closeset_points:
-        stop_locations_on_line.append([p.xy[1][0], p.xy[0][0]])
+        stop_locations_on_line.append([p.xy[0][0], p.xy[1][0]])
 
     marked_path = []
     old_line = list(zip(*line.coords.xy))
     for x, y in old_line:
-        marked_path.append([y, x])
+        marked_path.append([x, y])
 
     stop_locations_on_line = np.array(stop_locations_on_line)
     marked_path = np.array(marked_path)

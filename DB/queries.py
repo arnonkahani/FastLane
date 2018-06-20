@@ -100,7 +100,7 @@ def get_stoptimes_info_by_area(session: Session, line_string_2pt: str) -> pickle
         stop_stops_times_in_area = query_stoptimes_info_by_area(session, line_string_2pt)
 
         stop_stops_times_in_area_res = list(stop_stops_times_in_area)
-
+        print("There are {0} objects in the query".format(stop_stops_times_in_area_res))
         # Retrieves a set of all trip ids from the stop times
         trips_set = set(list(map(lambda x: x[4], stop_stops_times_in_area_res)))
 
@@ -139,7 +139,7 @@ def get_stoptimes_info_by_area(session: Session, line_string_2pt: str) -> pickle
     else:
         with open(function_pkl, 'rb') as handle:
             result = pickle.load(handle)
-
+    print("There are {0} objects in the request result".format(result))
     return pickle.dumps(result)
 
 
@@ -234,6 +234,7 @@ def get_v_info_by_path(session, line_string_path):
     function_pkl = function_name +'.pkl'
     if not (demo_flag and os.path.isfile(function_pkl)):
         stops_times_in_path = query_stops_info_by_path(session, line_string_path)
+        print('Total V query res {0}'.format(len(list(stops_times_in_path))))
         stops = {}
         result = []
 
@@ -247,6 +248,7 @@ def get_v_info_by_path(session, line_string_path):
                 stops[stop_id] = StopObj(id=stop_id, name=stop_name, location=to_shape(stop_geom))
 
             result.append(stops[stop_id])
+        print('Total V res {0}'.format(len(result)))
         with open(function_pkl, 'wb') as handle:
             pickle.dump(result, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
