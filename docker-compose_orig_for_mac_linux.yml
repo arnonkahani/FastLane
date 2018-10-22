@@ -7,7 +7,7 @@ services:
     - POSTGRES_PASSWORD=1234
     - POSTGRES_DB=fastlanes
     volumes:
-       - postgis_data:/var/lib/postgresql/data
+       - ./data/postgres:/var/lib/postgresql/data
     ports:
      - "5434:5432"
     healthcheck:
@@ -23,7 +23,7 @@ services:
      - "3001:3001"
     environment:
     - DATABSE_URL=postgresql+psycopg2://fastlanes:1234@postgis:5432/fastlanes
-    - SHOULD_DROP_ALL_TABELS=1
+    - SHOULD_DROP_ALL_TABELS=0
     - GTFS_FILE_PATH=DB/raw_data/gtfs.zip
     - PASSENGER_COUNT_FILE_PATH=DB/raw_data/passenger_count.csv
     - SHOULD_LOAD_GTFS_DATA=0
@@ -44,6 +44,3 @@ services:
       dockerfile: UI/Dockerfile
     ports:
      - "8080:8080"
-volumes:
-   postgis_data:
-      external: true

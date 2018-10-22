@@ -36,6 +36,7 @@ class GTFSDB():
         """This function loads the db with that data from a given zip file.
         """
         if self.config.SHOULD_LOAD_GTFS_DATA:
+            print("Going to load the following GTFS file".format(self.config.GTFS_FILE_PATH))
             self.load(self.db)
 
     def load(self, db):
