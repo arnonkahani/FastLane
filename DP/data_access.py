@@ -7,7 +7,11 @@ import requests
 
 
 
-server_ip = 'db:3001'
+dev_server_ip = 'localhost:3001'
+prod_server_ip = 'db:3001'
+
+server_ip=dev_server_ip
+
 # server_ip = 'localhost:3006'
 headers = {'Content-Type': 'application/json'}
 

@@ -8,10 +8,15 @@ const uuidv1 = require('uuid/v1');
 const axios = require('axios')
 
 
-server_url = 'http://dp:3002/compute'
-server_url_V = 'http://dp:3002/v/path'
-server_url_trips = 'http://dp:3002/trips/path'
-server_url_analytics = 'http://dp:3002/analytics'
+dev_server_ip = '0.0.0.0'
+prod_server_ip = 'dp'
+
+server_ip=dev_server_ip
+
+server_url = 'http://' + server_ip +':3002/compute'
+server_url_V = 'http://' + server_ip + ':3002/v/path'
+server_url_trips = 'http://'+ server_ip + ':3002/trips/path'
+server_url_analytics = 'http://' + server_ip + ':3002/analytics'
 
 count = 0
 //server_url = 'http://localhost:3005/compute'
