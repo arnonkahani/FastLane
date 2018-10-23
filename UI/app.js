@@ -11,7 +11,7 @@ const axios = require('axios')
 dev_server_ip = '0.0.0.0'
 prod_server_ip = 'dp'
 
-server_ip=dev_server_ip
+server_ip=prod_server_ip
 
 server_url = 'http://' + server_ip +':3002/compute'
 server_url_V = 'http://' + server_ip + ':3002/v/path'
