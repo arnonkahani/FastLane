@@ -23,7 +23,7 @@ services:
      - "3001:3001"
     environment:
     - DATABSE_URL=postgresql+psycopg2://fastlanes:1234@postgis:5432/fastlanes
-    - SHOULD_DROP_ALL_TABELS=1
+    - SHOULD_DROP_ALL_TABELS=0
     - GTFS_FILE_PATH=DB/raw_data/gtfs.zip
     - PASSENGER_COUNT_FILE_PATH=DB/raw_data/passenger_count.csv
     - SHOULD_LOAD_GTFS_DATA=0
