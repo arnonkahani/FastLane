@@ -215,3 +215,7 @@ DB/.idea/*
 docs/**
 
 **/tmp/**
+DB/raw_data/gtfs.zip
+DP/compute.json
+DB/get_v_info_by_path.pkl
+DB/get_stoptimes_info_by_area.pkl

@@ -5,8 +5,6 @@ from geojson import LineString
 from shapely.geometry import LineString as ShapelyLineString, mapping
 import requests
 
-
-
 dev_server_ip = 'localhost:3001'
 prod_server_ip = 'db:3001'
 
